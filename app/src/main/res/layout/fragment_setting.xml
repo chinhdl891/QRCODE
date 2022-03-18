@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.SettingFragment">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#3C52F5"
+            android:gravity="center"
+            android:padding="20dp"
+            android:text="Setting"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="50dp"
+            android:src="@drawable/go_premium" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:text="General Settings"
+            android:textColor="#3C52F5"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="26dp"
+            android:paddingTop="5dp">
+
+            <ImageView
+                android:id="@+id/imgVibrate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/vibrate" />
+
+            <TextView
+                android:id="@+id/txtVis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@+id/imgVibrate"
+                android:text="Vibrate"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtVis"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@id/imgVibrate"
+                android:hint="Vibrate when scan successful" />
+
+            <Switch
+                android:id="@+id/switchVibrate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/switchVibrate"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:background="#E0E0E0" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginEnd="26dp"
+            android:paddingTop="5dp">
+
+            <ImageView
+                android:id="@+id/imgBeep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/beep" />
+
+            <TextView
+                android:id="@+id/txtBeep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@+id/imgBeep"
+                android:text="Vibrate"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtBeep"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@id/imgBeep"
+                android:hint="Vibrate when scan successful" />
+
+            <Switch
+                android:id="@+id/switchBeep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/switchBeep"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:background="#E0E0E0" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="26dp"
+
+            android:layout_marginEnd="26dp"
+            android:paddingTop="5dp">
+
+            <ImageView
+                android:id="@+id/imgHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/history_setting" />
+
+            <TextView
+                android:id="@+id/txtHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@+id/imgHistory"
+                android:text="Vibrate"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtHistory"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@id/imgHistory"
+                android:hint="Vibrate when scan successful" />
+
+            <Switch
+                android:id="@+id/switchHis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/switchHis"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:background="#E0E0E0" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="26dp"
+
+            android:layout_marginEnd="26dp"
+            android:paddingTop="5dp">
+
+            <ImageView
+                android:id="@+id/imgBarcode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/barcode" />
+
+            <TextView
+                android:id="@+id/txtBarcode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@+id/imgBarcode"
+                android:text="Vibrate"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtBarcode"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@id/imgBarcode"
+                android:hint="Vibrate when scan successful" />
+
+            <Switch
+                android:id="@+id/switchBarcode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/switchBarcode"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:background="#E0E0E0" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="26dp"
+
+            android:layout_marginEnd="26dp"
+            android:paddingTop="5dp">
+
+            <ImageView
+                android:id="@+id/imgLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/language" />
+
+            <TextView
+                android:id="@+id/txtLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@+id/imgLanguage"
+                android:text="Language"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtSelectLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:text="Language"
+                android:textColor="#3C52F5"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="20dp"
+            android:text="Support"
+            android:textColor="#3C52F5"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginEnd="26dp"
+            android:paddingTop="5dp">
+
+            <ImageView
+                android:id="@+id/imageShare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/share" />
+
+            <TextView
+                android:id="@+id/txtShare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@+id/imageShare"
+                android:text="Share with your friends"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/txtShare"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:background="#E0E0E0" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginEnd="26dp"
+            android:paddingTop="5dp">
+
+            <ImageView
+                android:id="@+id/imgRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/rate" />
+
+            <TextView
+                android:id="@+id/txtRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@+id/imgRate"
+                android:text="Rate app"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/txtRate"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:background="#E0E0E0" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginEnd="26dp"
+            android:paddingTop="5dp">
+
+            <ImageView
+                android:id="@+id/imageFeedBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/feedback" />
+
+            <TextView
+                android:id="@+id/txtFeedBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@+id/imageFeedBack"
+                android:text="Feedback"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/txtFeedBack"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:background="#E0E0E0" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginEnd="26dp"
+            android:paddingTop="5dp">
+
+            <ImageView
+                android:id="@+id/imgPrivacyPolicy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/privacy" />
+
+            <TextView
+                android:id="@+id/txtPrivacy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@+id/imgPrivacyPolicy"
+                android:text="Privacy Policy"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/txtPrivacy"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:background="#E0E0E0" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</ScrollView>

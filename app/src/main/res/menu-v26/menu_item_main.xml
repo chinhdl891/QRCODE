@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/scan"
+     android:iconTint="#3C52F5"
+        android:icon="@drawable/scanner"
+        android:title="Scanner" />
+    <item
+        android:iconTint="#3C52F5"
+        android:id="@+id/history"
+        android:icon="@drawable/history"
+        android:title="History" />
+    <item
+        android:iconTint="#3C52F5"
+        android:id="@+id/generate"
+        android:icon="@drawable/gender"
+        android:title="Generate" />
+    <item
+        android:iconTint="#3C52F5"
+        android:id="@+id/setting"
+        android:icon="@drawable/settings"
+        android:title="Setting" />
+
+</menu>
