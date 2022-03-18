@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+
+        android:id="@+id/scan"
+        android:icon="@drawable/scanner"
+        android:title="Scanner" />
+    <item
+        android:id="@+id/history"
+        android:icon="@drawable/history_selected"
+        android:title="History" />
+    <item
+        android:id="@+id/generate"
+        android:icon="@drawable/generate_selected"
+        android:title="Generate" />
+    <item
+
+        android:id="@+id/setting"
+        android:icon="@drawable/settings_selected"
+        android:title="Setting" />
+
+</menu>
