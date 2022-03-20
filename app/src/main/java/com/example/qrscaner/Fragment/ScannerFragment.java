@@ -17,6 +17,7 @@ import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrMess;
 import com.example.qrscaner.Model.QrText;
 import com.example.qrscaner.Model.QrUrl;
+import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.R;
 import com.google.zxing.Result;
 import com.karumi.dexter.Dexter;
@@ -123,11 +124,11 @@ public class ScannerFragment extends Fragment {
         if (content[0].equals("SMSTO")) {
             StringBuilder contentSMS = new StringBuilder();
             QrMess qrMess = new QrMess();
-            qrMess.nguoiGui = content[1];
+            qrMess.setNguoiGui(content[1]);
             for (int i = 2; i < content.length; i++) {
                 contentSMS.append(content[i]);
             }
-            qrMess.content = contentSMS.toString();
+            qrMess.setContent(contentSMS.toString());
 
         } else if (content[0].equals("http") || content[0].equals("https")) {
             QrUrl qrUrl = new QrUrl();
@@ -139,20 +140,27 @@ public class ScannerFragment extends Fragment {
                 link.append(content[i]);
 
             }
-            Log.e("url", link.toString());
+           qrUrl.setUrl(link.toString());
         } else if (content[0].equals("WIFI")) {
+
             StringBuilder stringBuilder = new StringBuilder();
             String[] contentWifi = s.split(";");
             String name = "";
             String pass = "";
+            String type = "";
             for (String value : contentWifi) {
                 stringBuilder.append(value);
             }
             String contentWifi2 = stringBuilder.toString();
             String[] contentWifi3 = contentWifi2.split(":");
+            type = contentWifi[2];
             name = contentWifi3[3].replace("P","").trim();
             pass = contentWifi3[4].replace("H","").trim();
-            Log.e(TAG, "ID"+name+"   Pass"+pass );
+            for (String value: contentWifi3
+                 ) {
+                Log.e(TAG, value );
+            }
+
 
         } else if (content[0].equals("MATMSG")){
             String email = "";
@@ -160,17 +168,18 @@ public class ScannerFragment extends Fragment {
             String contentEmailSend = "";
             StringBuilder stringBuilder = new StringBuilder();
             for (String value : content) {
-//                stringBuilder.append(value);
-//                Log.e(TAG, "processQr: ", );
+                stringBuilder.append(value);
             }
-//            String contentEmail = stringBuilder.toString();
-//            String[] contentEmail1 = contentEmail.split(";");
-//
+           String contentEmail = stringBuilder.toString();
+           String[] contentEmail1 = contentEmail.split(";");
+            email = contentEmail1[0].replace("MATMSGTO","").trim();
+            emailSubject = contentEmail1[1].replace("SUB","");
+            contentEmailSend = contentEmail1[2].replace("BODY","");
 
         }else {
             Log.e(TAG, s );
             QrText qrText = new QrText();
-            qrText.text = s;
+            qrText.setText(s);
         }
 
     }
@@ -181,16 +190,4 @@ public class ScannerFragment extends Fragment {
         super.onDestroy();
     }
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_CAMERA_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
 }
