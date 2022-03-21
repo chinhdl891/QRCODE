@@ -98,7 +98,6 @@ public class GenerateFragment extends Fragment {
     }
 
     private List<GenerateItem> getListQR() {
-
         List<GenerateItem> generateItems = new ArrayList<>();
         generateItems.add(new GenerateItem(0, R.drawable.add_call, "Phone"));
         generateItems.add(new GenerateItem(0, R.drawable.add_email, "Email"));
@@ -110,6 +109,7 @@ public class GenerateFragment extends Fragment {
         generateItems.add(new GenerateItem(0, R.drawable.add_calendar, "Calendar"));
         generateItems.add(new GenerateItem(0, R.drawable.add_location, "Location"));
         return generateItems;
+
     }
 
     private List<GenerateItem> getListBar() {
@@ -127,7 +127,6 @@ public class GenerateFragment extends Fragment {
         generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "UPC E"));
         generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "ITF"));
         generateItems.add(new GenerateItem(0, R.drawable.ic_maxi_code, "MAXI CODE"));
-
 
         return generateItems;
     }

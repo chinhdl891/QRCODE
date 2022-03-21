@@ -1,7 +1,9 @@
 package com.example.qrscaner.Fragment;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,12 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.qrscaner.Activity.MainActivity;
+import com.example.qrscaner.Model.Qr;
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrMess;
+import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.Model.QrText;
 import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
+import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
+import com.example.qrscaner.SendData;
 import com.google.zxing.Result;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -27,20 +34,23 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import java.util.Arrays;
+import java.io.Serializable;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ScannerFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+///**
+// * A simple {@link Fragment} subclass.
+// * Use the {@link ScannerFragment#newInstance} factory method to
+// * create an instance of this fragment.
+// */
 public class ScannerFragment extends Fragment {
     ZXingScannerView zXingScannerView;
+
+    private SendData sendData;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
-    private static final String TAG = "aaa";
+    private static final String TAG = "scanLog";
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,23 +65,15 @@ public class ScannerFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ScannerFragment.
-     */
     // TODO: Rename and change types and number of parameters
-    public static ScannerFragment newInstance(String param1, String param2) {
-        ScannerFragment fragment = new ScannerFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+//    public static ScannerFragment newInstance(QrScan qrScan, SendData isendData) {
+//        sendData = isendData;
+//        ScannerFragment fragment = new ScannerFragment();
+//        Bundle args = new Bundle();
+//        args.putSerializable(qrScan);
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,7 @@ public class ScannerFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,7 +102,6 @@ public class ScannerFragment extends Fragment {
 
                     }
                 });
-                zXingScannerView.startCamera();
             }
 
             @Override
@@ -118,69 +120,10 @@ public class ScannerFragment extends Fragment {
     }
 
     private void processQr(String s) {
-
-        String[] content = s.split(":");
-
-        if (content[0].equals("SMSTO")) {
-            StringBuilder contentSMS = new StringBuilder();
-            QrMess qrMess = new QrMess();
-            qrMess.setNguoiGui(content[1]);
-            for (int i = 2; i < content.length; i++) {
-                contentSMS.append(content[i]);
-            }
-            qrMess.setContent(contentSMS.toString());
-
-        } else if (content[0].equals("http") || content[0].equals("https")) {
-            QrUrl qrUrl = new QrUrl();
-            StringBuilder link = new StringBuilder();
-            for (int i = 0; i < content.length; i++) {
-                if (i == 1) {
-                    link.append(":");
-                }
-                link.append(content[i]);
-
-            }
-           qrUrl.setUrl(link.toString());
-        } else if (content[0].equals("WIFI")) {
-
-            StringBuilder stringBuilder = new StringBuilder();
-            String[] contentWifi = s.split(";");
-            String name = "";
-            String pass = "";
-            String type = "";
-            for (String value : contentWifi) {
-                stringBuilder.append(value);
-            }
-            String contentWifi2 = stringBuilder.toString();
-            String[] contentWifi3 = contentWifi2.split(":");
-            type = contentWifi[2];
-            name = contentWifi3[3].replace("P","").trim();
-            pass = contentWifi3[4].replace("H","").trim();
-            for (String value: contentWifi3
-                 ) {
-                Log.e(TAG, value );
-            }
-
-
-        } else if (content[0].equals("MATMSG")){
-            String email = "";
-            String emailSubject = "";
-            String contentEmailSend = "";
-            StringBuilder stringBuilder = new StringBuilder();
-            for (String value : content) {
-                stringBuilder.append(value);
-            }
-           String contentEmail = stringBuilder.toString();
-           String[] contentEmail1 = contentEmail.split(";");
-            email = contentEmail1[0].replace("MATMSGTO","").trim();
-            emailSubject = contentEmail1[1].replace("SUB","");
-            contentEmailSend = contentEmail1[2].replace("BODY","");
-
-        }else {
-            Log.e(TAG, s );
-            QrText qrText = new QrText();
-            qrText.setText(s);
-        }
+        QrScan qrScan = new QrScan();
+        qrScan.setScanText(s);
+        qrScan.setDate(System.currentTimeMillis());
+        sendData.sendQr(qrScan);
 
     }
 
@@ -190,4 +133,15 @@ public class ScannerFragment extends Fragment {
         super.onDestroy();
     }
 
+    @Override
+    public void onResume() {
+        zXingScannerView.startCamera();
+        super.onResume();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        sendData = ((SendData) context);
+    }
 }

@@ -4,22 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <FrameLayout
-        android:id="@+id/frame_content"
+    tools:context=".Activity.MainActivity">
+    <com.example.qrscaner.view.QrScanResult
+        android:visibility="gone"
+        android:id="@+id/con_activitiMain_resultView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/navigationMenu" />
+        android:layout_height="match_parent"/>
+  <RelativeLayout
+      android:id="@+id/rll_main_activity"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+      <FrameLayout
+          android:id="@+id/frame_content"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_above="@+id/navigationMenu" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigationMenu"
-        android:layout_width="match_parent"
-        app:itemIconTint="@drawable/select_item"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        app:itemTextColor="@drawable/select_item"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/menu_item_main" />
-
+      <com.google.android.material.bottomnavigation.BottomNavigationView
+          android:id="@+id/navigationMenu"
+          android:layout_width="match_parent"
+          app:itemIconTint="@drawable/select_item"
+          android:layout_height="60dp"
+          android:layout_alignParentBottom="true"
+          app:itemTextColor="@drawable/select_item"
+          app:labelVisibilityMode="labeled"
+          app:menu="@menu/menu_item_main" />
+  </RelativeLayout>
 </RelativeLayout>
