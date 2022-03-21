@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.example.qrscaner.Adapter.CategoryQCAdapter;
 import com.example.qrscaner.Model.GenerateItem;
@@ -76,46 +78,57 @@ public class GenerateFragment extends Fragment {
         recyclerViewGenerate.setLayoutManager(layoutManager);
         CategoryQCAdapter categoryQCAdapter = new CategoryQCAdapter(getOpGen(), getActivity());
         recyclerViewGenerate.setAdapter(categoryQCAdapter);
+        Button button = view.findViewById(R.id.btn_generate_qr);
+        LinearLayout linearLayout = view.findViewById(R.id.LLOGenerate);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                linearLayout.setVisibility(View.GONE);
+                recyclerViewGenerate.setVisibility(View.VISIBLE);
+            }
+        });
         return view;
     }
 
     private List<OptionGenerate> getOpGen() {
         List<OptionGenerate> optionGenerates = new ArrayList<>();
         optionGenerates.add(new OptionGenerate(0, getListQR(), "QR CODE"));
-        optionGenerates.add(new OptionGenerate(1, getListBar(), "QR CODE"));
-
+        optionGenerates.add(new OptionGenerate(1, getListBar(), "BAR CODE"));
         return optionGenerates;
+    }
+
+    private List<GenerateItem> getListQR() {
+
+        List<GenerateItem> generateItems = new ArrayList<>();
+        generateItems.add(new GenerateItem(0, R.drawable.add_call, "Phone"));
+        generateItems.add(new GenerateItem(0, R.drawable.add_email, "Email"));
+        generateItems.add(new GenerateItem(0, R.drawable.add_uri, "Uri"));
+        generateItems.add(new GenerateItem(0, R.drawable.add_sms, "SMS"));
+        generateItems.add(new GenerateItem(0, R.drawable.add_contact, "Contact"));
+        generateItems.add(new GenerateItem(0, R.drawable.add_text, "Text"));
+        generateItems.add(new GenerateItem(0, R.drawable.add_wifi, "Wifi"));
+        generateItems.add(new GenerateItem(0, R.drawable.add_calendar, "Calendar"));
+        generateItems.add(new GenerateItem(0, R.drawable.add_location, "Location"));
+        return generateItems;
     }
 
     private List<GenerateItem> getListBar() {
         List<GenerateItem> generateItems = new ArrayList<>();
+        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/ic_barcoder3996128", null, null), "Code 39"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "Code 93"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "Code 128"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "Pdf 417"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "Coda bar"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_data_matrix, "Data Matrix"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_aztec, "AZTEC"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "EAN8"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "EAN13"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "UPC A"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "UPC E"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "ITF"));
+        generateItems.add(new GenerateItem(0, R.drawable.ic_maxi_code, "MAXI CODE"));
 
-        generateItems.add(new GenerateItem(0, R.drawable.add_call, "Phone"));
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("add_call", "drawable", "com.example.qrscaner"), "Phone"));
 
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-        return generateItems;
-    }
-
-    private List<GenerateItem> getListQR() {
-        List<GenerateItem> generateItems = new ArrayList<>();
-
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
-        generateItems.add(new GenerateItem(0, getResources().getIdentifier("com.example.qrscaner:drawable/add_call", null, null), "Phone"));
         return generateItems;
     }
 }

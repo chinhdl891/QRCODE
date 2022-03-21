@@ -61,18 +61,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/RLTScanHistory">
         <LinearLayout
-            android:id="@+id/LLOHistory"
+            android:gravity="center"
+            android:id="@+id/LLOGenerate"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/RLTScanHistory"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="110dp"
                 android:layout_marginTop="50dp"
-                android:layout_marginEnd="110dp"
-                android:gravity="center"
                 android:hint="@string/generate_text_empty"
                 android:maxLines="2"
                 android:textSize="17sp"
@@ -87,6 +85,7 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/btn_goto_scan"
                     android:background="#3C52F5"
                     android:text="Scan Now!"
                     android:textColor="@color/white" />
