@@ -32,7 +32,7 @@ public class QrWifi extends QrScan {
 
 
     public void compileWifi(String[] contentWifi, String[] contentWifi3) {
-        this.type = contentWifi[2];
+        this.type = contentWifi[0].replace("WIFI:T:","");
         this.id = contentWifi3[3].replace("P", "").trim();
         this.pass = contentWifi3[4].replace("H", "").trim();
     }

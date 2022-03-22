@@ -54,8 +54,8 @@ public class CategoryQCAdapter extends RecyclerView.Adapter<CategoryQCAdapter.Vi
         TextView txtCategory;
         public ViewHolderCategoryOption(@NonNull View itemView) {
             super(itemView);
-            recyclerViewCategory = itemView.findViewById(R.id.recyclerCategory);
-            txtCategory = itemView.findViewById(R.id.txtCategoryName);
+            recyclerViewCategory = itemView.findViewById(R.id.rlv_itemCategory_listOption);
+            txtCategory = itemView.findViewById(R.id.tv_item_CategoryName);
 
         }
     }

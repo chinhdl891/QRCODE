@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="50dp"
-            android:src="@drawable/go_premium" />
+            android:src="@drawable/ic_goto_premium" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,18 +48,18 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/imgVibrate"
+                android:id="@+id/imv_settingFragment_Vibrate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:src="@drawable/vibrate" />
 
             <TextView
-                android:id="@+id/txtVis"
+                android:id="@+id/tv_settingFragment_Vis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_toRightOf="@+id/imgVibrate"
+                android:layout_toRightOf="@+id/imv_settingFragment_Vibrate"
                 android:text="Vibrate"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -67,14 +67,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtVis"
+                android:layout_below="@id/tv_settingFragment_Vis"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/imgVibrate"
+                android:layout_toRightOf="@id/imv_settingFragment_Vibrate"
                 android:hint="Vibrate when scan successful" />
 
             <Switch
-                android:id="@+id/switchVibrate"
+                android:id="@+id/sw_settingFragment_Vibrate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -84,7 +84,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/switchVibrate"
+                android:layout_below="@id/sw_settingFragment_Vibrate"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:background="#E0E0E0" />
@@ -99,33 +99,33 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/imgBeep"
+                android:id="@+id/imv_settingFragment_Beep"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:src="@drawable/beep" />
 
             <TextView
-                android:id="@+id/txtBeep"
+                android:id="@+id/tv_settingFragment_Beep"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_toRightOf="@+id/imgBeep"
-                android:text="Vibrate"
+                android:layout_toRightOf="@+id/imv_settingFragment_Beep"
+                android:text="Beep"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtBeep"
+                android:layout_below="@id/tv_settingFragment_Beep"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/imgBeep"
+                android:layout_toRightOf="@id/imv_settingFragment_Beep"
                 android:hint="Vibrate when scan successful" />
 
             <Switch
-                android:id="@+id/switchBeep"
+                android:id="@+id/sw_settingFragment_Beep"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -135,7 +135,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/switchBeep"
+                android:layout_below="@id/sw_settingFragment_Beep"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:background="#E0E0E0" />
@@ -150,18 +150,18 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/imgHistory"
+                android:id="@+id/imv_settingFragment_History"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:src="@drawable/history_setting" />
 
             <TextView
-                android:id="@+id/txtHistory"
+                android:id="@+id/tv_settingFragment_History"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_toRightOf="@+id/imgHistory"
+                android:layout_toRightOf="@+id/imv_settingFragment_History"
                 android:text="Vibrate"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -169,14 +169,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtHistory"
+                android:layout_below="@id/tv_settingFragment_History"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/imgHistory"
+                android:layout_toRightOf="@id/imv_settingFragment_History"
                 android:hint="Vibrate when scan successful" />
 
             <Switch
-                android:id="@+id/switchHis"
+                android:id="@+id/sw_settingFragment_His"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -186,7 +186,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/switchHis"
+                android:layout_below="@id/sw_settingFragment_His"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:background="#E0E0E0" />
@@ -201,18 +201,18 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/imgBarcode"
+                android:id="@+id/imv_settingFragment_Barcode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:src="@drawable/barcode" />
 
             <TextView
-                android:id="@+id/txtBarcode"
+                android:id="@+id/tv_settingFragment_Barcode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_toRightOf="@+id/imgBarcode"
+                android:layout_toRightOf="@+id/imv_settingFragment_Barcode"
                 android:text="Vibrate"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -220,14 +220,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtBarcode"
+                android:layout_below="@id/tv_settingFragment_Barcode"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/imgBarcode"
+                android:layout_toRightOf="@id/imv_settingFragment_Barcode"
                 android:hint="Vibrate when scan successful" />
 
             <Switch
-                android:id="@+id/switchBarcode"
+                android:id="@+id/sw_settingFragment_Barcode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -237,7 +237,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/switchBarcode"
+                android:layout_below="@id/sw_settingFragment_Barcode"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:background="#E0E0E0" />
@@ -252,7 +252,7 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/imgLanguage"
+                android:id="@+id/imv_settingFragment_Language"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -260,18 +260,18 @@
                 android:src="@drawable/language" />
 
             <TextView
-                android:id="@+id/txtLanguage"
+                android:id="@+id/tv_settingFragment_Language"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
-                android:layout_toRightOf="@+id/imgLanguage"
+                android:layout_toRightOf="@+id/imv_settingFragment_Language"
                 android:text="Language"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/txtSelectLanguage"
+                android:id="@+id/tv_settingFragment_SelectLanguage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -301,7 +301,7 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/imageShare"
+                android:id="@+id/imv_settingFragment_Share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -309,12 +309,12 @@
                 android:src="@drawable/share" />
 
             <TextView
-                android:id="@+id/txtShare"
+                android:id="@+id/tv_settingFragment_Share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
-                android:layout_toRightOf="@+id/imageShare"
+                android:layout_toRightOf="@+id/imv_settingFragment_Share"
                 android:text="Share with your friends"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -322,7 +322,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/txtShare"
+                android:layout_below="@id/tv_settingFragment_Share"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:background="#E0E0E0" />
@@ -338,7 +338,7 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/imgRate"
+                android:id="@+id/imv_settingFragment_Rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -346,12 +346,12 @@
                 android:src="@drawable/rate" />
 
             <TextView
-                android:id="@+id/txtRate"
+                android:id="@+id/tv_settingFragment_Rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
-                android:layout_toRightOf="@+id/imgRate"
+                android:layout_toRightOf="@+id/imv_settingFragment_Rate"
                 android:text="Rate app"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -359,7 +359,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/txtRate"
+                android:layout_below="@id/tv_settingFragment_Rate"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:background="#E0E0E0" />
@@ -374,7 +374,7 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/imageFeedBack"
+                android:id="@+id/imv_settingFragment_FeedBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -382,12 +382,12 @@
                 android:src="@drawable/feedback" />
 
             <TextView
-                android:id="@+id/txtFeedBack"
+                android:id="@+id/tv_settingFragment_FeedBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
-                android:layout_toRightOf="@+id/imageFeedBack"
+                android:layout_toRightOf="@+id/imv_settingFragment_FeedBack"
                 android:text="Feedback"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -395,7 +395,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/txtFeedBack"
+                android:layout_below="@id/tv_settingFragment_FeedBack"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:background="#E0E0E0" />
@@ -411,7 +411,7 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/imgPrivacyPolicy"
+                android:id="@+id/imv_settingFragment_PrivacyPolicy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -419,12 +419,12 @@
                 android:src="@drawable/privacy" />
 
             <TextView
-                android:id="@+id/txtPrivacy"
+                android:id="@+id/tv_settingFragment_Privacy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
-                android:layout_toRightOf="@+id/imgPrivacyPolicy"
+                android:layout_toRightOf="@+id/imv_settingFragment_PrivacyPolicy"
                 android:text="Privacy Policy"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -432,7 +432,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/txtPrivacy"
+                android:layout_below="@id/tv_settingFragment_Privacy"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:background="#E0E0E0" />

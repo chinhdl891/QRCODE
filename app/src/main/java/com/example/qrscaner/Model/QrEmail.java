@@ -31,10 +31,10 @@ public class QrEmail extends QrScan {
     }
 
 
-    public void compileEmail(String[] contentEmail) {
-        this.content = contentEmail[0].replace("MATMSGTO", "").trim();
-        this.sendTo = contentEmail[1].replace("SUB", "");
-        this.content = contentEmail[2].replace("BODY", "");
+    public void compileEmail(String[] content) {
+        this.sendBy = content[2].replace(";SUB", "").trim();
+        this.sendTo = content[3].replace(";BODY", "").trim();
+        this.content = content[4];
 
     }
 }

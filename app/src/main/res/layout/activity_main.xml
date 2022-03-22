@@ -5,11 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.MainActivity">
-    <com.example.qrscaner.view.QrScanResult
-        android:visibility="gone"
-        android:id="@+id/con_activitiMain_resultView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+
   <RelativeLayout
       android:id="@+id/rll_main_activity"
       android:layout_width="match_parent"
@@ -18,10 +14,9 @@
           android:id="@+id/frame_content"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_above="@+id/navigationMenu" />
-
+          android:layout_above="@+id/nv_activityMain_menu" />
       <com.google.android.material.bottomnavigation.BottomNavigationView
-          android:id="@+id/navigationMenu"
+          android:id="@+id/nv_activityMain_menu"
           android:layout_width="match_parent"
           app:itemIconTint="@drawable/select_item"
           android:layout_height="60dp"
@@ -30,4 +25,10 @@
           app:labelVisibilityMode="labeled"
           app:menu="@menu/menu_item_main" />
   </RelativeLayout>
+
+    <com.example.qrscaner.view.QrScanResult
+        android:visibility="gone"
+        android:id="@+id/con_activityMain_resultView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

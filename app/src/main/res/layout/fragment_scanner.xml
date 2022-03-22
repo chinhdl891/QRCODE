@@ -9,7 +9,7 @@
     tools:context=".Fragment.ScannerFragment">
 
     <me.dm7.barcodescanner.zxing.ZXingScannerView
-        android:id="@+id/scannerView"
+        android:id="@+id/scv_ScanFragment_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:borderColor="#FFF"
@@ -65,7 +65,7 @@
                 android:layout_weight="1" />
 
             <ImageView
-                android:id="@+id/openPhoto"
+                android:id="@+id/imv_ScanFragment_openPhoto"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -73,7 +73,7 @@
                 android:src="@drawable/photo_image" />
 
             <ImageView
-                android:id="@+id/rotateCam"
+                android:id="@+id/imv_scanFragment_rotateCam"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -81,7 +81,7 @@
                 android:src="@drawable/rotate_camera" />
 
             <ImageView
-                android:id="@+id/openFlash"
+                android:id="@+id/imv_scanFragment_openFlash"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -92,7 +92,6 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
-
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

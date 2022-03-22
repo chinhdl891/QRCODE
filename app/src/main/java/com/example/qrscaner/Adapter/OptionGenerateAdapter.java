@@ -46,8 +46,8 @@ public class OptionGenerateAdapter extends RecyclerView.Adapter<OptionGenerateAd
 
         public ViewHolderItemOption(@NonNull View itemView) {
             super(itemView);
-            txtNameOption = itemView.findViewById(R.id.txtNameOption);
-            imgOption = itemView.findViewById(R.id.img_option_create);
+            txtNameOption = itemView.findViewById(R.id.tv_select_nameOption);
+            imgOption = itemView.findViewById(R.id.imv_select_icon_create);
         }
     }
 }

@@ -16,14 +16,13 @@
         android:gravity="center"
         android:orientation="vertical">
         <ImageView
-            android:id="@+id/img_option_create"
+            android:id="@+id/imv_select_icon_create"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/add_call" />
 
         <View
-
-            android:id="@+id/view"
+            android:id="@+id/v_select_viewUnder"
             android:layout_width="70dp"
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
@@ -31,7 +30,7 @@
             android:background="#CDD0E3" />
 
         <TextView
-            android:id="@+id/txtNameOption"
+            android:id="@+id/tv_select_nameOption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp" />

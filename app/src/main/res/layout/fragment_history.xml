@@ -8,7 +8,7 @@
 
 
     <RelativeLayout
-        android:id="@+id/RLTScanHistory"
+        android:id="@+id/rlt_scanHistory_upto"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:background="@drawable/background_history">
@@ -22,7 +22,7 @@
             android:src="@drawable/plus_history" />
 
         <TextView
-            android:id="@+id/txtHis"
+            android:id="@+id/tv_history_fragment_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/addScan"
@@ -35,7 +35,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtHis"
+            android:layout_below="@+id/tv_history_fragment_name"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
             android:text="QR Code Scanner"
@@ -56,10 +56,10 @@
     </RelativeLayout>
 
     <ScrollView
-        android:id="@+id/ScollRenerate"
+        android:id="@+id/scv_historyFragment_renerate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/RLTScanHistory">
+        android:layout_below="@+id/rlt_scanHistory_upto">
         <LinearLayout
             android:gravity="center"
             android:id="@+id/LLOGenerate"

@@ -73,7 +73,7 @@ public class GenerateFragment extends Fragment {
                              Bundle savedInstanceState) {
         RecyclerView recyclerViewGenerate;
         View view = inflater.inflate(R.layout.fragment_generate, container, false);
-        recyclerViewGenerate = view.findViewById(R.id.recyclerOption);
+        recyclerViewGenerate = view.findViewById(R.id.rcl_gennerateFragment_option);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewGenerate.setLayoutManager(layoutManager);
         CategoryQCAdapter categoryQCAdapter = new CategoryQCAdapter(getOpGen(), getActivity());
@@ -127,7 +127,7 @@ public class GenerateFragment extends Fragment {
         generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "UPC E"));
         generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "ITF"));
         generateItems.add(new GenerateItem(0, R.drawable.ic_maxi_code, "MAXI CODE"));
-
         return generateItems;
+
     }
 }
