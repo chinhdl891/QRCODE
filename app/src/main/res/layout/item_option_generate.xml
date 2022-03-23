@@ -10,10 +10,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="Hello"
-    android:id="@+id/txtOption"/>
+    android:id="@+id/tv_item_option_rennerate"/>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginStart="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/recycleItem"/>
+        android:id="@+id/rcv_item_renerate_item"/>
 </LinearLayout>
