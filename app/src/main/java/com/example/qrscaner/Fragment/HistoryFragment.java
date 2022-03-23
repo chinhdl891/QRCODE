@@ -5,78 +5,81 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
+import com.example.qrscaner.Adapter.HistoryAdapterDate;
+import com.example.qrscaner.Model.Date;
+import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HistoryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class HistoryFragment extends Fragment {
-Button btnGotoScan;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public HistoryFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HistoryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HistoryFragment newInstance(String param1, String param2) {
-        HistoryFragment fragment = new HistoryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private Button btnGotoScan;
+    private RecyclerView rcvHistoryScan;
+    private LinearLayout lnlHTRGotoScan;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_history, container, false);
-        btnGotoScan = view.findViewById(R.id.btn_goto_scan);
+        lnlHTRGotoScan = view.findViewById(R.id.lnl_historyFragment_gotoScan);
+
+        rcvHistoryScan = view.findViewById(R.id.rcv_historyFragment_qrScan);
+        HistoryAdapterDate historyAdapterDate = new HistoryAdapterDate(getDateList(), getActivity());
+        rcvHistoryScan.setAdapter(historyAdapterDate);
+        rcvHistoryScan.setLayoutManager(new LinearLayoutManager(getActivity()));
+        btnGotoScan = view.findViewById(R.id.btn_historyFragment_gotoScan);
         btnGotoScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               ScannerFragment scannerFragment = new ScannerFragment();
-               fragmentTransaction.replace(R.id.frame_content,scannerFragment);
-               fragmentTransaction.commit();
+                ScannerFragment scannerFragment = new ScannerFragment();
+                fragmentTransaction.replace(R.id.frame_content, scannerFragment);
+                fragmentTransaction.commit();
             }
         });
+
         return view;
+    }
+
+    private List<Date> getDateList() {
+        List<Date> dateList = new ArrayList<>();
+        dateList.add(new Date(1, 1646102494, getListQr()));
+        dateList.add(new Date(2, 1646102494, getListQr()));
+        dateList.add(new Date(3, 1646102494, getListQr()));
+        if (dateList.size()>0){
+            lnlHTRGotoScan.setVisibility(View.GONE);
+        }
+        return dateList;
+    }
+
+    private List<QrScan> getListQr() {
+        List<QrScan> qrScanList = new ArrayList<>();
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        qrScanList.add(new QrScan("https://www.qr-code-generator.com/solutions/wifi-qr-code/", 1646102494));
+        return qrScanList;
     }
 }

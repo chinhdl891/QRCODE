@@ -68,7 +68,7 @@
 
             <LinearLayout
                 android:gravity="center"
-                android:id="@+id/LLOGenerate"
+                android:id="@+id/lnl_historyFragment_gotoGenerate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">

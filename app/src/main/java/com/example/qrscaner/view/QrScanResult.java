@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -98,6 +99,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 
 
     public void setupData(QrScan qrScan) {
+        zXingScannerView.stopCamera();
         String s = qrScan.getScanText();
         String[] content = s.split(":");
         setImage(s);

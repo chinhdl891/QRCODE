@@ -79,7 +79,7 @@ public class GenerateFragment extends Fragment {
         CategoryQCAdapter categoryQCAdapter = new CategoryQCAdapter(getOpGen(), getActivity());
         recyclerViewGenerate.setAdapter(categoryQCAdapter);
         Button button = view.findViewById(R.id.btn_generate_qr);
-        LinearLayout linearLayout = view.findViewById(R.id.LLOGenerate);
+        LinearLayout linearLayout = view.findViewById(R.id.lnl_historyFragment_gotoGenerate);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

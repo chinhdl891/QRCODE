@@ -1,5 +1,7 @@
 package com.example.qrscaner.Activity;
 
+import static com.example.qrscaner.Fragment.ScannerFragment.zXingScannerView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements SendData {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void sendQr(QrScan qr) {
+        zXingScannerView.stopCamera();
         conActivityMainResultView.setVisibility(View.VISIBLE);
         conActivityMainResultView.setupData(qr);
     }

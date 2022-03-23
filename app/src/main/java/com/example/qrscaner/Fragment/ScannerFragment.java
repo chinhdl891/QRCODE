@@ -68,12 +68,11 @@ public class ScannerFragment extends Fragment implements DecoratedBarcodeView.To
     private static final int MY_CAMERA_REQUEST_CODE = 100;
     private static final String TAG = "scanLog";
     private ImageView imvScanFragmentOpenCam, imvScanFragmentSwitchFlash;
-    private CameraManager mcameraManager;
-    private boolean isFlash = true;
+    private boolean isFlash = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ///hasFlash()=true:flashoff
 
         boolean isFlashAvailable = getActivity().getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
@@ -83,13 +82,13 @@ public class ScannerFragment extends Fragment implements DecoratedBarcodeView.To
         }
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
         zXingScannerView = view.findViewById(R.id.scv_ScanFragment_view);
-        mcameraManager = (CameraManager) getActivity().getSystemService(CAMERA_SERVICE);
-        try {
-            mCameraId = mcameraManager.getCameraIdList()[0];
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
+        zXingScannerView.setResultHandler(new ZXingScannerView.ResultHandler() {
+            @Override
+            public void handleResult(Result result) {
+               processQr(result.getText());
 
+            }
+        });
         imvScanFragmentOpenCam = view.findViewById(R.id.imv_ScanFragment_openPhoto);
         imvScanFragmentSwitchFlash = view.findViewById(R.id.imv_scanFragment_openFlash);
         imvScanFragmentSwitchFlash.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +96,6 @@ public class ScannerFragment extends Fragment implements DecoratedBarcodeView.To
             @Override
             public void onClick(View view) {
                 switchFlashLight(isFlash);
-                isFlash = false;
             }
         });
         imvScanFragmentOpenCam.setOnClickListener(new View.OnClickListener() {
@@ -127,12 +125,15 @@ public class ScannerFragment extends Fragment implements DecoratedBarcodeView.To
         });
         alert.show();
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void switchFlashLight(boolean status) {
-        try {
-            mcameraManager.setTorchMode(mCameraId, status);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
+        if (!status) {
+            zXingScannerView.setFlash(true);
+            isFlash = true;
+        } else {
+            zXingScannerView.setFlash(false);
+            isFlash = false;
         }
     }
 
@@ -201,10 +202,6 @@ public class ScannerFragment extends Fragment implements DecoratedBarcodeView.To
         sendData = ((SendData) context);
     }
 
-    private boolean hasFlash() {
-        return getActivity().getPackageManager()
-                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-    }
 
     @Override
     public void onTorchOn() {
@@ -215,4 +212,5 @@ public class ScannerFragment extends Fragment implements DecoratedBarcodeView.To
     public void onTorchOff() {
         imvScanFragmentSwitchFlash.setBackgroundColor(R.drawable.back_ground_on_flash);
     }
+
 }
