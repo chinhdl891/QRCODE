@@ -72,7 +72,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/imv_result_alert"
         android:layout_width="288dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -88,8 +88,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintStart_toStartOf="@+id/imageView5"
-        app:layout_constraintTop_toTopOf="@+id/imageView5"
+        app:layout_constraintStart_toStartOf="@+id/imv_result_alert"
+        app:layout_constraintTop_toTopOf="@+id/imv_result_alert"
         app:srcCompat="@drawable/add_email" />
 
     <TextView
@@ -101,7 +101,7 @@
         android:layout_marginTop="12dp"
         android:text="Email"
         app:layout_constraintStart_toEndOf="@+id/imv_result_qr_category"
-        app:layout_constraintTop_toTopOf="@+id/imageView5" />
+        app:layout_constraintTop_toTopOf="@+id/imv_result_alert" />
 
     <TextView
         android:id="@+id/tv_result_qr_date_create"
@@ -111,7 +111,7 @@
         android:layout_marginTop="28dp"
         android:text="25th Dec, 2020 "
         app:layout_constraintStart_toEndOf="@+id/imv_result_qr_category"
-        app:layout_constraintTop_toTopOf="@+id/imageView5" />
+        app:layout_constraintTop_toTopOf="@+id/imv_result_alert" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_result_qr_render"
@@ -120,8 +120,8 @@
         android:layout_marginTop="48dp"
         android:padding="20dp"
         app:cardCornerRadius="12dp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView5"
-        app:layout_constraintStart_toStartOf="@+id/imageView5"
+        app:layout_constraintEnd_toEndOf="@+id/imv_result_alert"
+        app:layout_constraintStart_toStartOf="@+id/imv_result_alert"
         app:layout_constraintTop_toBottomOf="@+id/tv_result_qr_date_create">
 
         <ImageView
@@ -141,7 +141,7 @@
         app:layout_constraintBottom_toTopOf="@+id/lnl_result_scan_btnOption"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5">
+        app:layout_constraintTop_toBottomOf="@+id/imv_result_alert">
 
         <LinearLayout
             android:id="@+id/ll_result_qr_string"

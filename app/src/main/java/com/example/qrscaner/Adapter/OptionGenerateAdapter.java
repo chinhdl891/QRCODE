@@ -15,7 +15,7 @@ import com.example.qrscaner.R;
 import java.util.List;
 
 public class OptionGenerateAdapter extends RecyclerView.Adapter<OptionGenerateAdapter.ViewHolderItemOption> {
-    List<GenerateItem> generateItems;
+    private List<GenerateItem> generateItems;
 
     public void setGenerateItems(List<GenerateItem> generateItems) {
         this.generateItems = generateItems;

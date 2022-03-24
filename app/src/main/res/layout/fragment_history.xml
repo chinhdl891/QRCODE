@@ -43,7 +43,8 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/imv_history_plus_historyEdit"
+            android:padding="10dp"
+            android:id="@+id/imv_history_historyEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -93,6 +94,7 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginStart="20dp"
             android:id="@+id/rcv_historyFragment_qrScan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

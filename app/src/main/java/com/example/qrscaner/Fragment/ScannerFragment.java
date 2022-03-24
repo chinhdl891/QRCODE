@@ -60,7 +60,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 // * Use the {@link ScannerFragment#newInstance} factory method to
 // * create an instance of this fragment.
 // */
-public class ScannerFragment extends Fragment implements DecoratedBarcodeView.TorchListener {
+public class ScannerFragment extends Fragment {
     public static ZXingScannerView zXingScannerView;
 
     private SendData sendData;
@@ -73,26 +73,17 @@ public class ScannerFragment extends Fragment implements DecoratedBarcodeView.To
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        boolean isFlashAvailable = getActivity().getPackageManager()
-                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
-
-        if (!isFlashAvailable) {
-            showNoFlashError();
-        }
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
         zXingScannerView = view.findViewById(R.id.scv_ScanFragment_view);
-        zXingScannerView.setResultHandler(new ZXingScannerView.ResultHandler() {
-            @Override
-            public void handleResult(Result result) {
-               processQr(result.getText());
-
-            }
-        });
+      zXingScannerView.setResultHandler(new ZXingScannerView.ResultHandler() {
+          @Override
+          public void handleResult(Result result) {
+              processQr(result.getText());
+          }
+      });
         imvScanFragmentOpenCam = view.findViewById(R.id.imv_ScanFragment_openPhoto);
         imvScanFragmentSwitchFlash = view.findViewById(R.id.imv_scanFragment_openFlash);
         imvScanFragmentSwitchFlash.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
                 switchFlashLight(isFlash);
@@ -113,20 +104,7 @@ public class ScannerFragment extends Fragment implements DecoratedBarcodeView.To
         return view;
     }
 
-    private void showNoFlashError() {
-        AlertDialog alert = new AlertDialog.Builder(getActivity())
-                .create();
-        alert.setTitle("Oops!");
-        alert.setMessage("Flash not available in this device...");
-        alert.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        alert.show();
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public void switchFlashLight(boolean status) {
         if (!status) {
             zXingScannerView.setFlash(true);
@@ -179,7 +157,8 @@ public class ScannerFragment extends Fragment implements DecoratedBarcodeView.To
     private void processQr(String s) {
         QrScan qrScan = new QrScan();
         qrScan.setScanText(s);
-        qrScan.setDate(System.currentTimeMillis());
+        Log.e(TAG, s);
+        qrScan.setDate();
         sendData.sendQr(qrScan);
 
     }
@@ -202,15 +181,5 @@ public class ScannerFragment extends Fragment implements DecoratedBarcodeView.To
         sendData = ((SendData) context);
     }
 
-
-    @Override
-    public void onTorchOn() {
-        imvScanFragmentSwitchFlash.setBackgroundColor(Color.GRAY);
-    }
-
-    @Override
-    public void onTorchOff() {
-        imvScanFragmentSwitchFlash.setBackgroundColor(R.drawable.back_ground_on_flash);
-    }
 
 }

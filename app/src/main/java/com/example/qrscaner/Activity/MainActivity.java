@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.graphics.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,9 @@ import com.example.qrscaner.SendData;
 import com.example.qrscaner.view.QrScanResult;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.zxing.Result;
+
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class MainActivity extends AppCompatActivity implements SendData {
     private BottomNavigationView bottomNavigationView;
@@ -81,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements SendData {
         fragmentTransaction.commit();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void sendQr(QrScan qr) {
         zXingScannerView.stopCamera();
@@ -89,4 +92,15 @@ public class MainActivity extends AppCompatActivity implements SendData {
         conActivityMainResultView.setupData(qr);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        zXingScannerView.stopCamera();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        zXingScannerView.startCamera();
+    }
 }
