@@ -1,186 +1,165 @@
 package com.example.qrscaner.Fragment;
 
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.CAMERA_SERVICE;
+
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Camera;
+import android.graphics.Color;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.qrscaner.Model.QrEmail;
-import com.example.qrscaner.Model.QrMess;
-import com.example.qrscaner.Model.QrText;
-import com.example.qrscaner.Model.QrUrl;
-import com.example.qrscaner.Model.QrWifi;
+import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
+import com.example.qrscaner.SendData;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Reader;
 import com.google.zxing.Result;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
+import com.google.zxing.common.HybridBinarizer;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.security.Policy;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ScannerFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+///**
+// * A simple {@link Fragment} subclass.
+// * Use the {@link ScannerFragment#newInstance} factory method to
+// * create an instance of this fragment.
+// */
 public class ScannerFragment extends Fragment {
-    ZXingScannerView zXingScannerView;
+    public static ZXingScannerView zXingScannerView;
+
+    private SendData sendData;
+    private String strImgFromPhoto, mCameraId;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
-    private static final String TAG = "aaa";
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ScannerFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ScannerFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ScannerFragment newInstance(String param1, String param2) {
-        ScannerFragment fragment = new ScannerFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private static final String TAG = "scanLog";
+    private ImageView imvScanFragmentOpenCam, imvScanFragmentSwitchFlash;
+    private boolean isFlash = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
-        zXingScannerView = view.findViewById(R.id.scannerView);
-        Dexter.withContext(getActivity()).withPermission(Manifest.permission.CAMERA).withListener(new PermissionListener() {
+        zXingScannerView = view.findViewById(R.id.scv_ScanFragment_view);
+      zXingScannerView.setResultHandler(new ZXingScannerView.ResultHandler() {
+          @Override
+          public void handleResult(Result result) {
+              processQr(result.getText());
+          }
+      });
+        imvScanFragmentOpenCam = view.findViewById(R.id.imv_ScanFragment_openPhoto);
+        imvScanFragmentSwitchFlash = view.findViewById(R.id.imv_scanFragment_openFlash);
+        imvScanFragmentSwitchFlash.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                zXingScannerView.setResultHandler(new ZXingScannerView.ResultHandler() {
-                    @Override
-                    public void handleResult(Result result) {
-//                        Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
-                        processQr(result.getText());
-
-                    }
-                });
-                zXingScannerView.startCamera();
+            public void onClick(View view) {
+                switchFlashLight(isFlash);
             }
-
+        });
+        imvScanFragmentOpenCam.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity()
+                            , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+                } else {
+                    selectImage();
+                }
             }
-
-            @Override
-            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-
-            }
-        }).check();
-
+        });
 
         return view;
     }
 
-    private void processQr(String s) {
 
-        String[] content = s.split(":");
-
-        if (content[0].equals("SMSTO")) {
-            StringBuilder contentSMS = new StringBuilder();
-            QrMess qrMess = new QrMess();
-            qrMess.setNguoiGui(content[1]);
-            for (int i = 2; i < content.length; i++) {
-                contentSMS.append(content[i]);
-            }
-            qrMess.setContent(contentSMS.toString());
-
-        } else if (content[0].equals("http") || content[0].equals("https")) {
-            QrUrl qrUrl = new QrUrl();
-            StringBuilder link = new StringBuilder();
-            for (int i = 0; i < content.length; i++) {
-                if (i == 1) {
-                    link.append(":");
-                }
-                link.append(content[i]);
-
-            }
-           qrUrl.setUrl(link.toString());
-        } else if (content[0].equals("WIFI")) {
-
-            StringBuilder stringBuilder = new StringBuilder();
-            String[] contentWifi = s.split(";");
-            String name = "";
-            String pass = "";
-            String type = "";
-            for (String value : contentWifi) {
-                stringBuilder.append(value);
-            }
-            String contentWifi2 = stringBuilder.toString();
-            String[] contentWifi3 = contentWifi2.split(":");
-            type = contentWifi[2];
-            name = contentWifi3[3].replace("P","").trim();
-            pass = contentWifi3[4].replace("H","").trim();
-            for (String value: contentWifi3
-                 ) {
-                Log.e(TAG, value );
-            }
-
-
-        } else if (content[0].equals("MATMSG")){
-            String email = "";
-            String emailSubject = "";
-            String contentEmailSend = "";
-            StringBuilder stringBuilder = new StringBuilder();
-            for (String value : content) {
-                stringBuilder.append(value);
-            }
-           String contentEmail = stringBuilder.toString();
-           String[] contentEmail1 = contentEmail.split(";");
-            email = contentEmail1[0].replace("MATMSGTO","").trim();
-            emailSubject = contentEmail1[1].replace("SUB","");
-            contentEmailSend = contentEmail1[2].replace("BODY","");
-
-        }else {
-            Log.e(TAG, s );
-            QrText qrText = new QrText();
-            qrText.setText(s);
+    public void switchFlashLight(boolean status) {
+        if (!status) {
+            zXingScannerView.setFlash(true);
+            isFlash = true;
+        } else {
+            zXingScannerView.setFlash(false);
+            isFlash = false;
         }
+    }
+
+    private void selectImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), 100);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            selectImage();
+        } else {
+            Toast.makeText(getActivity(), "Permission Denied", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+            Uri uri = data.getData();
+            try {
+                Bitmap bMap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
+                bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(), bMap.getHeight());
+                LuminanceSource source = new RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray);
+                BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+                Reader reader = new MultiFormatReader();
+                Result result = reader.decode(bitmap);
+                strImgFromPhoto = result.getText();
+                processQr(strImgFromPhoto);
+
+            } catch (IOException | ChecksumException | NotFoundException | FormatException e) {
+                e.printStackTrace();
+                processQr("Error");
+            }
+        }
+    }
+
+    private void processQr(String s) {
+        QrScan qrScan = new QrScan();
+        qrScan.setScanText(s);
+        Log.e(TAG, s);
+        qrScan.setDate();
+        sendData.sendQr(qrScan);
 
     }
 
@@ -189,5 +168,18 @@ public class ScannerFragment extends Fragment {
         zXingScannerView.stopCamera();
         super.onDestroy();
     }
+
+    @Override
+    public void onResume() {
+        zXingScannerView.startCamera();
+        super.onResume();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        sendData = ((SendData) context);
+    }
+
 
 }

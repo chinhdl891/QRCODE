@@ -1,37 +1,57 @@
-package com.example.qrscaner;
+package com.example.qrscaner.Activity;
+
+import static com.example.qrscaner.Fragment.ScannerFragment.zXingScannerView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.graphics.Camera;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.example.qrscaner.Fragment.GenerateFragment;
 import com.example.qrscaner.Fragment.HistoryFragment;
 import com.example.qrscaner.Fragment.ScannerFragment;
 import com.example.qrscaner.Fragment.SettingFragment;
+import com.example.qrscaner.Model.QrScan;
+import com.example.qrscaner.R;
+import com.example.qrscaner.SendData;
+import com.example.qrscaner.view.QrScanResult;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.zxing.Result;
 
-public class MainActivity extends AppCompatActivity {
-    BottomNavigationView bottomNavigationView;
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
+public class MainActivity extends AppCompatActivity implements SendData {
+    private BottomNavigationView bottomNavigationView;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+    private QrScanResult conActivityMainResultView;
+    private RelativeLayout rrlMainActivity;
+    private Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        rrlMainActivity = findViewById(R.id.rll_main_activity);
+        bottomNavigationView = findViewById(R.id.nv_activityMain_menu);
+        conActivityMainResultView = findViewById(R.id.con_activityMain_resultView);
         ScannerFragment scannerFragment = new ScannerFragment();
         fragmentLoad(scannerFragment);
-        bottomNavigationView = findViewById(R.id.navigationMenu);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment;
+
                 switch (item.getItemId()) {
                     case R.id.history:
                         fragment = new HistoryFragment();
@@ -63,6 +83,24 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_content, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
 
+    @Override
+    public void sendQr(QrScan qr) {
+        zXingScannerView.stopCamera();
+        conActivityMainResultView.setVisibility(View.VISIBLE);
+        conActivityMainResultView.setupData(qr);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        zXingScannerView.stopCamera();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        zXingScannerView.startCamera();
     }
 }

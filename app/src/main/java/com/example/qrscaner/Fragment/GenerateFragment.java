@@ -73,13 +73,13 @@ public class GenerateFragment extends Fragment {
                              Bundle savedInstanceState) {
         RecyclerView recyclerViewGenerate;
         View view = inflater.inflate(R.layout.fragment_generate, container, false);
-        recyclerViewGenerate = view.findViewById(R.id.recyclerOption);
+        recyclerViewGenerate = view.findViewById(R.id.rcl_gennerateFragment_option);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewGenerate.setLayoutManager(layoutManager);
         CategoryQCAdapter categoryQCAdapter = new CategoryQCAdapter(getOpGen(), getActivity());
         recyclerViewGenerate.setAdapter(categoryQCAdapter);
         Button button = view.findViewById(R.id.btn_generate_qr);
-        LinearLayout linearLayout = view.findViewById(R.id.LLOGenerate);
+        LinearLayout linearLayout = view.findViewById(R.id.lnl_historyFragment_gotoGenerate);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +98,6 @@ public class GenerateFragment extends Fragment {
     }
 
     private List<GenerateItem> getListQR() {
-
         List<GenerateItem> generateItems = new ArrayList<>();
         generateItems.add(new GenerateItem(0, R.drawable.add_call, "Phone"));
         generateItems.add(new GenerateItem(0, R.drawable.add_email, "Email"));
@@ -110,6 +109,7 @@ public class GenerateFragment extends Fragment {
         generateItems.add(new GenerateItem(0, R.drawable.add_calendar, "Calendar"));
         generateItems.add(new GenerateItem(0, R.drawable.add_location, "Location"));
         return generateItems;
+
     }
 
     private List<GenerateItem> getListBar() {
@@ -127,8 +127,7 @@ public class GenerateFragment extends Fragment {
         generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "UPC E"));
         generateItems.add(new GenerateItem(0, R.drawable.ic_barcoder3996128, "ITF"));
         generateItems.add(new GenerateItem(0, R.drawable.ic_maxi_code, "MAXI CODE"));
-
-
         return generateItems;
+
     }
 }

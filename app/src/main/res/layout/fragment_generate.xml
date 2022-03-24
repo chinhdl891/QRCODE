@@ -7,24 +7,24 @@
     tools:context=".Fragment.GenerateFragment">
 
     <RelativeLayout
-        android:id="@+id/RLTScanHistory"
+        android:id="@+id/rlt_scan_gennerate_upto"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:background="@drawable/background_history">
 
         <ImageView
-            android:id="@+id/addScan"
+            android:id="@+id/imv_scan_renerate_ddScan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="30dp"
-            android:src="@drawable/plus_history" />
+            android:src="@drawable/plus" />
 
         <TextView
-            android:id="@+id/txtHis"
+            android:id="@+id/tv_gennerateFragmet_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/addScan"
+            android:layout_below="@+id/imv_scan_renerate_ddScan"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
             android:text="CREATE QR CODE"
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtHis"
+            android:layout_below="@+id/tv_gennerateFragmet_name"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
             android:text="QR Code Generator"
@@ -43,7 +43,7 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/historyEdit"
+            android:id="@+id/imv_gennerateFragment_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -55,20 +55,20 @@
     </RelativeLayout>
 
     <ScrollView
-        android:id="@+id/ScollRenerate"
+        android:id="@+id/scv_gennerateFragment_renerate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/RLTScanHistory">
+        android:layout_below="@+id/rlt_scan_gennerate_upto">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/RLTScanHistory"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rlt_scan_gennerate_upto"
             android:orientation="vertical">
 
             <LinearLayout
                 android:gravity="center"
-                android:id="@+id/LLOGenerate"
+                android:id="@+id/lnl_historyFragment_gotoGenerate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -102,7 +102,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:visibility="gone"
-                android:id="@+id/recyclerOption"
+                android:id="@+id/rcl_gennerateFragment_option"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

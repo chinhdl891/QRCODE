@@ -9,7 +9,7 @@
     tools:context=".Fragment.ScannerFragment">
 
     <me.dm7.barcodescanner.zxing.ZXingScannerView
-        android:id="@+id/scannerView"
+        android:id="@+id/scv_ScanFragment_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:borderColor="#FFF"
@@ -24,7 +24,7 @@
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="10dp"
-        android:layout_above="@+id/cardViewMenu"
+        android:layout_above="@+id/cv_fragment_scanner_menu"
         android:weightSum="11"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -44,7 +44,7 @@
             android:src="@drawable/minus"/>
     </LinearLayout>
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardViewMenu"
+        android:id="@+id/cv_fragment_scanner_menu"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -65,7 +65,7 @@
                 android:layout_weight="1" />
 
             <ImageView
-                android:id="@+id/openPhoto"
+                android:id="@+id/imv_ScanFragment_openPhoto"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -73,7 +73,7 @@
                 android:src="@drawable/photo_image" />
 
             <ImageView
-                android:id="@+id/rotateCam"
+                android:id="@+id/imv_scanFragment_rotateCam"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -81,7 +81,7 @@
                 android:src="@drawable/rotate_camera" />
 
             <ImageView
-                android:id="@+id/openFlash"
+                android:id="@+id/imv_scanFragment_openFlash"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -92,7 +92,6 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
-
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
