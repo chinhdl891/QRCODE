@@ -34,6 +34,6 @@ public class QrUrl extends QrScan implements Serializable {
         }
         this.url = link.toString();
 
-
     }
+
 }

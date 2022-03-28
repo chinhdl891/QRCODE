@@ -1,18 +1,32 @@
 package com.example.qrscaner.Model;
 
-import android.text.format.DateFormat;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+@Entity(tableName = "qr_history")
 public class QrScan implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+    @ColumnInfo(name = "content")
     private String scanText;
+    @ColumnInfo(name = "date")
     private long date;
+    @Ignore
     private boolean isEdit;
 
     public QrScan() {
+    }
+
+    public QrScan(String scanText, long date) {
+        this.scanText = scanText;
+        this.date = date;
     }
 
     public boolean getIsEdit() {
@@ -21,6 +35,23 @@ public class QrScan implements Serializable {
 
     public void setEdit(boolean edit) {
         isEdit = edit;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public boolean isEdit() {
+        return isEdit;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public QrScan(String scanText) {

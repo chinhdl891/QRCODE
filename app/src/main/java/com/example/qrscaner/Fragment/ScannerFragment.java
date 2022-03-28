@@ -1,38 +1,26 @@
 package com.example.qrscaner.Fragment;
 
 import static android.app.Activity.RESULT_OK;
-import static android.content.Context.CAMERA_SERVICE;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Camera;
-import android.graphics.Color;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
@@ -47,10 +35,8 @@ import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Reader;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
-import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import java.io.IOException;
-import java.security.Policy;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -60,8 +46,8 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 // * Use the {@link ScannerFragment#newInstance} factory method to
 // * create an instance of this fragment.
 // */
-public class ScannerFragment extends Fragment {
-    public static ZXingScannerView zXingScannerView;
+public class ScannerFragment extends Fragment implements ZXingScannerView.ResultHandler {
+    public ZXingScannerView zXingScannerView;
 
     private SendData sendData;
     private String strImgFromPhoto, mCameraId;
@@ -71,16 +57,10 @@ public class ScannerFragment extends Fragment {
     private boolean isFlash = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
         zXingScannerView = view.findViewById(R.id.scv_ScanFragment_view);
-      zXingScannerView.setResultHandler(new ZXingScannerView.ResultHandler() {
-          @Override
-          public void handleResult(Result result) {
-              processQr(result.getText());
-          }
-      });
+        zXingScannerView.setResultHandler(this);
         imvScanFragmentOpenCam = view.findViewById(R.id.imv_ScanFragment_openPhoto);
         imvScanFragmentSwitchFlash = view.findViewById(R.id.imv_scanFragment_openFlash);
         imvScanFragmentSwitchFlash.setOnClickListener(new View.OnClickListener() {
@@ -157,22 +137,31 @@ public class ScannerFragment extends Fragment {
     private void processQr(String s) {
         QrScan qrScan = new QrScan();
         qrScan.setScanText(s);
-        Log.e(TAG, s);
         qrScan.setDate();
         sendData.sendQr(qrScan);
 
     }
 
     @Override
-    public void onDestroy() {
-        zXingScannerView.stopCamera();
-        super.onDestroy();
+    public void handleResult(Result result) {
+        processQr(result.getText());
+        zXingScannerView.stopCameraPreview();
     }
 
     @Override
     public void onResume() {
-        zXingScannerView.startCamera();
         super.onResume();
+        zXingScannerView.startCamera();
+        zXingScannerView.setResultHandler(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (zXingScannerView != null){
+            zXingScannerView.stopCameraPreview();
+            zXingScannerView.stopCamera();
+        }
     }
 
     @Override
@@ -181,5 +170,14 @@ public class ScannerFragment extends Fragment {
         sendData = ((SendData) context);
     }
 
+    public void resumeCamera(){
+        zXingScannerView.startCamera();
+        zXingScannerView.setResultHandler(this);
+    }
 
+    @Override
+    public void onDestroy() {
+        zXingScannerView.stopCamera();
+        super.onDestroy();
+    }
 }

@@ -18,6 +18,7 @@ public class QreTelephone extends QrScan {
     public void compile(String[] content) {
         this.tel = content[1];
 
-
     }
+
+
 }

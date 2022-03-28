@@ -37,4 +37,9 @@ public class QrEmail extends QrScan {
         this.content = content[4];
 
     }
+
+    public String getShare() {
+        String email = "Email :" + sendBy + "\n Subject " + sendTo + "\n Message: " + content;
+        return email;
+    }
 }

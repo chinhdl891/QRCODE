@@ -1,34 +1,27 @@
 package com.example.qrscaner.view;
 
 
-import static com.example.qrscaner.Fragment.ScannerFragment.zXingScannerView;
-
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
 import android.text.format.DateFormat;
-import android.util.Log;
+import android.util.AttributeSet;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import android.content.Context;
-
-import android.util.AttributeSet;
-
-import android.view.LayoutInflater;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrMess;
 import com.example.qrscaner.Model.QrScan;
@@ -45,7 +38,7 @@ import java.util.Date;
 
 
 public class QrScanResult extends ConstraintLayout implements View.OnClickListener {
-    private static final String TAG = "resultQRString";
+    private QrScan mqrScan;
     private View mRootView;
     private Context mContext;
     private ImageView imvQrScanResultRender, imvQrScanResultIconCategory, imvQrScanResultBack;
@@ -53,10 +46,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     private Bitmap bitmap;
     private QRGEncoder qrgEncoder;
     private LinearLayout lnlResultInfo;
-
     private DrawView drawView;
 
-    private BackToFragmentScan backToFragmentScan;
 
     public QrScanResult(@NonNull Context context) {
         super(context);
@@ -85,6 +76,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         tvQrScanResultSave = findViewById(R.id.tv_scanResult_save);
         imvQrScanResultBack.setOnClickListener(this);
         tvQrScanResultCancel.setOnClickListener(this);
+        tvQrScanResultSave.setOnClickListener(this);
         imvQrScanResultIconCategory.setOnClickListener(this);
         mRootView.setOnTouchListener(new OnTouchListener() {
             @Override
@@ -98,8 +90,9 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     }
 
 
-    public void setupData(QrScan qrScan) {
-        zXingScannerView.stopCamera();
+    public void setupData(QrScan qrScan, iSaveQrScan listener) {
+        mqrScan = qrScan;
+        saveQrScanListener = listener;
         String s = qrScan.getScanText();
         String[] content = s.split(":");
         setImage(s);
@@ -201,7 +194,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         linearLayoutPhone.addView(tvNameCategory);
         linearLayoutPhone.addView(tvPhoneNumber);
         lnlResultInfo.addView(linearLayoutPhone);
-        lnlResultInfo.addView(drawView);
+//        lnlResultInfo.addView(drawView);
         LinearLayout linearLayoutMess = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryMess = new TextViewPoppinBold(mContext);
         tvNameCategoryMess.setText("Body      ");
@@ -229,7 +222,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         tvNameWifi.setTextColor(Color.WHITE);
         tvNameWifi.setTextSize(13);
         TextView tvWifiName = new TextView(mContext);
-        tvWifiName.setText(qrWifi.getId());
+        tvWifiName.setText(qrWifi.getWifiName());
         tvWifiName.setTextColor(Color.WHITE);
         tvWifiName.setTextSize(13);
         linearLayoutPhone.setOrientation(LinearLayout.HORIZONTAL);
@@ -265,16 +258,13 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 
     private void setContentMail(long date, QrEmail qrEmail) {
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_email);
-        // or you already have long value of date, use this instead of milliseconds variable.
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
         tvQrScanResultCategoryName.setText("Email");
-
         LinearLayout linearLayoutEmail = new LinearLayout(mContext);
-        //sendBy
-        TextView tvNameCategoryEmail = new TextView(mContext);
+        TextViewPoppinBold tvNameCategoryEmail = new TextViewPoppinBold(mContext);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvNameCategoryEmail.setText("<h3>Email:     </h3>");
+            tvNameCategoryEmail.setText("Email");
         }
         tvNameCategoryEmail.setTextColor(Color.WHITE);
         tvNameCategoryEmail.setTextSize(13);
@@ -342,7 +332,6 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 
     private void setContentUrl(long date, QrUrl qrUrl) {
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_uri);
-        // or you already have long value of date, use this instead of milliseconds variable.
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
         tvQrScanResultCategoryName.setText("Uri");
@@ -356,6 +345,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         tvUrl.setTextSize(13);
         lnlResultInfo.addView(tvNameCategory);
         lnlResultInfo.addView(tvUrl);
+
 
     }
 
@@ -384,17 +374,34 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         switch (view.getId()) {
             case R.id.imv_scanResult_back:
             case R.id.tv_scanResult_cancel:
-                zXingScannerView.startCamera();
                 setVisibility(GONE);
                 lnlResultInfo.removeAllViews();
+                callbackCancelResult.cancel();
                 break;
             case R.id.tv_scanResult_save:
+                setVisibility(View.GONE);
+                saveQrScanListener.saveQr(mqrScan);
 
-
+                break;
         }
+
     }
 
-    public interface BackToFragmentScan {
-        void gotoScanFragment();
+    public interface iSaveQrScan {
+        void saveQr(QrScan qrScan);
     }
+
+    private iSaveQrScan saveQrScanListener;
+
+    public interface CallbackCancelResult {
+        void cancel();
+    }
+
+    private CallbackCancelResult callbackCancelResult;
+
+    public void setCallbackCancelResult(CallbackCancelResult callbackCancelResult) {
+        this.callbackCancelResult = callbackCancelResult;
+    }
+
+
 }
