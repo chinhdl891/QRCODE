@@ -18,10 +18,12 @@ import java.util.List;
 public class QrCodeAdapter extends RecyclerView.Adapter<QrCodeAdapter.ViewHolderGenItem> {
     private List<GenerateItem> generateItemList;
     private Context mContext;
+    private BARCODEAdapter.iCreateQr createQr;
 
-    public QrCodeAdapter(List<GenerateItem> generateItemList, Context mContext) {
+    public QrCodeAdapter(List<GenerateItem> generateItemList, Context mContext, BARCODEAdapter.iCreateQr createQr) {
         this.generateItemList = generateItemList;
         this.mContext = mContext;
+        this.createQr = createQr;
     }
 
     @NonNull
@@ -36,7 +38,12 @@ public class QrCodeAdapter extends RecyclerView.Adapter<QrCodeAdapter.ViewHolder
         GenerateItem generateItem = generateItemList.get(position);
         holder.tvNameItem.setText(generateItem.getName());
         holder.imvIconGen.setImageResource(generateItem.getImage());
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createQr.createListener(generateItem.getId());
+            }
+        });
     }
 
     @Override

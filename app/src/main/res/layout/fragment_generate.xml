@@ -54,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_generate_create" />
     <LinearLayout
         android:paddingBottom="10dp"
-        android:id="@+id/lnl_historyFragment_gotoGenerate"
+        android:id="@+id/nsv_genFragment_gotoGenerate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -78,7 +78,7 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="50dp"
-            android:background="@drawable/botron"
+            android:background="@drawable/corner"
             android:text="Create now!"
             android:textColor="@color/white" />
     </LinearLayout>
@@ -95,7 +95,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lnl_historyFragment_gotoGenerate">
+        app:layout_constraintTop_toBottomOf="@+id/nsv_genFragment_gotoGenerate">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -129,4 +129,11 @@
                 android:layout_marginStart="15dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.example.qrscaner.view.generate.ViewGenerateQRCode
+        android:visibility="gone"
+        android:id="@+id/vgq_generate_createQr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+      />
 </androidx.constraintlayout.widget.ConstraintLayout>

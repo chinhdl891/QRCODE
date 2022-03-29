@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,6 +25,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrMess;
+import com.example.qrscaner.Model.QrProduct;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.Model.QrText;
 import com.example.qrscaner.Model.QrUrl;
@@ -137,12 +139,50 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
             setContentTel(qrScan.getDate(), qreTelephone);
 
         } else {
-            QrText qrText = new QrText();
-            qrText.setText(s);
-            setContentText(qrScan.getDate(), qrText);
+            if (checkIsProduct(qrScan.getScanText())){
+                QrProduct qrProduct = new QrProduct();
+                qrProduct.setProduct(Long.parseLong(qrScan.getScanText()));
+                setContentProduct(qrScan.getDate(),qrProduct);
+            }else {
+                QrText qrText = new QrText();
+                qrText.setText(s);
+                setContentText(qrScan.getDate(), qrText);
+            }
+
 
         }
 
+    }
+
+    private void setContentProduct(long date, QrProduct qrProduct) {
+        lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.ic_product);
+        String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
+        tvQrScanResultDate.setText(dateString);
+        tvQrScanResultCategoryName.setText("Product");
+        LinearLayout linearLayoutText = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameCategoryText = new TextViewPoppinBold(mContext);
+        tvNameCategoryText.setText("Product");
+        tvNameCategoryText.setTextColor(Color.WHITE);
+        tvNameCategoryText.setTextSize(13);
+        TextView tvTextContent = new TextView(mContext);
+        tvTextContent.setText(qrProduct.getProduct()+"");
+        tvTextContent.setTextColor(Color.WHITE);
+        tvTextContent.setTextSize(13);
+        linearLayoutText.setOrientation(LinearLayout.VERTICAL);
+        linearLayoutText.addView(tvNameCategoryText);
+        linearLayoutText.addView(tvTextContent);
+        lnlResultInfo.addView(linearLayoutText);
+    }
+
+    public boolean checkIsProduct(String qr){
+        long id ;
+        try {
+            id = Long.parseLong(qr);
+            return  true;
+        }catch (Exception e){
+            return  false;
+        }
     }
 
     private void setContentError() {
@@ -156,11 +196,11 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 
     private void setContentText(long date, QrText qrText) {
         lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
-        imvQrScanResultIconCategory.setImageResource(R.drawable.add_sms);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.add_text);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
         tvQrScanResultCategoryName.setText("Mess");
-        LinearLayout linearLayoutText = new LinearLayout(mContext);
+        LinearLayout lnlText = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryText = new TextViewPoppinBold(mContext);
         tvNameCategoryText.setText("Text");
         tvNameCategoryText.setTextColor(Color.WHITE);
@@ -169,10 +209,10 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         tvTextContent.setText(qrText.getText());
         tvTextContent.setTextColor(Color.WHITE);
         tvTextContent.setTextSize(13);
-        linearLayoutText.setOrientation(LinearLayout.VERTICAL);
-        linearLayoutText.addView(tvNameCategoryText);
-        linearLayoutText.addView(tvTextContent);
-        lnlResultInfo.addView(linearLayoutText);
+        lnlText.setOrientation(LinearLayout.VERTICAL);
+        lnlText.addView(tvNameCategoryText);
+        lnlText.addView(tvTextContent);
+        lnlResultInfo.addView(lnlText);
     }
 
     private void setContentMess(long date, QrMess qrMess) {
@@ -195,7 +235,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         linearLayoutPhone.addView(tvPhoneNumber);
         lnlResultInfo.addView(linearLayoutPhone);
 //        lnlResultInfo.addView(drawView);
-        LinearLayout linearLayoutMess = new LinearLayout(mContext);
+        LinearLayout lnlMess = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryMess = new TextViewPoppinBold(mContext);
         tvNameCategoryMess.setText("Body      ");
         tvNameCategoryMess.setTextColor(Color.WHITE);
@@ -203,10 +243,10 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         TextView tvContent = new TextView(mContext);
         tvContent.setText(qrMess.getContent());
         tvContent.setTextColor(Color.WHITE);
-        linearLayoutMess.setOrientation(LinearLayout.VERTICAL);
-        linearLayoutMess.addView(tvNameCategoryMess);
-        linearLayoutMess.addView(tvContent);
-        lnlResultInfo.addView(linearLayoutMess);
+        lnlMess.setOrientation(LinearLayout.VERTICAL);
+        lnlMess.addView(tvNameCategoryMess);
+        lnlMess.addView(tvContent);
+        lnlResultInfo.addView(lnlMess);
 
     }
 
@@ -216,7 +256,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
         tvQrScanResultCategoryName.setText("Wifi");
-        LinearLayout linearLayoutPhone = new LinearLayout(mContext);
+        LinearLayout lnlPhone = new LinearLayout(mContext);
         TextViewPoppinBold tvNameWifi = new TextViewPoppinBold(mContext);
         tvNameWifi.setText("NetWork:     ");
         tvNameWifi.setTextColor(Color.WHITE);
@@ -225,12 +265,12 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         tvWifiName.setText(qrWifi.getWifiName());
         tvWifiName.setTextColor(Color.WHITE);
         tvWifiName.setTextSize(13);
-        linearLayoutPhone.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayoutPhone.addView(tvNameWifi);
-        linearLayoutPhone.addView(tvWifiName);
-        lnlResultInfo.addView(linearLayoutPhone);
+        lnlPhone.setOrientation(LinearLayout.HORIZONTAL);
+        lnlPhone.addView(tvNameWifi);
+        lnlPhone.addView(tvWifiName);
+        lnlResultInfo.addView(lnlPhone);
         lnlResultInfo.addView(drawView);
-        LinearLayout linearLayoutPass = new LinearLayout(mContext);
+        LinearLayout lnlPass = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryPass = new TextViewPoppinBold(mContext);
         tvNameCategoryPass.setText("Password:   ");
         tvNameCategoryPass.setTextColor(Color.WHITE);
@@ -238,11 +278,11 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         TextView tvPassContent = new TextView(mContext);
         tvPassContent.setText(qrWifi.getPass());
         tvPassContent.setTextColor(Color.WHITE);
-        linearLayoutPass.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayoutPass.addView(tvNameCategoryPass);
-        linearLayoutPass.addView(tvPassContent);
-        lnlResultInfo.addView(linearLayoutPass);
-        LinearLayout linearLayoutType = new LinearLayout(mContext);
+        lnlPass.setOrientation(LinearLayout.HORIZONTAL);
+        lnlPass.addView(tvNameCategoryPass);
+        lnlPass.addView(tvPassContent);
+        lnlResultInfo.addView(lnlPass);
+        LinearLayout lnlType = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryType = new TextViewPoppinBold(mContext);
         tvNameCategoryType.setText("EAP:      ");
         tvNameCategoryType.setTextColor(Color.WHITE);
@@ -250,10 +290,10 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         TextView tvEAP = new TextView(mContext);
         tvEAP.setText(qrWifi.getType());
         tvEAP.setTextColor(Color.WHITE);
-        linearLayoutType.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayoutType.addView(tvNameCategoryType);
-        linearLayoutType.addView(tvEAP);
-        lnlResultInfo.addView(linearLayoutType);
+        lnlType.setOrientation(LinearLayout.HORIZONTAL);
+        lnlType.addView(tvNameCategoryType);
+        lnlType.addView(tvEAP);
+        lnlResultInfo.addView(lnlType);
     }
 
     private void setContentMail(long date, QrEmail qrEmail) {
@@ -278,7 +318,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         lnlResultInfo.addView(linearLayoutEmail);
         lnlResultInfo.addView(drawView);
         //pass
-        LinearLayout linearLayoutSub = new LinearLayout(mContext);
+        LinearLayout lnlSub = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategorySub = new TextViewPoppinBold(mContext);
         tvNameCategorySub.setText("Subject:   ");
         tvNameCategorySub.setTextColor(Color.WHITE);
@@ -286,13 +326,13 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         TextView tvContent = new TextView(mContext);
         tvContent.setText(qrEmail.getSendTo());
         tvContent.setTextColor(Color.WHITE);
-        linearLayoutSub.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayoutSub.addView(tvNameCategorySub);
-        linearLayoutSub.addView(tvContent);
-        lnlResultInfo.addView(linearLayoutSub);
+        lnlSub.setOrientation(LinearLayout.HORIZONTAL);
+        lnlSub.addView(tvNameCategorySub);
+        lnlSub.addView(tvContent);
+        lnlResultInfo.addView(lnlSub);
 
 //type
-        LinearLayout linearLayoutContent = new LinearLayout(mContext);
+        LinearLayout lnlContent = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryContent = new TextViewPoppinBold(mContext);
         tvNameCategoryContent.setText("Content:   ");
         tvNameCategoryContent.setTextColor(Color.WHITE);
@@ -300,10 +340,10 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         TextView tvContentEmail = new TextView(mContext);
         tvContentEmail.setText(qrEmail.getContent());
         tvContentEmail.setTextColor(Color.WHITE);
-        linearLayoutContent.setOrientation(LinearLayout.VERTICAL);
-        linearLayoutContent.addView(tvNameCategoryContent);
-        linearLayoutContent.addView(tvContentEmail);
-        lnlResultInfo.addView(linearLayoutContent);
+        lnlContent.setOrientation(LinearLayout.VERTICAL);
+        lnlContent.addView(tvNameCategoryContent);
+        lnlContent.addView(tvContentEmail);
+        lnlResultInfo.addView(lnlContent);
 
     }
 

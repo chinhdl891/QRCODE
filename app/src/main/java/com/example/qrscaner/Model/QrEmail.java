@@ -1,5 +1,7 @@
 package com.example.qrscaner.Model;
 
+import android.util.Log;
+
 public class QrEmail extends QrScan {
     //2022-03-18 15:46:12.262 28186-28186/com.example.qrscaner E/aaa: MATMSG:TO:vuquocchinh891@gmail.com;SUB:chinh;BODY:chinh;;
     private String content;
@@ -32,6 +34,7 @@ public class QrEmail extends QrScan {
 
 
     public void compileEmail(String[] content) {
+
         this.sendBy = content[2].replace(";SUB", "").trim();
         this.sendTo = content[3].replace(";BODY", "").trim();
         this.content = content[4];

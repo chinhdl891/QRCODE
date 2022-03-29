@@ -18,10 +18,12 @@ import java.util.List;
 public class BARCODEAdapter extends RecyclerView.Adapter<BARCODEAdapter.ViewHolderGenItem> {
     private List<GenerateItem> generateItemList;
     private Context mContext;
+    private iCreateQr createQr;
 
-    public BARCODEAdapter(List<GenerateItem> generateItemList, Context mContext) {
+    public BARCODEAdapter(List<GenerateItem> generateItemList, Context mContext, iCreateQr createQr) {
         this.generateItemList = generateItemList;
         this.mContext = mContext;
+        this.createQr = createQr;
     }
 
     @NonNull
@@ -36,6 +38,12 @@ public class BARCODEAdapter extends RecyclerView.Adapter<BARCODEAdapter.ViewHold
         GenerateItem generateItem = generateItemList.get(position);
         holder.tvNameItem.setText(generateItem.getName());
         holder.imvIconGen.setImageResource(generateItem.getImage());
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 
     }
 
@@ -52,6 +60,18 @@ public class BARCODEAdapter extends RecyclerView.Adapter<BARCODEAdapter.ViewHold
             super(itemView);
             imvIconGen = itemView.findViewById(R.id.imv_select_icon_create);
             tvNameItem = itemView.findViewById(R.id.tv_select_nameOption);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    GenerateItem generateItem =  generateItemList.get(getLayoutPosition());
+                    createQr.createListener(generateItem.getId());
+                }
+            });
+
         }
+    }
+    public interface iCreateQr{
+        void createListener(int id);
     }
 }

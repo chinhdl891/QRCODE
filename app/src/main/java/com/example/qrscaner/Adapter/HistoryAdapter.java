@@ -179,16 +179,26 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qreTelephone.getTel()));
         } else {
             QrText qrText = new QrText();
-            qrText.setText(qrText.getText());
-            holder.tvItemHistoryQrContent.setText(qrScan.getScanText());
-            holder.imvItemScanType.setImageResource(R.drawable.add_text);
-            holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
-            if (qrScan.getScanText().equals("")) {
-                holder.tvItemHistoryQrContent.setText("Text");
+            if (checkIsProduct(qrText.getText())) {
+                qrText.setText(qrText.getText());
+                holder.tvItemHistoryQrContent.setText(qrScan.getScanText());
+                holder.imvItemScanType.setImageResource(R.drawable.ic_product);
+                holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
+                if (qrScan.getScanText().equals("")) {
+                    holder.tvItemHistoryQrContent.setText("Product");
+                }
+                holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrText.getText()));
+            } else {
+                qrText.setText(qrText.getText());
+                holder.tvItemHistoryQrContent.setText(qrScan.getScanText());
+                holder.imvItemScanType.setImageResource(R.drawable.add_text);
+                holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
+                if (qrScan.getScanText().equals("")) {
+                    holder.tvItemHistoryQrContent.setText("Text");
+                }
+                holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrText.getText()));
             }
-            holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrText.getText()));
         }
-
     }
 
     @Override
@@ -196,6 +206,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         return qrList.size();
     }
 
+    public boolean checkIsProduct(String qr) {
+        long id;
+        try {
+            id = Long.parseLong(qr);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public class ViewHolderHistory extends RecyclerView.ViewHolder {
         ConstraintLayout ctlItemHistoryDate;
@@ -237,6 +256,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         }
     }
+
     private iDeleteQr deleteListener;
 
     public interface iShareData {
@@ -248,7 +268,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public interface CallEditListener {
         void edit(Boolean isEdit);
     }
-    public interface iDeleteQr{
+
+    public interface iDeleteQr {
         void deleteListener(QrScan qrScan);
     }
 }
