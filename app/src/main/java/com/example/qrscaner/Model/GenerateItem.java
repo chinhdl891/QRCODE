@@ -1,5 +1,8 @@
 package com.example.qrscaner.Model;
 
+import androidx.room.Entity;
+
+
 public class GenerateItem {
     private int id;
     private int image;
@@ -11,6 +14,7 @@ public class GenerateItem {
         this.image = image;
         this.name = name;
     }
+
 
     public int getId() {
         return id;

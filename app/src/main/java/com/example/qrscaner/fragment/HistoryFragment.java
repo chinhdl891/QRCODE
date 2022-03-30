@@ -1,5 +1,6 @@
-package com.example.qrscaner.Fragment;
+package com.example.qrscaner.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,22 +16,22 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.example.qrscaner.Adapter.HistoryAdapter;
-import com.example.qrscaner.Adapter.HistoryAdapterItemQr;
+import com.example.qrscaner.adapter.HistoryAdapter;
+import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
-public class HistoryFragment extends Fragment implements View.OnClickListener, HistoryAdapterItemQr.CallEditListener {
+public class HistoryFragment extends Fragment implements View.OnClickListener, HistoryAdapter.CallEditListener, HistoryAdapter.iShareData, HistoryAdapter.iDeleteQr {
     private Button btnGotoScan;
     private RecyclerView rcvHistoryScan;
     private LinearLayout lnlHTRGotoScan;
     private ImageView imvEdit;
     private HistoryAdapter historyAdapter;
     private boolean isCheck = false;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,7 +41,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         lnlHTRGotoScan = view.findViewById(R.id.lnl_historyFragment_gotoScan);
         btnGotoScan = view.findViewById(R.id.btn_historyFragment_gotoScan);
         rcvHistoryScan = view.findViewById(R.id.rcv_historyFragment_qrScan);
-        historyAdapter = new HistoryAdapter(getListScan(), this, isCheck);
+        historyAdapter = new HistoryAdapter(getListScan(), isCheck, getActivity(), this, this, this, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rcvHistoryScan.setLayoutManager(layoutManager);
         rcvHistoryScan.setAdapter(historyAdapter);
@@ -51,12 +52,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     }
 
     private List<QrScan> getListScan() {
-        List<QrScan> qrScanList = new ArrayList<>();
-        qrScanList.add(new QrScan(""));
-        qrScanList.add(new QrScan(""));
-        qrScanList.add(new QrScan(""));
-        qrScanList.add(new QrScan(""));
-
+        List<QrScan> qrScanList = QrHistoryDatabase.getInstance(getActivity()).qrDao().getListQrHistory();
         if (qrScanList.size() > 0) {
             lnlHTRGotoScan.setVisibility(View.GONE);
         }
@@ -76,12 +72,13 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
                 break;
             case R.id.imv_history_historyEdit:
                 if (!isCheck) {
-                    historyAdapter = new HistoryAdapter(getListScan(), this, true);
+                    historyAdapter = new HistoryAdapter(getListScan(), true, getActivity(), this, this, this, this);
                     rcvHistoryScan.setAdapter(historyAdapter);
+
                     imvEdit.setImageResource(R.drawable.ic_close);
                     isCheck = true;
                 } else {
-                    historyAdapter = new HistoryAdapter(getListScan(), this, false);
+                    historyAdapter = new HistoryAdapter(getListScan(), false, getActivity(), this, this, this, this);
                     rcvHistoryScan.setAdapter(historyAdapter);
                     imvEdit.setImageResource(R.drawable.pen_edit_1);
                     isCheck = false;
@@ -94,16 +91,39 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     @Override
     public void edit(Boolean isEdit) {
         if (!isEdit) {
-            historyAdapter = new HistoryAdapter(getListScan(), this, true);
+            historyAdapter = new HistoryAdapter(getListScan(), true, getActivity(), this, this, this, this);
             rcvHistoryScan.setAdapter(historyAdapter);
             imvEdit.setImageResource(R.drawable.ic_close);
             isCheck = true;
         } else {
-            historyAdapter = new HistoryAdapter(getListScan(), this, false);
+            historyAdapter = new HistoryAdapter(getListScan(), false, getActivity(), this, this, this, this);
             rcvHistoryScan.setAdapter(historyAdapter);
             imvEdit.setImageResource(R.drawable.pen_edit_1);
             isCheck = false;
         }
 
+    }
+
+    @Override
+    public void shareDataListener(String data) {
+        Intent intentShare = new Intent(Intent.ACTION_SEND);
+        intentShare.setType("text/plain");
+        intentShare.putExtra(Intent.EXTRA_TEXT, data);
+        getActivity().startActivity(intentShare);
+    }
+
+    @Override
+    public void deleteListener(QrScan qrScan) {
+        if (check(getListScan())==1){
+            lnlHTRGotoScan.setVisibility(View.VISIBLE);
+            rcvHistoryScan.setVisibility(View.GONE);
+        }
+        QrHistoryDatabase.getInstance(getActivity()).qrDao().deleteQr(qrScan);
+        historyAdapter = new HistoryAdapter(getListScan(), false, getActivity(), this, this, this, this);
+        rcvHistoryScan.setAdapter(historyAdapter);
+
+    }
+    public int check(List<QrScan> qrScanList){
+        return qrScanList.size();
     }
 }

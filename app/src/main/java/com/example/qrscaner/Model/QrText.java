@@ -7,6 +7,9 @@ public class QrText extends QrScan {
     public String getText() {
         return text;
     }
+    public String getShare() {
+        return text;
+    }
 
     public void setText(String text) {
         this.text = text;

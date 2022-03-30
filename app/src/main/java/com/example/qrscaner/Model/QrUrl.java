@@ -1,13 +1,5 @@
 package com.example.qrscaner.Model;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.widget.Toast;
-
-import com.example.qrscaner.Activity.MainActivity;
-import com.example.qrscaner.R;
-
 import java.io.Serializable;
 
 public class QrUrl extends QrScan implements Serializable {
@@ -17,7 +9,9 @@ public class QrUrl extends QrScan implements Serializable {
     public String getUrl() {
         return url;
     }
-
+    public String getShare() {
+        return url;
+    }
     public void setUrl(String url) {
         this.url = url;
     }
@@ -34,6 +28,6 @@ public class QrUrl extends QrScan implements Serializable {
         }
         this.url = link.toString();
 
-
     }
+
 }
