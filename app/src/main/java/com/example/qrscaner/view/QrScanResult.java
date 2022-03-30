@@ -49,6 +49,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     private QRGEncoder qrgEncoder;
     private LinearLayout lnlResultInfo;
     private DrawView drawView;
+    private QrScan.QRType type;
 
 
     public QrScanResult(@NonNull Context context) {
@@ -100,9 +101,9 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         setImage(s);
 
         if (content[0].equals("SMSTO")) {
-
             QrMess qrMess = new QrMess();
             qrMess.compileSMS(content);
+
             setContentMess(qrScan.getDate(), qrMess);
 
         } else if (content[0].equals("Error")) {
@@ -139,11 +140,11 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
             setContentTel(qrScan.getDate(), qreTelephone);
 
         } else {
-            if (checkIsProduct(qrScan.getScanText())){
+            if (checkIsProduct(qrScan.getScanText())) {
                 QrProduct qrProduct = new QrProduct();
                 qrProduct.setProduct(Long.parseLong(qrScan.getScanText()));
-                setContentProduct(qrScan.getDate(),qrProduct);
-            }else {
+                setContentProduct(qrScan.getDate(), qrProduct);
+            } else {
                 QrText qrText = new QrText();
                 qrText.setText(s);
                 setContentText(qrScan.getDate(), qrText);
@@ -155,6 +156,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     }
 
     private void setContentProduct(long date, QrProduct qrProduct) {
+        type = QrScan.QRType.PRODUCT;
+        mqrScan.setTypeQR(type);
         lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
         imvQrScanResultIconCategory.setImageResource(R.drawable.ic_product);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
@@ -166,7 +169,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         tvNameCategoryText.setTextColor(Color.WHITE);
         tvNameCategoryText.setTextSize(13);
         TextView tvTextContent = new TextView(mContext);
-        tvTextContent.setText(qrProduct.getProduct()+"");
+        tvTextContent.setText(qrProduct.getProduct() + "");
         tvTextContent.setTextColor(Color.WHITE);
         tvTextContent.setTextSize(13);
         linearLayoutText.setOrientation(LinearLayout.VERTICAL);
@@ -175,17 +178,19 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         lnlResultInfo.addView(linearLayoutText);
     }
 
-    public boolean checkIsProduct(String qr){
-        long id ;
+    public boolean checkIsProduct(String qr) {
+        long id;
         try {
             id = Long.parseLong(qr);
-            return  true;
-        }catch (Exception e){
-            return  false;
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
     private void setContentError() {
+        type = QrScan.QRType.ERROR;
+        mqrScan.setTypeQR(type);
         lnlResultInfo.setVisibility(GONE);
         imvQrScanResultIconCategory.setVisibility(GONE);
         imvQrScanResultRender.setImageResource(R.drawable.ic_error);
@@ -195,6 +200,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     }
 
     private void setContentText(long date, QrText qrText) {
+        type = QrScan.QRType.TEXT;
+        mqrScan.setTypeQR(type);
         lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_text);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
@@ -216,6 +223,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     }
 
     private void setContentMess(long date, QrMess qrMess) {
+        type = QrScan.QRType.SMS;
+        mqrScan.setTypeQR(type);
         lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_sms);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
@@ -251,6 +260,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     }
 
     private void setContentWifi(long date, QrWifi qrWifi) {
+        type = QrScan.QRType.WIFI;
+        mqrScan.setTypeQR(type);
         lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_wifi);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
@@ -269,7 +280,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         lnlPhone.addView(tvNameWifi);
         lnlPhone.addView(tvWifiName);
         lnlResultInfo.addView(lnlPhone);
-        lnlResultInfo.addView(drawView);
+//        lnlResultInfo.addView(drawView);
         LinearLayout lnlPass = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryPass = new TextViewPoppinBold(mContext);
         tvNameCategoryPass.setText("Password:   ");
@@ -297,6 +308,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     }
 
     private void setContentMail(long date, QrEmail qrEmail) {
+        type = QrScan.QRType.EMAIL;
+        mqrScan.setTypeQR(type);
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_email);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
@@ -348,6 +361,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     }
 
     private void setContentTel(long date, QreTelephone qreTelephone) {
+        type = QrScan.QRType.PHONE;
+        mqrScan.setTypeQR(type);
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_call);
         // or you already have long value of date, use this instead of milliseconds variable.
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
@@ -371,6 +386,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 
 
     private void setContentUrl(long date, QrUrl qrUrl) {
+        type = QrScan.QRType.URL;
+        mqrScan.setTypeQR(type);
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_uri);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
@@ -420,6 +437,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
                 break;
             case R.id.tv_scanResult_save:
                 setVisibility(View.GONE);
+                lnlResultInfo.removeAllViews();
                 saveQrScanListener.saveQr(mqrScan);
 
                 break;

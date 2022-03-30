@@ -105,8 +105,8 @@
 
             <ImageView
                 android:id="@+id/imv_item_history_scan_check"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginStart="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imv_item_scan_type"

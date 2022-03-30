@@ -12,6 +12,22 @@ import java.util.Date;
 
 @Entity(tableName = "qr_history")
 public class QrScan implements Serializable {
+    public enum QRType {
+        WIFI,
+        TEXT,
+        PHONE,
+        EMAIL,
+        SMS,
+        URL,
+        PRODUCT,
+        ERROR,
+        BAR39,
+        BAR93,
+        BAR128,
+    }
+
+    @ColumnInfo(name = "type")
+    private QRType typeQR;
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "content")
@@ -23,10 +39,18 @@ public class QrScan implements Serializable {
 
     public QrScan() {
     }
-
-    public QrScan(String scanText, long date) {
+    public QrScan(QRType type, String scanText, long date) {
+        this.typeQR = type;
         this.scanText = scanText;
         this.date = date;
+    }
+
+    public QRType getTypeQR() {
+        return typeQR;
+    }
+
+    public void setTypeQR(QRType typeQR) {
+        this.typeQR = typeQR;
     }
 
     public boolean getIsEdit() {

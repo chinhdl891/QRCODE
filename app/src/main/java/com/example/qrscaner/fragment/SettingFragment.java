@@ -1,4 +1,4 @@
-package com.example.qrscaner.Fragment;
+package com.example.qrscaner.fragment;
 
 import android.os.Bundle;
 
@@ -10,11 +10,7 @@ import android.view.ViewGroup;
 
 import com.example.qrscaner.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class SettingFragment extends Fragment {
 
     @Override

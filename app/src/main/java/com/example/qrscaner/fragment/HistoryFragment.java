@@ -1,4 +1,4 @@
-package com.example.qrscaner.Fragment;
+package com.example.qrscaner.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.example.qrscaner.Adapter.HistoryAdapter;
+import com.example.qrscaner.adapter.HistoryAdapter;
 import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
@@ -31,6 +31,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     private ImageView imvEdit;
     private HistoryAdapter historyAdapter;
     private boolean isCheck = false;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +53,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
 
     private List<QrScan> getListScan() {
         List<QrScan> qrScanList = QrHistoryDatabase.getInstance(getActivity()).qrDao().getListQrHistory();
-
         if (qrScanList.size() > 0) {
             lnlHTRGotoScan.setVisibility(View.GONE);
         }
@@ -74,6 +74,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
                 if (!isCheck) {
                     historyAdapter = new HistoryAdapter(getListScan(), true, getActivity(), this, this, this, this);
                     rcvHistoryScan.setAdapter(historyAdapter);
+
                     imvEdit.setImageResource(R.drawable.ic_close);
                     isCheck = true;
                 } else {

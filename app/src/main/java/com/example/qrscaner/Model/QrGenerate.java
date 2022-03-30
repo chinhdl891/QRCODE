@@ -5,6 +5,10 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 @Entity(tableName = "qr_generate")
 public class QrGenerate {
     @PrimaryKey(autoGenerate = true)
@@ -13,12 +17,42 @@ public class QrGenerate {
     private long date;
     @ColumnInfo(name = "content")
     private String content;
+    @ColumnInfo(name = "qrType")
+    private QrScan.QRType qrType;
     @Ignore
-    private boolean type;
+    private boolean isEdit;
 
-    public QrGenerate(long date, String content) {
+    public boolean isEdit() {
+        return isEdit;
+    }
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
+    }
+
+    public QrGenerate(long date, String content, QrScan.QRType qrType) {
         this.date = date;
         this.content = content;
+        this.qrType = qrType;
+    }
+
+    public QrScan.QRType getQrType() {
+        return qrType;
+    }
+
+    public void setQrType(QrScan.QRType qrType) {
+        this.qrType = qrType;
+    }
+
+    public String getStringDate() {
+        Date datetime = new Date();
+        datetime.setTime(this.date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(datetime);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        long month = calendar.getTimeInMillis();
+        String dateString = new SimpleDateFormat("MMM,yyyy").format(month);
+        return dateString;
     }
 
     public int getId() {

@@ -1,12 +1,8 @@
-package com.example.qrscaner.Activity;
+package com.example.qrscaner.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -20,12 +16,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.qrscaner.Adapter.HistoryAdapter;
 import com.example.qrscaner.DataBase.QrHistoryDatabase;
-import com.example.qrscaner.Fragment.GenerateFragment;
-import com.example.qrscaner.Fragment.HistoryFragment;
-import com.example.qrscaner.Fragment.ScannerFragment;
-import com.example.qrscaner.Fragment.SettingFragment;
+import com.example.qrscaner.fragment.GenerateFragment;
+import com.example.qrscaner.fragment.HistoryFragment;
+import com.example.qrscaner.fragment.ScannerFragment;
+import com.example.qrscaner.fragment.SettingFragment;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;

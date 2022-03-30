@@ -1,4 +1,4 @@
-package com.example.qrscaner.Adapter;
+package com.example.qrscaner.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrMess;
+import com.example.qrscaner.Model.QrProduct;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.Model.QrText;
 import com.example.qrscaner.Model.QrUrl;
@@ -55,12 +56,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolderHistory holder, int position) {
 
         QrScan qrScan = qrList.get(position);
-        holder.imvItemDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteListener.deleteListener(qrScan);
-            }
-        });
+
         holder.tvItemHistoryDate.setText(qrScan.getDateString());
         if (position > 0) {
             QrScan qrScanUndo = qrList.get(position - 1);
@@ -72,27 +68,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         }
 
-        holder.imvItemScanMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.cvItemHistoryQr.setVisibility(View.GONE);
-                holder.cvItemHistoryEdit.setVisibility(View.VISIBLE);
-
-            }
-        });
-        holder.itemView.setOnClickListener(view -> {
-            if (!qrScan.getIsEdit()) {
-                holder.imvItemCheck.setImageResource(R.drawable.ic_check);
-                qrScan.setEdit(true);
-            } else {
-                holder.imvItemCheck.setImageResource(R.drawable.ic_uncheck);
-                qrScan.setEdit(false);
-
-            }
-        });
         String[] content = qrScan.getScanText().split(":");
         if (content[0].equals("SMSTO")) {
-
             QrMess qrMess = new QrMess();
             qrMess.compileSMS(content);
             holder.tvItemHistoryQrContent.setText(qrMess.getSendBy());
@@ -117,12 +94,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             holder.tvItemHistoryQrContent.setText(qrUrl.getUrl());
             holder.imvItemScanType.setImageResource(R.drawable.add_uri);
             holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
-            holder.imvItemShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    shareDataListener.shareDataListener(qrUrl.getUrl());
-                }
-            });
+//            holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrUrl.getUrl()));
             if (qrScan.getScanText().equals("")) {
                 holder.tvItemHistoryQrContent.setText("Uri");
             }
@@ -139,12 +111,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             holder.tvItemHistoryQrContent.setText(qrWifi.getWifiName());
             holder.imvItemScanType.setImageResource(R.drawable.add_wifi);
             holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
-            holder.imvItemShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    shareDataListener.shareDataListener(qrWifi.getShare());
-                }
-            });
+//            holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrWifi.getShare()));
             if (qrScan.getScanText().equals("")) {
                 holder.tvItemHistoryQrContent.setText("Wifi");
             }
@@ -161,12 +128,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             if (qrScan.getScanText().equals("")) {
                 holder.tvItemHistoryQrContent.setText("Email");
             }
-            holder.imvItemShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    shareDataListener.shareDataListener(qrEmail.getShare());
-                }
-            });
+//            holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrEmail.getShare()));
         } else if (content[0].equals("tel")) {
             QreTelephone qreTelephone = new QreTelephone();
             qreTelephone.compile(content);
@@ -176,7 +138,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             if (qrScan.getScanText().equals("")) {
                 holder.tvItemHistoryQrContent.setText("Phone");
             }
-            holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qreTelephone.getTel()));
+//            holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qreTelephone.getTel()));
         } else {
             QrText qrText = new QrText();
             if (checkIsProduct(qrText.getText())) {
@@ -187,7 +149,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 if (qrScan.getScanText().equals("")) {
                     holder.tvItemHistoryQrContent.setText("Product");
                 }
-                holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrText.getText()));
+//                holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrText.getText()));
             } else {
                 qrText.setText(qrText.getText());
                 holder.tvItemHistoryQrContent.setText(qrScan.getScanText());
@@ -196,14 +158,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 if (qrScan.getScanText().equals("")) {
                     holder.tvItemHistoryQrContent.setText("Text");
                 }
-                holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrText.getText()));
+//                holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrText.getText()));
             }
         }
     }
 
     @Override
     public int getItemCount() {
-        return qrList.size();
+       if (qrList !=null){
+          return qrList.size();
+       }
+       return 0;
     }
 
     public boolean checkIsProduct(String qr) {
@@ -227,6 +192,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         public ViewHolderHistory(@NonNull View itemView) {
             super(itemView);
+
             tvItemHistoryDate = itemView.findViewById(R.id.tv_item_history_monthCreate);
             ctlItemHistoryDate = itemView.findViewById(R.id.csl_item_history_date);
             cvItemHistoryQr = itemView.findViewById(R.id.cv_item_history_scan);
@@ -251,6 +217,71 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             imvItemCancel.setOnClickListener(view -> {
                 cvItemHistoryQr.setVisibility(View.VISIBLE);
                 cvItemHistoryEdit.setVisibility(View.GONE);
+            });
+            imvItemDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QrScan qrScan = qrList.get(getLayoutPosition());
+                    deleteListener.deleteListener(qrScan);
+                }
+            });
+
+            imvItemScanMenu.setOnClickListener(view -> {
+                cvItemHistoryQr.setVisibility(View.GONE);
+                cvItemHistoryEdit.setVisibility(View.VISIBLE);
+
+            });
+            imvItemShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QrScan qrScan = qrList.get(getLayoutPosition());
+                    String[] content = qrScan.getScanText().split(":");
+                    if (qrScan.getTypeQR() == QrScan.QRType.EMAIL) {
+                        QrEmail qrEmail = new QrEmail();
+                        qrEmail.compileEmail(content);
+                        shareDataListener.shareDataListener(qrEmail.getShare());
+                    } else if (qrScan.getTypeQR() == QrScan.QRType.SMS) {
+                        QrMess qrMess = new QrMess();
+                        qrMess.compileSMS(content);
+                      shareDataListener.shareDataListener(qrMess.getShare());
+                    } else if (qrScan.getTypeQR() == QrScan.QRType.PRODUCT) {
+                        QrProduct qrProduct = (QrProduct) qrScan;
+                        qrProduct.compileProduct(qrScan.getScanText());
+                     shareDataListener.shareDataListener(qrProduct.getShare());
+                    } else if (qrScan.getTypeQR() == QrScan.QRType.WIFI) {
+                        QrWifi qrWifi = new QrWifi();
+                        StringBuilder stringBuilder = new StringBuilder();
+                        String[] contentWifi = qrScan.getScanText().split(";");
+                        for (String value : contentWifi) {
+                            stringBuilder.append(value);
+                        }
+                        String contentWifi2 = stringBuilder.toString();
+                        String[] contentWifi3 = contentWifi2.split(":");
+                        qrWifi.compileWifi(contentWifi, contentWifi3);
+                       shareDataListener.shareDataListener(qrWifi.getShare());
+                    } else if (qrScan.getTypeQR() == QrScan.QRType.PHONE) {
+                        QreTelephone qreTelephone = new QreTelephone();
+                        qreTelephone.compile(content);
+                        shareDataListener.shareDataListener(qreTelephone.getShare());
+                    } else if (qrScan.getTypeQR() == QrScan.QRType.TEXT) {
+                        QrText qrText = new QrText();
+                       shareDataListener.shareDataListener(qrText.getShare());
+                    }else if (qrScan.getTypeQR() == QrScan.QRType.URL) {
+                        QrUrl qrUrl = new QrUrl();
+                       shareDataListener.shareDataListener(qrUrl.getShare());
+                    }
+                }
+            });
+            itemView.setOnClickListener(view -> {
+                QrScan qrScan = qrList.get(getLayoutPosition());
+                if (!qrScan.getIsEdit()) {
+                 imvItemCheck.setImageResource(R.drawable.ic_check);
+                    qrScan.setEdit(true);
+                } else {
+                   imvItemCheck.setImageResource(R.drawable.ic_uncheck);
+                    qrScan.setEdit(false);
+
+                }
             });
 
 

@@ -1,4 +1,4 @@
-package com.example.qrscaner.Fragment;
+package com.example.qrscaner.fragment;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -182,4 +182,5 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         zXingScannerView.stopCamera();
         super.onDestroy();
     }
+
 }

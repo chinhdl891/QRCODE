@@ -31,7 +31,7 @@ public class QrMess extends QrScan {
         this.content = contentSMS.toString();
     }
 
-    public String getMess() {
+    public String getShare() {
         String mess = "Number : " + sendBy + "\n Message : " + content;
         return mess;
     }

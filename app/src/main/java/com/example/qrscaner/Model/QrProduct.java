@@ -9,9 +9,13 @@ public class QrProduct extends QrScan {
         }catch (Exception e){
 
         }
+
     }
     public long getProduct() {
         return product;
+    }
+    public String getShare() {
+        return product+"";
     }
 
     public void setProduct(long product) {

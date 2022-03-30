@@ -10,7 +10,9 @@ public class QreTelephone extends QrScan {
     public String getTel() {
         return tel;
     }
-
+    public String getShare() {
+        return tel;
+    }
     public void setTel(String tel) {
         this.tel = tel;
     }
