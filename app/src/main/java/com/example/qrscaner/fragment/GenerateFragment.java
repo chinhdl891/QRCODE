@@ -39,6 +39,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     private GenerateHistoryAdapter generateHistoryAdapter;
     private ImageView imvGenerateGotoCreate,imvGenerateEdit;
     private boolean edit;
+    private boolean isEdit;
 
 
     @Override
