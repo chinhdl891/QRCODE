@@ -121,7 +121,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@id/imv_settingFragment_Beep"
-                android:hint="Vibrate when scan successful" />
+                android:hint="Beep when scan successful" />
 
             <Switch
                 android:id="@+id/sw_settingFragment_Beep"
@@ -161,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_toRightOf="@+id/imv_settingFragment_History"
-                android:text="Vibrate"
+                android:text="History"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
@@ -172,7 +172,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@id/imv_settingFragment_History"
-                android:hint="Vibrate when scan successful" />
+                android:hint="Save history for your scan" />
 
             <Switch
                 android:id="@+id/sw_settingFragment_His"
@@ -212,7 +212,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_toRightOf="@+id/imv_settingFragment_Barcode"
-                android:text="Vibrate"
+                android:text="Scan Barcode Automatically"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
@@ -223,7 +223,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@id/imv_settingFragment_Barcode"
-                android:hint="Vibrate when scan successful" />
+                android:hint="Take longer time when scaning" />
 
             <Switch
                 android:id="@+id/sw_settingFragment_Barcode"

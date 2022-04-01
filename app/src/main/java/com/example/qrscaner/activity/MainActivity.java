@@ -5,11 +5,13 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -24,17 +26,24 @@ import com.example.qrscaner.fragment.SettingFragment;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
+import com.example.qrscaner.myshareferences.MyDataLocal;
 import com.example.qrscaner.view.QrScanResult;
+import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends AppCompatActivity implements SendData, QrScanResult.iSaveQrScan{
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements SendData, QrScanResult.iSaveQrScan {
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private QrScanResult conActivityMainResultView;
     private RelativeLayout rrlMainActivity;
     private Fragment fragment;
+    private ConstraintLayout ctlMainEditItem;
+    private TextViewPoppinBold tvMainNumItem;
+    private ImageView imvMainItemShare, imvMainItemDelete;
     public final static int REQUEST_CAM = 100;
 
     @Override
@@ -43,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements SendData, QrScanR
         super.onCreate(savedInstanceState);
         checkPermission();
         setContentView(R.layout.activity_main);
+        tvMainNumItem = findViewById(R.id.tv_main_num_select);
+        imvMainItemDelete = findViewById(R.id.imv_main_delete);
+        imvMainItemShare = findViewById(R.id.imv_main_share);
+        ctlMainEditItem = findViewById(R.id.csl_main_edit);
         rrlMainActivity = findViewById(R.id.rll_main_activity);
         bottomNavigationView = findViewById(R.id.nv_activityMain_menu);
         conActivityMainResultView = findViewById(R.id.con_activityMain_resultView);
@@ -84,9 +97,9 @@ public class MainActivity extends AppCompatActivity implements SendData, QrScanR
     }
 
     private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_DENIED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
 
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, REQUEST_CAM);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAM);
         }
 
     }
@@ -106,16 +119,42 @@ public class MainActivity extends AppCompatActivity implements SendData, QrScanR
 
     }
 
+    public ConstraintLayout getCtlMainEditItem() {
+        return ctlMainEditItem;
+    }
+
+
+
+    public TextViewPoppinBold getTvMainNumItem() {
+        return tvMainNumItem;
+    }
+
+
+
+    public ImageView getImvMainItemShare() {
+        return imvMainItemShare;
+    }
+
+
+    public ImageView getImvMainItemDelete() {
+        return imvMainItemDelete;
+    }
+
+
+    public BottomNavigationView getBottomNavigationView() {
+        return bottomNavigationView;
+    }
+
 
     @Override
     public void saveQr(QrScan qrScan) {
+
         QrHistoryDatabase.getInstance(this).qrDao().insertQr(qrScan);
         Toast.makeText(this, "Save successful", Toast.LENGTH_SHORT).show();
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ScannerFragment.class.getSimpleName());
         if (fragment instanceof ScannerFragment) {
             ((ScannerFragment) fragment).resumeCamera();
         }
-
 
     }
 
@@ -124,10 +163,11 @@ public class MainActivity extends AppCompatActivity implements SendData, QrScanR
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CAM) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-              
             } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
     }
+
+
 }

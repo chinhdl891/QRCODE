@@ -50,16 +50,16 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
 
     @Override
     public void onBindViewHolder(@NonNull GenerateQrCodeHistoryViewHolder holder, int position) {
-        if (!isEdit){
+        QrGenerate qrGenerate = generateItemList.get(position);
+        if (!isEdit) {
             holder.imvItemCheck.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.imvItemCheck.setVisibility(View.VISIBLE);
         }
         holder.cvItemHistoryEdit.setVisibility(View.GONE);
         if (isEdit) {
             holder.imvItemEdit.setVisibility(View.GONE);
         }
-        QrGenerate qrGenerate = generateItemList.get(position);
         holder.tvItemHistoryDate.setText(qrGenerate.getStringDate());
         if (position > 0) {
             QrGenerate qrScanUndo = generateItemList.get(position - 1);
@@ -87,7 +87,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             holder.tvItemHistoryQrContent.setText(qrUrl.getUrl());
             holder.imvItemScanType.setImageResource(R.drawable.add_uri);
             holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
-//            holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrUrl.getUrl()));
+
             if (qrGenerate.getContent().equals("")) {
                 holder.tvItemHistoryQrContent.setText("Uri");
             }
@@ -104,7 +104,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             holder.tvItemHistoryQrContent.setText(qrWifi.getWifiName());
             holder.imvItemScanType.setImageResource(R.drawable.add_wifi);
             holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
-//            holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrWifi.getShare()));
+
             if (qrGenerate.getContent().equals("")) {
                 holder.tvItemHistoryQrContent.setText("Wifi");
             }
@@ -121,8 +121,9 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             if (qrGenerate.getContent().equals("")) {
                 holder.tvItemHistoryQrContent.setText("Email");
             }
-//            holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrEmail.getShare()));
+
         } else if (content[0].equals("tel")) {
+
             QreTelephone qreTelephone = new QreTelephone();
             qreTelephone.compile(content);
             holder.tvItemHistoryQrContent.setText(qreTelephone.getTel());
@@ -131,15 +132,39 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             if (qrGenerate.getContent().equals("")) {
                 holder.tvItemHistoryQrContent.setText("Phone");
             }
-//            holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qreTelephone.getTel()));
-        } else {
-            QrText qrText = new QrText();
-            qrText.setText(qrGenerate.getContent());
-            holder.tvItemHistoryQrContent.setText(qrGenerate.getContent());
-            holder.imvItemScanType.setImageResource(R.drawable.add_text);
-            holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
 
-//                holder.imvItemShare.setOnClickListener(view -> shareDataListener.shareDataListener(qrText.getText()));
+        } else {
+
+            if (qrGenerate.getQrType() == QrScan.QRType.BAR39) {
+                holder.tvItemHistoryQrContent.setText(qrGenerate.getContent());
+                holder.imvItemScanType.setImageResource(R.drawable.ic_barcoder3996128);
+                holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
+                if (qrGenerate.getContent().equals("")) {
+                    holder.tvItemHistoryQrContent.setText("BAR39");
+                }
+            } else if (qrGenerate.getQrType() == QrScan.QRType.BAR93) {
+                holder.tvItemHistoryQrContent.setText(qrGenerate.getContent());
+                holder.imvItemScanType.setImageResource(R.drawable.ic_barcoder3996128);
+                holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
+                if (qrGenerate.getContent().equals("")) {
+                    holder.tvItemHistoryQrContent.setText("BAR93");
+                }
+            } else if (qrGenerate.getQrType() == QrScan.QRType.BAR128) {
+                holder.tvItemHistoryQrContent.setText(qrGenerate.getContent());
+                holder.imvItemScanType.setImageResource(R.drawable.ic_barcoder3996128);
+                holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
+                if (qrGenerate.getContent().equals("")) {
+                    holder.tvItemHistoryQrContent.setText("BAR128");
+                }
+            }else {
+                QrText qrText = new QrText();
+                qrText.setText(qrGenerate.getContent());
+                holder.tvItemHistoryQrContent.setText(qrGenerate.getContent());
+                holder.imvItemScanType.setImageResource(R.drawable.add_text);
+                holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
+            }
+
+
         }
     }
 
@@ -199,15 +224,15 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                         if (qrGenerate.getQrType() == QrScan.QRType.EMAIL) {
                             QrEmail qrEmail = new QrEmail();
                             qrEmail.compileEmail(content);
-                            shareListener.share(qrEmail.getShare());
+                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.SMS) {
                             QrMess qrMess = new QrMess();
                             qrMess.compileSMS(content);
-                            shareListener.share(qrMess.getShare());
+                            shareListener.share(qrMess.getShare(), QrScan.QRType.SMS);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.PRODUCT) {
                             QrProduct qrProduct = new QrProduct();
                             qrProduct.compileProduct(qrGenerate.getContent());
-                            shareListener.share(qrProduct.getShare());
+                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.WIFI) {
                             QrWifi qrWifi = new QrWifi();
                             StringBuilder stringBuilder = new StringBuilder();
@@ -218,18 +243,24 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                             String contentWifi2 = stringBuilder.toString();
                             String[] contentWifi3 = contentWifi2.split(":");
                             qrWifi.compileWifi(contentWifi, contentWifi3);
-                            shareListener.share(qrWifi.getShare());
+                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.PHONE) {
                             QreTelephone qreTelephone = new QreTelephone();
                             qreTelephone.compile(content);
-                            shareListener.share(qreTelephone.getShare());
+                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.TEXT) {
                             QrText qrText = new QrText();
-                            shareListener.share(qrText.getShare());
+                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.URL) {
                             QrUrl qrUrl = new QrUrl();
                             qrUrl.compileUrl(content);
-                            shareListener.share(qrUrl.getShare());
+                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                        }else if (qrGenerate.getQrType()== QrScan.QRType.BAR39){
+                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.BAR39);
+                        }else if (qrGenerate.getQrType()== QrScan.QRType.BAR93){
+                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.BAR93);
+                        }else if (qrGenerate.getQrType()== QrScan.QRType.BAR128){
+                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.BAR128);
                         }
                     }
                 }
@@ -257,7 +288,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
     private IShare shareListener;
 
     public interface IShare {
-        void share(String s);
+        void share(String s, QrScan.QRType type);
     }
 
     private IDelete deleteListener;
