@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
+import com.example.qrscaner.myshareferences.MyDataLocal;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
@@ -56,10 +60,12 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     private static final String TAG = "scanLog";
     private ImageView imvScanFragmentOpenCam, imvScanFragmentSwitchFlash;
     private boolean isFlash = false;
+    private  Vibrator vibrator ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
+        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         zXingScannerView = view.findViewById(R.id.scv_ScanFragment_view);
         zXingScannerView.setResultHandler(this);
         imvScanFragmentOpenCam = view.findViewById(R.id.imv_ScanFragment_openPhoto);
@@ -145,8 +151,18 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
 
     @Override
     public void handleResult(Result result) {
+        if (MyDataLocal.getVibrate()){
+             VibrationEffect vibrationEffect;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                vibrationEffect = VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE);
+                vibrator.cancel();
+                vibrator.vibrate(vibrationEffect);
+            }
+        }else if (MyDataLocal.getBeep()){
+            MediaPlayer mediaPlayer = MediaPlayer.create(getActivity(),R.raw.beep);
+            mediaPlayer.start();
+        }
         processQr(result.getText());
-        Log.e(TAG, result.getText() );
         zXingScannerView.stopCameraPreview();
     }
 

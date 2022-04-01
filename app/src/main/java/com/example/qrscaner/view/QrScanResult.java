@@ -206,7 +206,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_text);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
-        tvQrScanResultCategoryName.setText("Mess");
+        tvQrScanResultCategoryName.setText("Text");
         LinearLayout lnlText = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryText = new TextViewPoppinBold(mContext);
         tvNameCategoryText.setText("Text");

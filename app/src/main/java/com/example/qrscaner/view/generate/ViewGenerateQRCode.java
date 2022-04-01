@@ -92,8 +92,93 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                 }
             });
 
+        } else if (id == 1) {
+            typeQR = QrScan.QRType.BAR93;
+            tvGenCategory.setText("BAR93");
+            LinearLayout lnlContentText = new LinearLayout(mContext);
+            TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
+            EditText edtPhone = new EditText(mContext);
+            tvCategoryText.setText("BAR93");
+            lnlContentText.setOrientation(LinearLayout.VERTICAL);
+            lnlContentText.addView(tvCategoryText);
+            lnlContentText.addView(edtPhone);
+            lnlGenContent.addView(lnlContentText);
+            edtPhone.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    contentQr = editable.toString();
+                }
+            });
+
         }
-        if (id == 13) {
+        else if (id == 13) {
+            typeQR = QrScan.QRType.PHONE;
+            tvGenCategory.setText("Phone");
+            LinearLayout lnlContentText = new LinearLayout(mContext);
+            TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
+            EditText edtPhone = new EditText(mContext);
+            tvCategoryText.setText("Phone");
+            lnlContentText.setOrientation(LinearLayout.VERTICAL);
+            lnlContentText.addView(tvCategoryText);
+            lnlContentText.addView(edtPhone);
+            lnlGenContent.addView(lnlContentText);
+            edtPhone.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    contentQr = "tel:" + editable.toString();
+                }
+            });
+
+        } else if (id == 2) {
+            typeQR = QrScan.QRType.BAR128;
+            tvGenCategory.setText("BAR128");
+            LinearLayout lnlContentText = new LinearLayout(mContext);
+            TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
+            EditText edtPhone = new EditText(mContext);
+            tvCategoryText.setText("BAR128");
+            lnlContentText.setOrientation(LinearLayout.VERTICAL);
+            lnlContentText.addView(tvCategoryText);
+            lnlContentText.addView(edtPhone);
+            lnlGenContent.addView(lnlContentText);
+            edtPhone.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    contentQr =  editable.toString();
+                }
+            });
+
+        }
+        else if (id == 13) {
             typeQR = QrScan.QRType.PHONE;
             tvGenCategory.setText("Phone");
             LinearLayout lnlContentText = new LinearLayout(mContext);
