@@ -1,8 +1,13 @@
 package com.example.qrscaner.activity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qrscaner.DataBase.QrHistoryDatabase;
+import com.example.qrscaner.config.Constant;
 import com.example.qrscaner.fragment.GenerateFragment;
 import com.example.qrscaner.fragment.HistoryFragment;
 import com.example.qrscaner.fragment.ScannerFragment;
@@ -34,7 +40,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SendData, QrScanResult.iSaveQrScan {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, QrScanResult.iSaveQrScan {
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -59,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements SendData, QrScanR
         rrlMainActivity = findViewById(R.id.rll_main_activity);
         bottomNavigationView = findViewById(R.id.nv_activityMain_menu);
         conActivityMainResultView = findViewById(R.id.con_activityMain_resultView);
+        imvMainItemDelete.setOnClickListener(this);
         ScannerFragment scannerFragment = new ScannerFragment();
         fragmentLoad(scannerFragment, ScannerFragment.class.getSimpleName());
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -124,11 +131,9 @@ public class MainActivity extends AppCompatActivity implements SendData, QrScanR
     }
 
 
-
     public TextViewPoppinBold getTvMainNumItem() {
         return tvMainNumItem;
     }
-
 
 
     public ImageView getImvMainItemShare() {
@@ -170,4 +175,10 @@ public class MainActivity extends AppCompatActivity implements SendData, QrScanR
     }
 
 
+    @Override
+    public void onClick(View view) {
+        if (view == imvMainItemDelete) {
+            sendBroadcast(new Intent(Constant.ACTION_DELETE_MULTIPLE_QRCODE));
+        }
+    }
 }

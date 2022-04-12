@@ -1,9 +1,11 @@
 package com.example.qrscaner.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,7 +22,6 @@ import android.widget.LinearLayout;
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrMess;
 import com.example.qrscaner.Model.QrProduct;
-import com.example.qrscaner.Model.QrText;
 import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
@@ -30,13 +30,14 @@ import com.example.qrscaner.adapter.HistoryAdapter;
 import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
+import com.example.qrscaner.config.Constant;
 import com.example.qrscaner.myshareferences.MyDataLocal;
-import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class HistoryFragment extends Fragment implements View.OnClickListener, HistoryAdapter.ISelectItem, HistoryAdapter.CallEditListener, HistoryAdapter.IShareData, HistoryAdapter.IDeleteQr {
+public class HistoryFragment extends Fragment implements View.OnClickListener, HistoryAdapter.HistoryAdapterListener {
     private Button btnGotoScan;
     private RecyclerView rcvHistoryScan;
     private LinearLayout lnlHTRGotoScan;
@@ -44,7 +45,12 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     private HistoryAdapter historyAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private MainActivity mMainActivity;
-    private boolean isCheck = false;
+    private QRHistoryReceiver qrHistoryReceiver;
+    private List<QrScan> mQRScannedList = new ArrayList<>();
+    private boolean isEditable = false;
+    private int mNumQRSelect = 0;
+    private List<HistoryAdapter.MultiSelected> selectedList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,7 +60,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         btnGotoScan = view.findViewById(R.id.btn_historyFragment_gotoScan);
         rcvHistoryScan = view.findViewById(R.id.rcv_historyFragment_qrScan);
         mMainActivity = (MainActivity) getActivity();
-        historyAdapter = new HistoryAdapter(getListScan(), this, isCheck, getActivity(), this, this, this, this);
+        getListScan();
+        historyAdapter = new HistoryAdapter(getActivity(), mQRScannedList, this);
+
         if (MyDataLocal.getShowHistory()) {
             layoutManager = new LinearLayoutManager(getActivity());
             rcvHistoryScan.setLayoutManager(layoutManager);
@@ -66,167 +74,185 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         imvEdit = view.findViewById(R.id.imv_history_historyEdit);
         btnGotoScan.setOnClickListener(this);
         imvEdit.setOnClickListener(this);
+        qrHistoryReceiver = new QRHistoryReceiver();
+        mMainActivity.registerReceiver(qrHistoryReceiver, new IntentFilter(Constant.ACTION_DELETE_MULTIPLE_QRCODE));
         return view;
     }
 
-    private List<QrScan> getListScan() {
-        List<QrScan> qrScanList = QrHistoryDatabase.getInstance(getActivity()).qrDao().getListQrHistory();
-        if (qrScanList.size() > 0) {
+    private void getListScan() {
+        mQRScannedList = QrHistoryDatabase.getInstance(getActivity()).qrDao().getListQrHistory();
+        if (mQRScannedList.size() > 0) {
             lnlHTRGotoScan.setVisibility(View.GONE);
         }
-        return qrScanList;
     }
 
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_historyFragment_gotoScan:
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                ScannerFragment scannerFragment = new ScannerFragment();
-                fragmentTransaction.replace(R.id.frame_content, scannerFragment);
-                fragmentTransaction.commit();
-
-                break;
-            case R.id.imv_history_historyEdit:
-                if (!isCheck) {
-                    historyAdapter = new HistoryAdapter(getListScan(), this, true, getActivity(), this, this, this, this);
-                    rcvHistoryScan.setAdapter(historyAdapter);
-                    imvEdit.setImageResource(R.drawable.ic_close);
-                    isCheck = true;
-                } else {
-                    historyAdapter = new HistoryAdapter(getListScan(), this, false, getActivity(), this, this, this, this);
-                    rcvHistoryScan.setAdapter(historyAdapter);
-                    imvEdit.setImageResource(R.drawable.pen_edit_1);
-                    isCheck = false;
+        if (view == btnGotoScan) {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            ScannerFragment scannerFragment = new ScannerFragment();
+            fragmentTransaction.replace(R.id.frame_content, scannerFragment);
+            fragmentTransaction.commit();
+        } else if (view == imvEdit) {
+            if (!isEditable) {
+                imvEdit.setImageResource(R.drawable.ic_close);
+                isEditable = true;
+            } else {
+                imvEdit.setImageResource(R.drawable.pen_edit_1);
+                isEditable = false;
+                mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
+                mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
+                mNumQRSelect = 0;
+                for (QrScan qrScan : mQRScannedList) {
+                    qrScan.setEdit(false);
                 }
-                break;
-        }
-    }
-
-    @Override
-    public void edit(Boolean isEdit) {
-        if (!isEdit) {
-            historyAdapter = new HistoryAdapter(getListScan(), this, true, getActivity(), this, this, this, this);
-            rcvHistoryScan.setAdapter(historyAdapter);
-            imvEdit.setImageResource(R.drawable.ic_close);
-            isCheck = true;
-        } else {
-            historyAdapter = new HistoryAdapter(getListScan(), this, false, getActivity(), this, this, this, this);
-            rcvHistoryScan.setAdapter(historyAdapter);
-            imvEdit.setImageResource(R.drawable.pen_edit_1);
-            isCheck = false;
+                if (mQRScannedList.size() == 0) {
+                    rcvHistoryScan.setVisibility(View.GONE);
+                    lnlHTRGotoScan.setVisibility(View.VISIBLE);
+                }
+            }
+            historyAdapter.setEdit(isEditable);
         }
 
     }
 
     @Override
-    public void shareDataListener(String data) {
-        Intent intentShare = new Intent(Intent.ACTION_SEND);
-        intentShare.setType("text/plain");
-        intentShare.putExtra(Intent.EXTRA_TEXT, data);
-        getActivity().startActivity(intentShare);
-    }
-
-    @Override
-    public void deleteListener(QrScan qrScan) {
-        if (check(getListScan()) == 1) {
-            lnlHTRGotoScan.setVisibility(View.VISIBLE);
-            rcvHistoryScan.setVisibility(View.GONE);
-        }
-        QrHistoryDatabase.getInstance(getActivity()).qrDao().deleteQr(qrScan);
-        historyAdapter = new HistoryAdapter(getListScan(), this, false, getActivity(), this, this, this, this);
-        rcvHistoryScan.setAdapter(historyAdapter);
-
+    public void onDestroyView() {
+        mMainActivity.unregisterReceiver(qrHistoryReceiver);
+        super.onDestroyView();
     }
 
     public int check(List<QrScan> qrScanList) {
         return qrScanList.size();
     }
 
+
     @Override
-    public void selectItemListener(List<QrScan> qrScanList) {
-
-        if (qrScanList.size() > 0) {
-            mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
-            mMainActivity.getCtlMainEditItem().setVisibility(View.VISIBLE);
-            mMainActivity.getTvMainNumItem().setText(qrScanList.size() + "");
-            mMainActivity.getImvMainItemShare().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    for (int i = 0; i < qrScanList.size(); i++) {
-                        QrScan qrScan = qrScanList.get(i);
-                        String[] content = qrScan.getScanText().split(":");
-                        if (qrScan.getTypeQR() == QrScan.QRType.EMAIL) {
-                            QrEmail qrEmail = new QrEmail();
-                            qrEmail.compileEmail(content);
-                            shareDataListener(qrEmail.getShare());
-//                shareDataListener.shareDataListener(qrEmail.getShare());
-                        } else if (qrScan.getTypeQR() == QrScan.QRType.SMS) {
-                            QrMess qrMess = new QrMess();
-                            qrMess.compileSMS(content);
-                            shareDataListener(qrMess.getShare());
-//                shareDataListener.shareDataListener(qrMess.getShare());
-                        } else if (qrScan.getTypeQR() == QrScan.QRType.PRODUCT) {
-                            QrProduct qrProduct = (QrProduct) qrScan;
-                            qrProduct.compileProduct(qrScan.getScanText());
-                            shareDataListener(qrProduct.getShare());
-//                shareDataListener.shareDataListener(qrProduct.getShare());
-                        } else if (qrScan.getTypeQR() == QrScan.QRType.WIFI) {
-                            QrWifi qrWifi = new QrWifi();
-                            StringBuilder stringBuilder = new StringBuilder();
-                            String[] contentWifi = qrScan.getScanText().split(";");
-                            for (String value : contentWifi) {
-                                stringBuilder.append(value);
-                            }
-                            String contentWifi2 = stringBuilder.toString();
-                            String[] contentWifi3 = contentWifi2.split(":");
-                            qrWifi.compileWifi(contentWifi, contentWifi3);
-                            shareDataListener(qrWifi.getShare());
-//                shareDataListener.shareDataListener(qrWifi.getShare());
-                        } else if (qrScan.getTypeQR() == QrScan.QRType.PHONE) {
-                            QreTelephone qreTelephone = new QreTelephone();
-                            qreTelephone.compile(content);
-                            shareDataListener(qreTelephone.getShare());
-//                shareDataListener.shareDataListener(qreTelephone.getShare());
-                        } else if (qrScan.getTypeQR() == QrScan.QRType.TEXT) {
-                            QrText qrText = new QrText();
-                            shareDataListener(qrText.getShare());
-//                shareDataListener.shareDataListener(qrText.getShare());
-                        } else if (qrScan.getTypeQR() == QrScan.QRType.URL) {
-                            QrUrl qrUrl = new QrUrl();
-                            shareDataListener(qrUrl.getShare());
-                        }
-                    }
+    public void onShareQRSelected(QrScan qrCode) {
+        String[] content = qrCode.getScanText().split(":");
+        String shareContent = "";
+        switch (qrCode.getTypeQR()) {
+            case WIFI:
+                QrWifi qrWifi = new QrWifi();
+                StringBuilder stringBuilder = new StringBuilder();
+                String[] contentWifi = qrCode.getScanText().split(";");
+                for (String value : contentWifi) {
+                    stringBuilder.append(value);
                 }
-            });
-            mMainActivity.getImvMainItemDelete().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    for (int i = 0; i < qrScanList.size() ; i++) {
-                       QrHistoryDatabase.getInstance(getActivity()).qrDao().deleteQr(qrScanList.get(i));
-                    }
-                   if (getListScan().size()==0){
-                       mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
-                       mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
-                       lnlHTRGotoScan.setVisibility(View.VISIBLE);
+                String contentWifi2 = stringBuilder.toString();
+                String[] contentWifi3 = contentWifi2.split(":");
+                qrWifi.compileWifi(contentWifi, contentWifi3);
+                shareContent = qrWifi.getShare();
+                break;
+            case TEXT:
+                shareContent = qrCode.getScanText();
+                break;
+            case PHONE:
+                QreTelephone qreTelephone = new QreTelephone();
+                qreTelephone.compile(content);
+                shareContent = qreTelephone.getShare();
+                break;
+            case EMAIL:
+                QrEmail qrEmail = new QrEmail();
+                qrEmail.compileEmail(content);
+                shareContent = qrEmail.getShare();
+                break;
+            case SMS:
+                QrMess qrMess = new QrMess();
+                qrMess.compileSMS(content);
+                shareContent = qrMess.getShare();
+                break;
+            case URL:
+                QrUrl qrUrl = new QrUrl();
+                qrUrl.compileUrl(content);
+                shareContent = qrUrl.getShare();
+                break;
+            case PRODUCT:
+                QrProduct qrProduct = (QrProduct) qrCode;
+                qrProduct.compileProduct(qrCode.getScanText());
+                shareContent = qrProduct.getShare();
+                break;
+            case ERROR:
+                break;
+            case BAR39:
+                break;
+            case BAR93:
+                break;
+            case BAR128:
+                break;
+            default:
+                break;
+        }
+        Intent intentShare = new Intent(Intent.ACTION_SEND);
+        intentShare.setType("text/plain");
+        intentShare.putExtra(Intent.EXTRA_TEXT, shareContent);
+        getActivity().startActivity(intentShare);
+    }
 
-                   }
-                   updateData();
-                }
-            });
+    @Override
+    public void onEditHistory(boolean isEdit) {
+        if (isEdit) {
+            imvEdit.setImageResource(R.drawable.ic_close);
+            isEditable = isEdit;
+        }
+    }
 
+    @Override
+    public void onDeleteQRSelected(int position) {
+        deleteQR(position);
+        if (mQRScannedList.size() == 0) {
+            rcvHistoryScan.setVisibility(View.GONE);
+            lnlHTRGotoScan.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onItemSelected(boolean isSelect) {
+        if (isSelect) {
+            mNumQRSelect++;
         } else {
-            mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
-            mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
+            mNumQRSelect--;
         }
 
-
+        if (mNumQRSelect > 0) {
+            mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
+            mMainActivity.getCtlMainEditItem().setVisibility(View.VISIBLE);
+            mMainActivity.getTvMainNumItem().setText(mNumQRSelect + "");
+        } else {
+            imvEdit.performClick();
+        }
     }
-public void updateData(){
-    historyAdapter = new HistoryAdapter(getListScan(), this, isCheck, getActivity(), this, this, this, this);
-    rcvHistoryScan.setAdapter(historyAdapter);
-}
+
+    @Override
+    public void onSelectedMultiPosition(List<HistoryAdapter.MultiSelected> integerList) {
+        selectedList = new ArrayList<>();
+        selectedList = integerList;
+    }
+
+    private void deleteQR(int position) {
+        if (mQRScannedList != null && mQRScannedList.get(position) != null) {
+            QrScan deleteQR = mQRScannedList.get(position);
+            QrHistoryDatabase.getInstance(getActivity()).qrDao().deleteQr(deleteQR);
+            mQRScannedList.remove(position);
+            historyAdapter.notifyItemRemoved(position);
+        }
+    }
+
+    public class QRHistoryReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Constant.ACTION_DELETE_MULTIPLE_QRCODE)) {
+                for (int i = 0; i < selectedList.size(); i++) {
+                    int position = selectedList.get(i).getPosition();
+                    if (mQRScannedList.get(position).isChecked()) {
+                        deleteQR(position);
+                    }
+                }
+                imvEdit.performClick();
+            }
+        }
+    }
 
 }
