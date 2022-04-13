@@ -29,10 +29,7 @@ public class SettingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
-        swSettingFragmentVibrate = view.findViewById(R.id.sw_settingFragment_Vibrate);
-        swSettingFragmentBeep = view.findViewById(R.id.sw_settingFragment_Beep);
-        swSettingFragmentBarcode = view.findViewById(R.id.sw_settingFragment_Barcode);
-        swSettingFragmentHistory = view.findViewById(R.id.sw_settingFragment_His);
+        init(view);
         swSettingFragmentVibrate.setChecked(MyDataLocal.getVibrate());
         swSettingFragmentBeep.setChecked(MyDataLocal.getBeep());
         swSettingFragmentHistory.setChecked(MyDataLocal.getShowHistory());
@@ -63,5 +60,12 @@ public class SettingFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void init(View view) {
+        swSettingFragmentVibrate = view.findViewById(R.id.sw_settingFragment_Vibrate);
+        swSettingFragmentBeep = view.findViewById(R.id.sw_settingFragment_Beep);
+        swSettingFragmentBarcode = view.findViewById(R.id.sw_settingFragment_Barcode);
+        swSettingFragmentHistory = view.findViewById(R.id.sw_settingFragment_His);
     }
 }
