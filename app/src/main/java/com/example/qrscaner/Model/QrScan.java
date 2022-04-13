@@ -53,7 +53,7 @@ public class QrScan implements Serializable {
         this.typeQR = typeQR;
     }
 
-    public boolean getIsEdit() {
+    public boolean getIsChecked() {
         return isEdit;
     }
 
@@ -65,7 +65,7 @@ public class QrScan implements Serializable {
         return id;
     }
 
-    public boolean isEdit() {
+    public boolean isChecked() {
         return isEdit;
     }
 

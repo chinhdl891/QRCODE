@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,87 +15,81 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrMess;
-import com.example.qrscaner.Model.QrProduct;
 import com.example.qrscaner.Model.QrScan;
-import com.example.qrscaner.Model.QrText;
 import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
-import com.example.qrscaner.view.fonts.TextViewPoppinBold;
-import com.example.qrscaner.view.fonts.TextViewPoppinThin;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolderHistory> {
-    private List<QrScan> qrList;
-    private boolean isEdit;
-    private Context mContext;
-    private IShareData shareDataListener;
-    private IDeleteQr deleteQrListener;
-    private List<QrScan> qrScanListEdit;
+import kotlin.jvm.internal.markers.KMutableListIterator;
+
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryHolder> {
+    private final List<QrScan> qrList;
+    private boolean isEdit = false;
+    private final Context mContext;
+    private HistoryAdapterListener mHistoryAdapterListener;
 
 
-    public HistoryAdapter(List<QrScan> qrList, ISelectItem  selectItem,boolean isEdit, Context mContext, IShareData shareDataListener, IDeleteQr deleteQrListener, IDeleteQr deleteListener, CallEditListener callEdit) {
+    public HistoryAdapter(Context mContext, List<QrScan> qrList, HistoryAdapterListener listener) {
         this.qrList = qrList;
-        this.isEdit = isEdit;
         this.mContext = mContext;
-        this.shareDataListener = shareDataListener;
-        this.deleteQrListener = deleteQrListener;
-        this.deleteListener = deleteListener;
-        this.callEdit = callEdit;
-        this.selectItem = selectItem;
+        mHistoryAdapterListener = listener;
+    }
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public ViewHolderHistory onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HistoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_history_scan, parent, false);
-        return new ViewHolderHistory(view);
+        return new HistoryHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolderHistory holder, int position) {
+    public void onBindViewHolder(@NonNull HistoryHolder holder, int position) {
         QrScan qrScan = qrList.get(position);
-        holder.tvItemHistoryDate.setText(qrScan.getDateString());
+        holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
         if (position > 0) {
             QrScan qrScanUndo = qrList.get(position - 1);
             if (qrScanUndo.getDateString().equals(qrScan.getDateString())) {
-                holder.ctlItemHistoryDate.setVisibility(View.GONE);
+                holder.cslItemHistoryDate.setVisibility(View.GONE);
             }
         } else {
-            holder.ctlItemHistoryDate.setVisibility(View.VISIBLE);
-
+            holder.cslItemHistoryDate.setVisibility(View.VISIBLE);
         }
         String[] content = qrScan.getScanText().split(":");
         if (content[0].equals("SMSTO")) {
             QrMess qrMess = new QrMess();
             qrMess.compileSMS(content);
-            holder.tvItemHistoryQrContent.setText(qrMess.getSendBy());
-            holder.imvItemScanType.setImageResource(R.drawable.add_sms);
-            holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
+            holder.tvItemHistoryScannedContent.setText(qrMess.getSendBy());
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_sms);
+            holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
             if (qrScan.getScanText().equals("")) {
-                holder.tvItemHistoryQrContent.setText("SMS");
+                holder.tvItemHistoryScannedContent.setText("SMS");
             }
 
-
         } else if (content[0].equals("Error")) {
-            holder.tvItemHistoryQrContent.setText("Error");
-            holder.imvItemScanType.setImageResource(R.drawable.ic_error);
-            holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
+            holder.tvItemHistoryScannedContent.setText("Error");
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.ic_error);
+            holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
             if (qrScan.getScanText().equals("")) {
-                holder.tvItemHistoryQrContent.setText("ERROR");
+                holder.tvItemHistoryScannedContent.setText("ERROR");
             }
 
         } else if (content[0].equals("http") || content[0].equals("https")) {
             QrUrl qrUrl = new QrUrl();
             qrUrl.compileUrl(content);
-            holder.tvItemHistoryQrContent.setText(qrUrl.getUrl());
-            holder.imvItemScanType.setImageResource(R.drawable.add_uri);
-            holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
+            holder.tvItemHistoryScannedContent.setText(qrUrl.getUrl());
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_uri);
+            holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
             if (qrScan.getScanText().equals("")) {
-                holder.tvItemHistoryQrContent.setText("Uri");
+                holder.tvItemHistoryScannedContent.setText("Uri");
             }
         } else if (content[0].equals("WIFI")) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -107,12 +101,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             String[] contentWifi3 = contentWifi2.split(":");
             QrWifi qrWifi = new QrWifi();
             qrWifi.compileWifi(contentWifi, contentWifi3);
-            holder.tvItemHistoryQrContent.setText(qrWifi.getWifiName());
-            holder.imvItemScanType.setImageResource(R.drawable.add_wifi);
-            holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
+            holder.tvItemHistoryScannedContent.setText(qrWifi.getWifiName());
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_wifi);
+            holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
 
             if (qrScan.getScanText().equals("")) {
-                holder.tvItemHistoryQrContent.setText("Wifi");
+                holder.tvItemHistoryScannedContent.setText("Wifi");
             }
         } else if (content[0].equals("MATMSG")) {
             QrEmail qrEmail = new QrEmail();
@@ -121,40 +115,53 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 stringBuilder.append(value);
             }
             qrEmail.compileEmail(content);
-            holder.tvItemHistoryQrContent.setText(qrEmail.getSendBy());
-            holder.imvItemScanType.setImageResource(R.drawable.add_email);
-            holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
+            holder.tvItemHistoryScannedContent.setText(qrEmail.getSendBy());
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_email);
+            holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
             if (qrScan.getScanText().equals("")) {
-                holder.tvItemHistoryQrContent.setText("Email");
+                holder.tvItemHistoryScannedContent.setText("Email");
             }
         } else if (content[0].equals("tel")) {
             QreTelephone qreTelephone = new QreTelephone();
             qreTelephone.compile(content);
-            holder.tvItemHistoryQrContent.setText(qreTelephone.getTel());
-            holder.imvItemScanType.setImageResource(R.drawable.add_call);
-            holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
+            holder.tvItemHistoryScannedContent.setText(qreTelephone.getTel());
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_call);
+            holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
             if (qrScan.getScanText().equals("")) {
-                holder.tvItemHistoryQrContent.setText("Phone");
+                holder.tvItemHistoryScannedContent.setText("Phone");
             }
 
         } else {
-
             if (checkIsProduct(qrScan.getScanText())) {
-                holder.tvItemHistoryQrContent.setText(qrScan.getScanText());
-                holder.imvItemScanType.setImageResource(R.drawable.ic_product);
-                holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
+                holder.tvItemHistoryScannedContent.setText(qrScan.getScanText());
+                holder.imvItemHistoryScannedType.setImageResource(R.drawable.ic_product);
+                holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
                 if (qrScan.getScanText().equals("")) {
-                    holder.tvItemHistoryQrContent.setText("Product");
+                    holder.tvItemHistoryScannedContent.setText("Product");
                 }
-
             } else {
-                holder.tvItemHistoryQrContent.setText(qrScan.getScanText());
-                holder.imvItemScanType.setImageResource(R.drawable.add_text);
-                holder.tvItemHistoryQrDate.setText(qrScan.getDateString());
+                holder.tvItemHistoryScannedContent.setText(qrScan.getScanText());
+                holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_text);
+                holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
                 if (qrScan.getScanText().equals("")) {
-                    holder.tvItemHistoryQrContent.setText("Text");
+                    holder.tvItemHistoryScannedContent.setText("Text");
                 }
             }
+        }
+        if (isEdit) {
+            holder.imvItemHistoryScannedCheck.setVisibility(View.VISIBLE);
+            if (qrScan.getIsChecked()) {
+                holder.imvItemHistoryScannedCheck.setImageResource(R.drawable.ic_check);
+                holder.ctlItemHistoryScannedBackground.setBackgroundResource(R.drawable.background_boder_selected);
+
+            } else {
+
+                holder.imvItemHistoryScannedCheck.setImageResource(R.drawable.ic_uncheck);
+                holder.ctlItemHistoryScannedBackground.setBackgroundResource(R.drawable.background_boder_unselect);
+            }
+        } else {
+            holder.imvItemHistoryScannedCheck.setVisibility(View.GONE);
+            holder.ctlItemHistoryScannedBackground.setBackgroundResource(R.drawable.background_boder_unselect);
         }
     }
 
@@ -176,150 +183,117 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         }
     }
 
-    public class ViewHolderHistory extends RecyclerView.ViewHolder {
-        ConstraintLayout ctlItemHistoryDate, ctlHistoryItem;
-        TextViewPoppinBold tvItemHistoryQrContent;
-        TextView tvItemHistoryDate;
-        TextViewPoppinThin tvItemHistoryQrDate;
-        CardView cvItemHistoryQr, cvItemHistoryEdit;
-        ImageView imvItemScanType, imvItemScanMenu, imvItemCheck;
-        LinearLayout imvItemCancel, imvItemShare, imvItemEdit, imvItemDelete;
+    public class HistoryHolder extends RecyclerView.ViewHolder {
+        private final ConstraintLayout cslItemHistoryDate;
+        private final TextView tvItemHistoryCreate;
+        private final TextView tvItemHistoryMonthCreate;
+        private final CardView cvItemHistoryScannedContainer;
+        private final ConstraintLayout ctlItemHistoryScannedBackground;
+        private final ImageView imvItemHistoryScannedType;
+        private final TextView tvItemHistoryScannedContent;
+        private final TextView tvItemHistoryScannedDate;
+        private final ImageView imvItemHistoryScannedMenu;
+        private final ImageView imvItemHistoryScannedCheck;
+        private final CardView cvItemHistoryEditContainer;
+        private final ImageButton imvItemHistoryEditCancel;
+        private final TextView txvItemHistoryEdit;
+        private final TextView txvItemHistoryEditShare;
+        private final TextView txvItemHistoryEditDelete;
 
-        public ViewHolderHistory(@NonNull View itemView) {
+        public HistoryHolder(@NonNull View itemView) {
             super(itemView);
-            ctlHistoryItem = itemView.findViewById(R.id.ctl_history_item);
-            tvItemHistoryDate = itemView.findViewById(R.id.tv_item_history_monthCreate);
-            ctlItemHistoryDate = itemView.findViewById(R.id.csl_item_history_date);
-            cvItemHistoryQr = itemView.findViewById(R.id.cv_item_history_scan);
-            imvItemCheck = itemView.findViewById(R.id.imv_item_history_scan_check);
-            tvItemHistoryQrContent = itemView.findViewById(R.id.tv_item_scan_content);
-            tvItemHistoryQrDate = itemView.findViewById(R.id.tv_item_scan_date_create);
-            imvItemScanMenu = itemView.findViewById(R.id.imv_item_scan_menu);
-            imvItemScanType = itemView.findViewById(R.id.imv_item_scan_type);
-            cvItemHistoryEdit = itemView.findViewById(R.id.cv_item_history_edit);
-            imvItemCancel = itemView.findViewById(R.id.lnl_item_history_cancel);
-            imvItemDelete = itemView.findViewById(R.id.lnl_item_history_delete);
-            imvItemEdit = itemView.findViewById(R.id.lnl_item_history_edit);
-            imvItemShare = itemView.findViewById(R.id.lnl_item_history_share);
-            cvItemHistoryEdit.setVisibility(View.GONE);
-            if (!isEdit) {
-                imvItemCheck.setVisibility(View.GONE);
-                qrScanListEdit = new ArrayList<>();
-                selectItem.selectItemListener(qrScanListEdit);
-            }
-            imvItemEdit.setOnClickListener(view -> {
-                callEdit.edit(isEdit);
-                imvItemCheck.setVisibility(View.GONE);
-            });
-            imvItemCancel.setOnClickListener(view -> {
-                cvItemHistoryQr.setVisibility(View.VISIBLE);
-                cvItemHistoryEdit.setVisibility(View.GONE);
-            });
-            imvItemDelete.setOnClickListener(new View.OnClickListener() {
+            cslItemHistoryDate = (ConstraintLayout) itemView.findViewById(R.id.csl_item_history__date);
+            tvItemHistoryCreate = (TextView) itemView.findViewById(R.id.tv_item_history_create);
+            tvItemHistoryMonthCreate = (TextView) itemView.findViewById(R.id.tv_item_history_monthCreate);
+            cvItemHistoryScannedContainer = (CardView) itemView.findViewById(R.id.cv_item_history__scannedContainer);
+            ctlItemHistoryScannedBackground = (ConstraintLayout) itemView.findViewById(R.id.ctl_item_history__scannedBackground);
+            imvItemHistoryScannedType = (ImageView) itemView.findViewById(R.id.imv_item_history__scannedType);
+            tvItemHistoryScannedContent = (TextView) itemView.findViewById(R.id.tv_item_history__scannedContent);
+            tvItemHistoryScannedDate = (TextView) itemView.findViewById(R.id.tv_item_history__scannedDate);
+            imvItemHistoryScannedMenu = (ImageView) itemView.findViewById(R.id.imv_item_history__scannedMenu);
+            imvItemHistoryScannedCheck = (ImageView) itemView.findViewById(R.id.imv_item_history__scannedCheck);
+            cvItemHistoryEditContainer = (CardView) itemView.findViewById(R.id.cv_item_history__editContainer);
+            imvItemHistoryEditCancel = (ImageButton) itemView.findViewById(R.id.imv_item_history__editCancel);
+            txvItemHistoryEdit = (TextView) itemView.findViewById(R.id.txv_item_history__edit);
+            txvItemHistoryEditShare = (TextView) itemView.findViewById(R.id.txv_item_history__editShare);
+            txvItemHistoryEditDelete = (TextView) itemView.findViewById(R.id.txv_item_history__editDelete);
+
+            txvItemHistoryEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    QrScan qrScan = qrList.get(getLayoutPosition());
-                    deleteListener.deleteListener(qrScan);
-                }
-            });
-
-            imvItemScanMenu.setOnClickListener(view -> {
-                cvItemHistoryQr.setVisibility(View.GONE);
-                cvItemHistoryEdit.setVisibility(View.VISIBLE);
-
-            });
-            imvItemShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    QrScan qrScan = qrList.get(getLayoutPosition());
-                    String[] content = qrScan.getScanText().split(":");
-                    if (qrScan.getTypeQR() == QrScan.QRType.EMAIL) {
-                        QrEmail qrEmail = new QrEmail();
-                        qrEmail.compileEmail(content);
-                        shareDataListener.shareDataListener(qrEmail.getShare());
-                    } else if (qrScan.getTypeQR() == QrScan.QRType.SMS) {
-                        QrMess qrMess = new QrMess();
-                        qrMess.compileSMS(content);
-                        shareDataListener.shareDataListener(qrMess.getShare());
-                    } else if (qrScan.getTypeQR() == QrScan.QRType.PRODUCT) {
-                        QrProduct qrProduct = (QrProduct) qrScan;
-                        qrProduct.compileProduct(qrScan.getScanText());
-                        shareDataListener.shareDataListener(qrProduct.getShare());
-                    } else if (qrScan.getTypeQR() == QrScan.QRType.WIFI) {
-                        QrWifi qrWifi = new QrWifi();
-                        StringBuilder stringBuilder = new StringBuilder();
-                        String[] contentWifi = qrScan.getScanText().split(";");
-                        for (String value : contentWifi) {
-                            stringBuilder.append(value);
-                        }
-                        String contentWifi2 = stringBuilder.toString();
-                        String[] contentWifi3 = contentWifi2.split(":");
-                        qrWifi.compileWifi(contentWifi, contentWifi3);
-                        shareDataListener.shareDataListener(qrWifi.getShare());
-                    } else if (qrScan.getTypeQR() == QrScan.QRType.PHONE) {
-                        QreTelephone qreTelephone = new QreTelephone();
-                        qreTelephone.compile(content);
-                        shareDataListener.shareDataListener(qreTelephone.getShare());
-                    } else if (qrScan.getTypeQR() == QrScan.QRType.TEXT) {
-                        QrText qrText = new QrText();
-                        shareDataListener.shareDataListener(qrText.getShare());
-                    } else if (qrScan.getTypeQR() == QrScan.QRType.URL) {
-                        QrUrl qrUrl = new QrUrl();
-                        shareDataListener.shareDataListener(qrUrl.getShare());
+                    setEdit(true);
+                    if (mHistoryAdapterListener != null) {
+                        mHistoryAdapterListener.onEditHistory(true);
                     }
                 }
             });
-            if (isEdit) {
-                if (qrScanListEdit == null) {
-                    qrScanListEdit = new ArrayList<>();
-                }
-                itemView.setOnClickListener(view -> {
-                    QrScan qrScan = qrList.get(getLayoutPosition());
-                 try {
-                     if (!qrScan.getIsEdit()) {
-                         imvItemCheck.setImageResource(R.drawable.ic_check);
-                         ctlHistoryItem.setBackgroundResource(R.drawable.background_boder_selected);
-                         qrScan.setEdit(true);
-                         qrScanListEdit.add(getLayoutPosition(), qrList.get(getLayoutPosition()));
 
-                     } else {
-                         imvItemCheck.setImageResource(R.drawable.ic_uncheck);
-                         ctlHistoryItem.setBackgroundResource(R.drawable.background_boder_unselect);
-                         qrScan.setEdit(false);
-                         if (qrScanListEdit.size()>0){
-                             qrScanListEdit.remove(getLayoutPosition());
-                         }
-                     }
-                     selectItem.selectItemListener(qrScanListEdit);
-                 }catch (Exception e){
-                     qrScanListEdit = new ArrayList<>();
-                     selectItem.selectItemListener(qrScanListEdit);
-                 }
-                });
-            }
+            imvItemHistoryEditCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cvItemHistoryEditContainer.setVisibility(View.GONE);
+                }
+            });
+
+            txvItemHistoryEditDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mHistoryAdapterListener != null) {
+                        mHistoryAdapterListener.onDeleteQRSelected(qrList.get(getLayoutPosition()));
+                        notifyItemRemoved(getLayoutPosition());
+                    }
+                }
+            });
+
+            imvItemHistoryScannedMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cvItemHistoryEditContainer.setVisibility(View.VISIBLE);
+                }
+            });
+
+            txvItemHistoryEditShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QrScan qrScan = qrList.get(getLayoutPosition());
+                    if (mHistoryAdapterListener != null) {
+                        mHistoryAdapterListener.onShareQRSelected(qrScan);
+                    }
+                }
+            });
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (isEdit) {
+                        boolean isSelect = !qrList.get(getLayoutPosition()).isChecked();
+                        qrList.get(getLayoutPosition()).setEdit(isSelect);
+                        notifyItemChanged(getLayoutPosition());
+                        if (mHistoryAdapterListener != null) {
+                            mHistoryAdapterListener.onItemSelected(isSelect);
+                        }
+                    } else {
+                        //show detail QR code
+                    }
+                }
+            });
 
         }
+
     }
 
-    private IDeleteQr deleteListener;
+    public interface HistoryAdapterListener {
 
-    public interface IShareData {
-        void shareDataListener(String data);
+        void onShareQRSelected(QrScan qrCode);
+
+        void onEditHistory(boolean isEdit);
+
+        void onDeleteQRSelected(QrScan qrScan);
+
+        void onItemSelected(boolean isSelected);
+
+
     }
 
-    private final CallEditListener callEdit;
 
-    public interface CallEditListener {
-        void edit(Boolean isEdit);
-    }
-
-    public interface IDeleteQr {
-        void deleteListener(QrScan qrScan);
-    }
-
-    private ISelectItem selectItem;
-
-    public interface ISelectItem {
-        void selectItemListener(List<QrScan> qrScanList);
-    }
 }

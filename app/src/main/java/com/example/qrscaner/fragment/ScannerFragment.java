@@ -57,7 +57,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     private SendData sendData;
     private String strImgFromPhoto, mCameraId;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
-    private static final String TAG = "scanLog";
+
     private ImageView imvScanFragmentOpenCam, imvScanFragmentSwitchFlash;
     private boolean isFlash = false;
     private  Vibrator vibrator ;

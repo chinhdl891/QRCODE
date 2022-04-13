@@ -1,27 +1,18 @@
 package com.example.qrscaner.fragment;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -33,17 +24,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.qrscaner.DataBase.QrGenerateDataBase;
-import com.example.qrscaner.DataBase.QrHistoryDatabase;
+import com.example.qrscaner.Model.GenerateItem;
 import com.example.qrscaner.Model.QrGenerate;
 import com.example.qrscaner.Model.QrScan;
+import com.example.qrscaner.R;
 import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.adapter.BARCODEGenerateAdapter;
 import com.example.qrscaner.adapter.GenerateHistoryAdapter;
-import com.example.qrscaner.adapter.HistoryAdapter;
 import com.example.qrscaner.adapter.QrCodeGenerateAdapter;
-import com.example.qrscaner.Model.GenerateItem;
-import com.example.qrscaner.R;
+import com.example.qrscaner.config.Constant;
+
 import com.example.qrscaner.utils.QRGContents;
 import com.example.qrscaner.utils.QRGEncoder;
 import com.example.qrscaner.view.generate.ViewGenerateQRCode;
@@ -51,13 +52,14 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.IShare, GenerateHistoryAdapter.IDelete, GenerateHistoryAdapter.IEdit {
+
+public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener {
     private static final int REQUEST_WRITE_STORAGE = 1000;
     private static final int REQUEST_READ_STORAGE = 999;
     private static final int BITMAP_WIDTH = 955;
@@ -73,7 +75,9 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     private ImageView imvGenerateGotoCreate, imvGenerateEdit;
     private boolean edit;
     private MainActivity mMainActivity;
-
+    private int mSelected = 0;
+    private GenerateReceiver generateReceiver;
+    private Bitmap bmShare;
 
 
     @Override
@@ -81,6 +85,32 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_generate, container, false);
+        init(view);
+        qrGenerateList = new ArrayList<>();
+        generateReceiver = new GenerateReceiver();
+        mMainActivity.registerReceiver(generateReceiver, new IntentFilter(Constant.ACTION_DELETE_MULTIPLE_QRCODE));
+        mMainActivity.registerReceiver(generateReceiver, new IntentFilter(Constant.ACTION_SHARE_MULTIPLE_QRCODE_GEN));
+
+
+        BARCODEGenerateAdapter barcodeAdapter = new BARCODEGenerateAdapter(getBarCode(), getActivity(), this);
+        QrCodeGenerateAdapter adapterBarCode = new QrCodeGenerateAdapter(getQrCode(), getActivity(), this);
+        rcvGenerateFragmentBarCode.setAdapter(barcodeAdapter);
+        rcvGenerateFragmentQrCode.setAdapter(adapterBarCode);
+
+        rcvGenerateFragmentQrCode.setLayoutManager(new GridLayoutManager(getActivity(), 3, RecyclerView.VERTICAL, false));
+        rcvGenerateFragmentBarCode.setLayoutManager(new GridLayoutManager(getActivity(), 3, RecyclerView.VERTICAL, false));
+        rcvGenerateFragmentHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
+        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this);
+        rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
+
+        btnGenerateGoTo.setOnClickListener(this);
+        imvGenerateGotoCreate.setOnClickListener(this);
+        imvGenerateEdit.setOnClickListener(this);
+
+        return view;
+    }
+
+    private void init(View view) {
         mMainActivity = (MainActivity) getActivity();
         rcvGenerateFragmentHistory = view.findViewById(R.id.rcv_generate_fragment_history);
         rcvGenerateFragmentBarCode = view.findViewById(R.id.rcv_generate_barcode);
@@ -89,22 +119,11 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         lnlGenQrGotoCreate = view.findViewById(R.id.nsv_genFragment_gotoGenerate);
         rcvGenerateFragmentQrCode = view.findViewById(R.id.rcv_generate_qrcode);
         btnGenerateGoTo = view.findViewById(R.id.btn_generate_create);
-        BARCODEGenerateAdapter barcodeAdapter = new BARCODEGenerateAdapter(getBarCode(), getActivity(), this);
-        QrCodeGenerateAdapter adapterBarCode = new QrCodeGenerateAdapter(getQrCode(), getActivity(), this);
-        rcvGenerateFragmentBarCode.setAdapter(barcodeAdapter);
-        rcvGenerateFragmentQrCode.setAdapter(adapterBarCode);
-        rcvGenerateFragmentQrCode.setLayoutManager(new GridLayoutManager(getActivity(), 3, RecyclerView.VERTICAL, false));
-        rcvGenerateFragmentBarCode.setLayoutManager(new GridLayoutManager(getActivity(), 3, RecyclerView.VERTICAL, false));
-        rcvGenerateFragmentHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this, this);
-        rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
         viewGenerateQRCode = view.findViewById(R.id.vgq_generate_createQr);
         imvGenerateEdit = view.findViewById(R.id.imv_generate_edit);
-        btnGenerateGoTo.setOnClickListener(this);
-        imvGenerateGotoCreate.setOnClickListener(this);
-        imvGenerateEdit.setOnClickListener(this);
-        return view;
+
     }
+
 
     private List<GenerateItem> getBarCode() {
         List<GenerateItem> generateItems = new ArrayList<>();
@@ -122,7 +141,6 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         generateItems.add(new GenerateItem(16, R.drawable.add_sms, "SMS"));
         generateItems.add(new GenerateItem(18, R.drawable.add_text, "Text"));
         generateItems.add(new GenerateItem(19, R.drawable.add_wifi, "Wifi"));
-
         return generateItems;
     }
 
@@ -156,119 +174,58 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
             case R.id.imv_generate_edit:
                 if (!edit) {
                     edit = true;
-                    generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this, this);
+                    generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this);
                     rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
                     imvGenerateEdit.setImageResource(R.drawable.ic_close);
 
                 } else {
+                    mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
+                    mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
+                    mSelected = 0;
+                    for (QrGenerate qrScan : qrGenerateList) {
+                        qrScan.setEdit(false);
+                    }
+                    if (qrGenerateList.size() == 0) {
+                        rcvGenerateFragmentHistory.setVisibility(View.GONE);
+                        lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
+                    }
                     imvGenerateEdit.setImageResource(R.drawable.pen_edit_1);
                     edit = false;
-                    generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this, this);
+                    generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this);
                     rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
 
                 }
+                generateHistoryAdapter.setEdit(edit);
                 break;
-
         }
     }
 
     @Override
     public void saveQr(QrGenerate qrGenerate) {
+
+
         checkPermissionWrite();
         QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().insertQrGenerate(qrGenerate);
         lnlGenQrGotoCreate.setVisibility(View.GONE);
         rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
         nsvGenQrItem.setVisibility(View.GONE);
-        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(),edit,this,this, this);
+        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this);
         rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
 
-    }
-
-    private Bitmap setImage(String s) {
-        WindowManager manager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        Display display = manager.getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
-        int width = point.x;
-        int height = point.y;
-        int smallerDimension = Math.min(width, height);
-        smallerDimension = smallerDimension * 3 / 4;
-        QRGEncoder qrgEncoder = new QRGEncoder(
-                s, null,
-                QRGContents.Type.TEXT,
-                smallerDimension);
-        qrgEncoder.setColorBlack(Color.BLACK);
-        qrgEncoder.setColorWhite(Color.WHITE);
-        Bitmap bitmap = qrgEncoder.getBitmap();
-        return bitmap;
 
     }
 
-    @Override
-    public void share(String s, QrScan.QRType type) {
-        checkPermissionRead();
-
-        if (type == QrScan.QRType.TEXT) {
-            Bitmap bitmap = setImage(s);
-            sharePalette(bitmap);
-        }
-        if (type == QrScan.QRType.BAR39) {
-            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_39, BITMAP_WIDTH, BITMAP_HEIGHT);
-                Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
-                for (int i = 0; i < BITMAP_WIDTH; i++) {
-                    for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                        bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
-                    }
-                }
-                sharePalette(bitmap);
-            } catch (Exception e) {
-
-            }
-        }
-        if (type == QrScan.QRType.BAR93) {
-            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_93, BITMAP_WIDTH, BITMAP_HEIGHT);
-                Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
-                for (int i = 0; i < BITMAP_WIDTH; i++) {
-                    for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                        bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
-                    }
-                }
-                sharePalette(bitmap);
-            } catch (Exception e) {
-
-            }
-        }
-        if (type == QrScan.QRType.BAR128) {
-            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_128, BITMAP_WIDTH, BITMAP_HEIGHT);
-                Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
-                for (int i = 0; i < BITMAP_WIDTH; i++) {
-                    for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                        bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
-                    }
-                }
-                sharePalette(bitmap);
-            } catch (Exception e) {
-
-            }
-        }
-
-
-    }
 
     private void sharePalette(Bitmap bitmap) {
-        String bitmapPath = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "palette", "share palette");
+
+        String bitmapPath = MediaStore.Images.Media.insertImage(mMainActivity.getContentResolver(), bitmap, "" + System.currentTimeMillis(), null);
         Uri bitmapUri = Uri.parse(bitmapPath);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/png");
         intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
         startActivity(Intent.createChooser(intent, "Share"));
     }
+
 
     private void checkPermissionWrite() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
@@ -304,36 +261,206 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         }
     }
 
+
     @Override
-    public void delete(QrGenerate qrGenerate, int position) {
-        if (check()==1){
-            lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
-            rcvGenerateFragmentHistory.setVisibility(View.GONE);
+    public void onShareGenerate(String s, QrScan.QRType type) {
+        checkPermissionRead();
+        if (type == QrScan.QRType.TEXT) {
+            setImage(s);
+            sharePalette(bmShare);
+        } else {
+            if (type == QrScan.QRType.BAR39) {
+                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                try {
+                    BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_39, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
+                    for (int i = 0; i < BITMAP_WIDTH; i++) {
+                        for (int j = 0; j < BITMAP_HEIGHT; j++) {
+                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                        }
+                    }
+                    sharePalette(bitmap);
+                } catch (Exception e) {
+
+                }
+            } else if (type == QrScan.QRType.BAR93) {
+                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                try {
+                    BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_93, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
+                    for (int i = 0; i < BITMAP_WIDTH; i++) {
+                        for (int j = 0; j < BITMAP_HEIGHT; j++) {
+                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                        }
+                    }
+                    sharePalette(bitmap);
+                } catch (Exception e) {
+
+                }
+            } else if (type == QrScan.QRType.BAR128) {
+                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                try {
+                    BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_128, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
+                    for (int i = 0; i < BITMAP_WIDTH; i++) {
+                        for (int j = 0; j < BITMAP_HEIGHT; j++) {
+                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                        }
+                    }
+                    sharePalette(bitmap);
+                } catch (Exception e) {
+
+                }
+            }
         }
-        QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().deleteQrGenerate(qrGenerate);
-        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), false, this, this, this);
-        rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
+
 
     }
-    private int check(){
-        int size = getListQrHistory().size();
-        return size;
+
+    private void setImage(String s) {
+        QRCodeWriter writer = new QRCodeWriter();
+        try {
+            BitMatrix bitMatrix = writer.encode(s, BarcodeFormat.QR_CODE, 512, 512);
+            int width = bitMatrix.getWidth();
+            int height = bitMatrix.getHeight();
+            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                }
+            }
+            bmShare = bmp;
+
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
     @Override
-    public void edit(boolean isEdit) {
+    public void onDeleteGenerate(QrGenerate qrGenerate) {
+        QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().deleteQrGenerate(qrGenerate);
+        qrGenerateList.remove(qrGenerate);
+        if (qrGenerateList.size() == 0) {
+            lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
+            mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
+            mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
+            mSelected = 0;
+        }
+    }
+
+    @Override
+    public void onEditGenerate(boolean isEdit) {
         if (isEdit) {
             edit = true;
-            generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this, this);
             rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
             imvGenerateEdit.setImageResource(R.drawable.pen_edit_1);
         } else {
             edit = true;
-            generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this, this);
             rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
             imvGenerateEdit.setImageResource(R.drawable.ic_close);
         }
+        generateHistoryAdapter.setEdit(edit);
     }
 
+    @Override
+    public void onSelectedItem(boolean isSelect) {
+        if (isSelect) {
+            mSelected++;
+        } else {
+            mSelected--;
+        }
+        if (mSelected > 0) {
+            mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
+            mMainActivity.getCtlMainEditItem().setVisibility(View.VISIBLE);
+            mMainActivity.getTvMainNumItem().setText("" + mSelected);
+        } else {
+            imvGenerateEdit.performClick();
+        }
+    }
+
+    public class GenerateReceiver extends BroadcastReceiver {
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Constant.ACTION_DELETE_MULTIPLE_QRCODE)) {
+                for (int i = 0; i < qrGenerateList.size(); i++) {
+                    if (qrGenerateList.get(i).isEdit()) {
+                        onDeleteGenerate(qrGenerateList.get(i));
+                        i--;
+                    }
+                }
+            }
+
+            if (intent.getAction().equals(Constant.ACTION_SHARE_MULTIPLE_QRCODE_GEN)) {
+                for (int i = 0; i < qrGenerateList.size(); i++) {
+                    if (qrGenerateList.get(i).isEdit()) {
+                        shareMulti(qrGenerateList.get(i).getContent(), qrGenerateList.get(i).getQrType());
+                        mSelected--;
+                    }
+                }
+                if (mSelected == 0) {
+                    imvGenerateEdit.performClick();
+                }
+            }
+        }
+    }
+
+    private void shareMulti(String s, QrScan.QRType type) {
+        if (type == QrScan.QRType.TEXT) {
+            setImage(s);
+            sharePalette(bmShare);
+        } else {
+            if (type == QrScan.QRType.BAR39) {
+                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                try {
+                    BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_39, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
+                    for (int i = 0; i < BITMAP_WIDTH; i++) {
+                        for (int j = 0; j < BITMAP_HEIGHT; j++) {
+                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                        }
+                    }
+                    sharePalette(bitmap);
+                } catch (Exception e) {
+
+                }
+            } else if (type == QrScan.QRType.BAR93) {
+                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                try {
+                    BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_93, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
+                    for (int i = 0; i < BITMAP_WIDTH; i++) {
+                        for (int j = 0; j < BITMAP_HEIGHT; j++) {
+                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                        }
+                    }
+                    sharePalette(bitmap);
+                } catch (Exception e) {
+
+                }
+            } else if (type == QrScan.QRType.BAR128) {
+                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                try {
+                    BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_128, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
+                    for (int i = 0; i < BITMAP_WIDTH; i++) {
+                        for (int j = 0; j < BITMAP_HEIGHT; j++) {
+                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                        }
+                    }
+                    sharePalette(bitmap);
+                } catch (Exception e) {
+
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        mMainActivity.unregisterReceiver(generateReceiver);
+        super.onDestroy();
+    }
 }

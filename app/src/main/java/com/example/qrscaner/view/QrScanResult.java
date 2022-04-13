@@ -35,7 +35,6 @@ import com.example.qrscaner.R;
 import com.example.qrscaner.utils.QRGContents;
 import com.example.qrscaner.utils.QRGEncoder;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
-
 import java.util.Date;
 
 
@@ -47,6 +46,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     private TextView tvQrScanResultCategoryName, tvQrScanResultDate, tvQrScanResultCancel, tvQrScanResultSave;
     private Bitmap bitmap;
     private QRGEncoder qrgEncoder;
+
     private LinearLayout lnlResultInfo;
     private DrawView drawView;
     private QrScan.QRType type;

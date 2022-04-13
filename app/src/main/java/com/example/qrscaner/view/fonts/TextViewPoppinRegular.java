@@ -12,16 +12,19 @@ public class TextViewPoppinRegular extends AppCompatTextView  {
     private Context mContext;
     public TextViewPoppinRegular(@NonNull Context context) {
         super(context);
+        mContext = context;
         setTypeFace();
     }
 
     public TextViewPoppinRegular(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         setTypeFace();
     }
 
     public TextViewPoppinRegular(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext = context;
         setTypeFace();
     }
     private void setTypeFace(){

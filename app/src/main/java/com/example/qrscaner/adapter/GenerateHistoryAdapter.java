@@ -1,44 +1,53 @@
 package com.example.qrscaner.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qrscaner.Model.GenerateItem;
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrGenerate;
 import com.example.qrscaner.Model.QrMess;
 import com.example.qrscaner.Model.QrProduct;
-import com.example.qrscaner.Model.QrGenerate;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.Model.QrText;
 import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
+import com.example.qrscaner.application.MyApplication;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.example.qrscaner.view.fonts.TextViewPoppinThin;
 
+import java.nio.channels.SelectableChannel;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistoryAdapter.GenerateQrCodeHistoryViewHolder> {
     private List<QrGenerate> generateItemList;
     private boolean isEdit;
+    private EditGenerateListener editGenerateListener;
 
-    public GenerateHistoryAdapter(List<QrGenerate> generateItemList, boolean isEdit, IEdit editListener, IShare shareListener, IDelete deleteListener) {
+
+    public GenerateHistoryAdapter(List<QrGenerate> generateItemList, boolean isEdit, EditGenerateListener listener) {
         this.generateItemList = generateItemList;
         this.isEdit = isEdit;
-        this.editListener = editListener;
-        this.shareListener = shareListener;
-        this.deleteListener = deleteListener;
+        this.editGenerateListener = listener;
+
+    }
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -55,6 +64,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             holder.imvItemCheck.setVisibility(View.GONE);
         } else {
             holder.imvItemCheck.setVisibility(View.VISIBLE);
+
         }
         holder.cvItemHistoryEdit.setVisibility(View.GONE);
         if (isEdit) {
@@ -156,16 +166,15 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                 if (qrGenerate.getContent().equals("")) {
                     holder.tvItemHistoryQrContent.setText("BAR128");
                 }
-            }else {
+            } else {
                 QrText qrText = new QrText();
                 qrText.setText(qrGenerate.getContent());
                 holder.tvItemHistoryQrContent.setText(qrGenerate.getContent());
                 holder.imvItemScanType.setImageResource(R.drawable.add_text);
                 holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
             }
-
-
         }
+
     }
 
 
@@ -178,35 +187,38 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
     }
 
     public class GenerateQrCodeHistoryViewHolder extends RecyclerView.ViewHolder {
-        ConstraintLayout ctlItemHistoryDate;
-        TextViewPoppinBold tvItemHistoryQrContent;
-        TextView tvItemHistoryDate;
-        TextViewPoppinThin tvItemHistoryQrDate;
-        CardView cvItemHistoryQr, cvItemHistoryEdit;
-        ImageView imvItemScanType, imvItemScanMenu, imvItemCheck;
-        LinearLayout imvItemCancel, imvItemShare, imvItemEdit, imvItemDelete;
+        private ConstraintLayout ctlItemHistoryDate, ctlItemHistoryQrGenerate;
+        private TextViewPoppinBold tvItemHistoryQrContent;
+        private TextView tvItemHistoryDate;
+        private TextView tvItemHistoryQrDate;
+        private CardView cvItemHistoryQr, cvItemHistoryEdit;
+        private ImageView imvItemScanType, imvItemScanMenu, imvItemCheck, imvItemCancel;
+        private TextView imvItemShare, imvItemEdit, imvItemDelete;
+
 
         public GenerateQrCodeHistoryViewHolder(@NonNull View itemView) {
             super(itemView);
+            ctlItemHistoryQrGenerate = itemView.findViewById(R.id.ctl_item_history__scannedBackground);
             tvItemHistoryDate = itemView.findViewById(R.id.tv_item_history_monthCreate);
-            ctlItemHistoryDate = itemView.findViewById(R.id.csl_item_history_date);
-            cvItemHistoryQr = itemView.findViewById(R.id.cv_item_history_scan);
-            imvItemCheck = itemView.findViewById(R.id.imv_item_history_scan_check);
-            tvItemHistoryQrContent = itemView.findViewById(R.id.tv_item_scan_content);
-            tvItemHistoryQrDate = itemView.findViewById(R.id.tv_item_scan_date_create);
-            imvItemScanMenu = itemView.findViewById(R.id.imv_item_scan_menu);
-            imvItemScanType = itemView.findViewById(R.id.imv_item_scan_type);
-            cvItemHistoryEdit = itemView.findViewById(R.id.cv_item_history_edit);
-            imvItemCancel = itemView.findViewById(R.id.lnl_item_history_cancel);
-            imvItemDelete = itemView.findViewById(R.id.lnl_item_history_delete);
-            imvItemEdit = itemView.findViewById(R.id.lnl_item_history_edit);
-            imvItemShare = itemView.findViewById(R.id.lnl_item_history_share);
+            ctlItemHistoryDate = itemView.findViewById(R.id.csl_item_history__date);
+            cvItemHistoryQr = itemView.findViewById(R.id.cv_item_history__scannedContainer);
+            imvItemCheck = itemView.findViewById(R.id.imv_item_history__scannedCheck);
+            tvItemHistoryQrContent = itemView.findViewById(R.id.tv_item_history__scannedContent);
+            tvItemHistoryQrDate = itemView.findViewById(R.id.tv_item_history__scannedDate);
+            imvItemScanMenu = itemView.findViewById(R.id.imv_item_history__scannedMenu);
+            imvItemScanType = itemView.findViewById(R.id.imv_item_history__scannedType);
+            cvItemHistoryEdit = itemView.findViewById(R.id.cv_item_history__editContainer);
+            imvItemCancel = itemView.findViewById(R.id.imv_item_history__editCancel);
+            imvItemDelete = itemView.findViewById(R.id.txv_item_history__editDelete);
+            imvItemEdit = itemView.findViewById(R.id.txv_item_history__edit);
+            imvItemShare = itemView.findViewById(R.id.txv_item_history__editShare);
 
-            imvItemCheck.setVisibility(View.GONE);
-            imvItemScanMenu.setOnClickListener(view -> {
-                cvItemHistoryQr.setVisibility(View.GONE);
-                cvItemHistoryEdit.setVisibility(View.VISIBLE);
-
+            imvItemScanMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cvItemHistoryQr.setVisibility(View.GONE);
+                    cvItemHistoryEdit.setVisibility(View.VISIBLE);
+                }
             });
             imvItemCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -224,15 +236,15 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                         if (qrGenerate.getQrType() == QrScan.QRType.EMAIL) {
                             QrEmail qrEmail = new QrEmail();
                             qrEmail.compileEmail(content);
-                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.SMS) {
                             QrMess qrMess = new QrMess();
                             qrMess.compileSMS(content);
-                            shareListener.share(qrMess.getShare(), QrScan.QRType.SMS);
+                            editGenerateListener.onShareGenerate(qrMess.getShare(), QrScan.QRType.SMS);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.PRODUCT) {
                             QrProduct qrProduct = new QrProduct();
                             qrProduct.compileProduct(qrGenerate.getContent());
-                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.WIFI) {
                             QrWifi qrWifi = new QrWifi();
                             StringBuilder stringBuilder = new StringBuilder();
@@ -243,24 +255,24 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                             String contentWifi2 = stringBuilder.toString();
                             String[] contentWifi3 = contentWifi2.split(":");
                             qrWifi.compileWifi(contentWifi, contentWifi3);
-                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.PHONE) {
                             QreTelephone qreTelephone = new QreTelephone();
                             qreTelephone.compile(content);
-                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.TEXT) {
                             QrText qrText = new QrText();
-                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
                         } else if (qrGenerate.getQrType() == QrScan.QRType.URL) {
                             QrUrl qrUrl = new QrUrl();
                             qrUrl.compileUrl(content);
-                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.TEXT);
-                        }else if (qrGenerate.getQrType()== QrScan.QRType.BAR39){
-                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.BAR39);
-                        }else if (qrGenerate.getQrType()== QrScan.QRType.BAR93){
-                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.BAR93);
-                        }else if (qrGenerate.getQrType()== QrScan.QRType.BAR128){
-                            shareListener.share(qrGenerate.getContent(), QrScan.QRType.BAR128);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                        } else if (qrGenerate.getQrType() == QrScan.QRType.BAR39) {
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.BAR39);
+                        } else if (qrGenerate.getQrType() == QrScan.QRType.BAR93) {
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.BAR93);
+                        } else if (qrGenerate.getQrType() == QrScan.QRType.BAR128) {
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.BAR128);
                         }
                     }
                 }
@@ -268,37 +280,52 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             imvItemEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    editListener.edit(isEdit);
+                    editGenerateListener.onEditGenerate(isEdit);
                 }
             });
             imvItemDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     notifyItemRemoved(getLayoutPosition());
-                    deleteListener.delete(generateItemList.get(getLayoutPosition()), getLayoutPosition());
+                    editGenerateListener.onDeleteGenerate(generateItemList.get(getLayoutPosition()));
                 }
             });
+            if (isEdit) {
+                cvItemHistoryQr.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        QrGenerate qrGenerate = generateItemList.get(getLayoutPosition());
 
+                        if (!qrGenerate.isEdit()) {
+
+                            qrGenerate.setEdit(isEdit);
+                            ctlItemHistoryQrGenerate.setBackgroundResource(R.drawable.background_boder_selected);
+                            editGenerateListener.onSelectedItem(true);
+                            imvItemCheck.setImageResource(R.drawable.ic_check);
+
+                        } else {
+
+                            editGenerateListener.onSelectedItem(false);
+                            qrGenerate.setEdit(!isEdit);
+                            ctlItemHistoryQrGenerate.setBackgroundResource(R.drawable.background_boder_unselect);
+                            imvItemCheck.setImageResource(R.drawable.ic_uncheck);
+                        }
+                    }
+                });
+            }
 
         }
     }
 
-    private IEdit editListener;
+    public interface EditGenerateListener {
+        void onShareGenerate(String s, QrScan.QRType type);
 
-    private IShare shareListener;
+        void onDeleteGenerate(QrGenerate qrGenerate);
 
-    public interface IShare {
-        void share(String s, QrScan.QRType type);
-    }
+        void onEditGenerate(boolean isEdit);
 
-    private IDelete deleteListener;
+        void onSelectedItem(boolean isSelect);
 
-    public interface IDelete {
-        void delete(QrGenerate qrGenerate, int position);
-    }
-
-    public interface IEdit {
-        void edit(boolean isEdit);
     }
 
 }
