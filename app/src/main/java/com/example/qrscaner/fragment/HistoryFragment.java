@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     private List<QrScan> mQRScannedList = new ArrayList<>();
     private boolean isEditable = false;
     private int mNumQRSelect = 0;
-    private List<HistoryAdapter.MultiSelected> selectedList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,6 +76,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         imvEdit.setOnClickListener(this);
         qrHistoryReceiver = new QRHistoryReceiver();
         mMainActivity.registerReceiver(qrHistoryReceiver, new IntentFilter(Constant.ACTION_DELETE_MULTIPLE_QRCODE));
+        mMainActivity.registerReceiver(qrHistoryReceiver, new IntentFilter(Constant.ACTION_SHARE_MULTIPLE_QRCODE_GEN));
+
         return view;
     }
 
@@ -123,11 +125,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         mMainActivity.unregisterReceiver(qrHistoryReceiver);
         super.onDestroyView();
     }
-
-    public int check(List<QrScan> qrScanList) {
-        return qrScanList.size();
-    }
-
 
     @Override
     public void onShareQRSelected(QrScan qrCode) {
@@ -200,8 +197,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     }
 
     @Override
-    public void onDeleteQRSelected(int position) {
-        deleteQR(position);
+    public void onDeleteQRSelected(QrScan qrScan) {
+        deleteQR(qrScan);
         if (mQRScannedList.size() == 0) {
             rcvHistoryScan.setVisibility(View.GONE);
             lnlHTRGotoScan.setVisibility(View.VISIBLE);
@@ -225,18 +222,10 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         }
     }
 
-    @Override
-    public void onSelectedMultiPosition(List<HistoryAdapter.MultiSelected> integerList) {
-        selectedList = new ArrayList<>();
-        selectedList = integerList;
-    }
-
-    private void deleteQR(int position) {
-        if (mQRScannedList != null && mQRScannedList.get(position) != null) {
-            QrScan deleteQR = mQRScannedList.get(position);
-            QrHistoryDatabase.getInstance(getActivity()).qrDao().deleteQr(deleteQR);
-            mQRScannedList.remove(position);
-            historyAdapter.notifyItemRemoved(position);
+    private void deleteQR(QrScan qrScan) {
+        if (mQRScannedList != null) {
+            QrHistoryDatabase.getInstance(getActivity()).qrDao().deleteQr(qrScan);
+            mQRScannedList.remove(qrScan);
         }
     }
 
@@ -244,15 +233,86 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constant.ACTION_DELETE_MULTIPLE_QRCODE)) {
-                for (int i = 0; i < selectedList.size(); i++) {
-                    int position = selectedList.get(i).getPosition();
-                    if (mQRScannedList.get(position).isChecked()) {
-                        deleteQR(position);
+                for (int i = 0; i < mQRScannedList.size(); i++) {
+                    if (mQRScannedList.get(i).isChecked()) {
+                        deleteQR(mQRScannedList.get(i));
+                        i--;
                     }
                 }
                 imvEdit.performClick();
             }
+            if (intent.getAction().equals(Constant.ACTION_SHARE_MULTIPLE_QRCODE_GEN)) {
+                for (int i = 0; i < mQRScannedList.size(); i++) {
+                    if (mQRScannedList.get(i).isChecked()) {
+                        QrScan qrScan = mQRScannedList.get(i);
+                        onShareHistory(qrScan);
+                        i--;
+                    }
+                }
+            }
         }
     }
+
+    private void onShareHistory(QrScan qrCode) {
+        String[] content = qrCode.getScanText().split(":");
+        String shareContent = "";
+        switch (qrCode.getTypeQR()) {
+            case WIFI:
+                QrWifi qrWifi = new QrWifi();
+                StringBuilder stringBuilder = new StringBuilder();
+                String[] contentWifi = qrCode.getScanText().split(";");
+                for (String value : contentWifi) {
+                    stringBuilder.append(value);
+                }
+                String contentWifi2 = stringBuilder.toString();
+                String[] contentWifi3 = contentWifi2.split(":");
+                qrWifi.compileWifi(contentWifi, contentWifi3);
+                shareContent = qrWifi.getShare();
+                break;
+            case TEXT:
+                shareContent = qrCode.getScanText();
+                break;
+            case PHONE:
+                QreTelephone qreTelephone = new QreTelephone();
+                qreTelephone.compile(content);
+                shareContent = qreTelephone.getShare();
+                break;
+            case EMAIL:
+                QrEmail qrEmail = new QrEmail();
+                qrEmail.compileEmail(content);
+                shareContent = qrEmail.getShare();
+                break;
+            case SMS:
+                QrMess qrMess = new QrMess();
+                qrMess.compileSMS(content);
+                shareContent = qrMess.getShare();
+                break;
+            case URL:
+                QrUrl qrUrl = new QrUrl();
+                qrUrl.compileUrl(content);
+                shareContent = qrUrl.getShare();
+                break;
+            case PRODUCT:
+                QrProduct qrProduct = (QrProduct) qrCode;
+                qrProduct.compileProduct(qrCode.getScanText());
+                shareContent = qrProduct.getShare();
+                break;
+            case ERROR:
+                break;
+            case BAR39:
+                break;
+            case BAR93:
+                break;
+            case BAR128:
+                break;
+            default:
+                break;
+        }
+        Intent intentShare = new Intent(Intent.ACTION_SEND);
+        intentShare.setType("text/plain");
+        intentShare.putExtra(Intent.EXTRA_TEXT, shareContent);
+        getActivity().startActivity(intentShare);
+    }
+
 
 }

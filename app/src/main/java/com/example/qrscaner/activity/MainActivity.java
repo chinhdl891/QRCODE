@@ -1,10 +1,7 @@
 package com.example.qrscaner.activity;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,13 +29,10 @@ import com.example.qrscaner.fragment.SettingFragment;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
-import com.example.qrscaner.myshareferences.MyDataLocal;
 import com.example.qrscaner.view.QrScanResult;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, QrScanResult.iSaveQrScan {
     private BottomNavigationView bottomNavigationView;
@@ -49,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Fragment fragment;
     private ConstraintLayout ctlMainEditItem;
     private TextViewPoppinBold tvMainNumItem;
-    private ImageView imvMainItemShare, imvMainItemDelete;
+    private ImageView imvMainItemShare, imvMainItemDelete,imvMainQrTest;
     public final static int REQUEST_CAM = 100;
 
     @Override
@@ -58,14 +52,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         checkPermission();
         setContentView(R.layout.activity_main);
-        tvMainNumItem = findViewById(R.id.tv_main_num_select);
-        imvMainItemDelete = findViewById(R.id.imv_main_delete);
-        imvMainItemShare = findViewById(R.id.imv_main_share);
-        ctlMainEditItem = findViewById(R.id.csl_main_edit);
-        rrlMainActivity = findViewById(R.id.rll_main_activity);
-        bottomNavigationView = findViewById(R.id.nv_activityMain_menu);
-        conActivityMainResultView = findViewById(R.id.con_activityMain_resultView);
+        init();
         imvMainItemDelete.setOnClickListener(this);
+        imvMainItemShare.setOnClickListener(this);
         ScannerFragment scannerFragment = new ScannerFragment();
         fragmentLoad(scannerFragment, ScannerFragment.class.getSimpleName());
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -101,6 +90,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ((ScannerFragment) fragment).resumeCamera();
             }
         });
+    }
+
+    private void init() {
+        tvMainNumItem = findViewById(R.id.tv_main_num_select);
+        imvMainItemDelete = findViewById(R.id.imv_main_delete);
+        imvMainItemShare = findViewById(R.id.imv_main_share);
+        ctlMainEditItem = findViewById(R.id.csl_main_edit);
+        rrlMainActivity = findViewById(R.id.rll_main_activity);
+        bottomNavigationView = findViewById(R.id.nv_activityMain_menu);
+        conActivityMainResultView = findViewById(R.id.con_activityMain_resultView);
+        imvMainQrTest = findViewById(R.id.imv_main_qr_test);
     }
 
     private void checkPermission() {
@@ -150,6 +150,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return bottomNavigationView;
     }
 
+    public ImageView getImvMainQrTest() {
+        return imvMainQrTest;
+    }
+
+    public void setImvMainQrTest(ImageView imvMainQrTest) {
+        this.imvMainQrTest = imvMainQrTest;
+    }
 
     @Override
     public void saveQr(QrScan qrScan) {
@@ -179,6 +186,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view == imvMainItemDelete) {
             sendBroadcast(new Intent(Constant.ACTION_DELETE_MULTIPLE_QRCODE));
+        } else if (view == imvMainItemShare) {
+            sendBroadcast(new Intent(Constant.ACTION_SHARE_MULTIPLE_QRCODE_GEN));
         }
     }
+
 }

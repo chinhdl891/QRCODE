@@ -31,7 +31,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     private boolean isEdit = false;
     private final Context mContext;
     private HistoryAdapterListener mHistoryAdapterListener;
-    private List<MultiSelected> positionLists = new ArrayList<>();
 
 
     public HistoryAdapter(Context mContext, List<QrScan> qrList, HistoryAdapterListener listener) {
@@ -154,18 +153,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             if (qrScan.getIsChecked()) {
                 holder.imvItemHistoryScannedCheck.setImageResource(R.drawable.ic_check);
                 holder.ctlItemHistoryScannedBackground.setBackgroundResource(R.drawable.background_boder_selected);
-                if (positionLists.size() == 0) {
-                    positionLists.add(0, new MultiSelected(position));
-                } else {
-                    positionLists.add(position, new MultiSelected(position));
-                }
-                mHistoryAdapterListener.onSelectedMultiPosition(positionLists);
+
             } else {
-                if (positionLists.size() == 1) {
-                    positionLists.clear();
-                } else if (positionLists.size()>1){
-                    positionLists.remove(position);
-                }
+
                 holder.imvItemHistoryScannedCheck.setImageResource(R.drawable.ic_uncheck);
                 holder.ctlItemHistoryScannedBackground.setBackgroundResource(R.drawable.background_boder_unselect);
             }
@@ -249,7 +239,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                 @Override
                 public void onClick(View view) {
                     if (mHistoryAdapterListener != null) {
-                        mHistoryAdapterListener.onDeleteQRSelected(getLayoutPosition());
+                        mHistoryAdapterListener.onDeleteQRSelected(qrList.get(getLayoutPosition()));
+                        notifyItemRemoved(getLayoutPosition());
                     }
                 }
             });
@@ -292,30 +283,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     }
 
     public interface HistoryAdapterListener {
+
         void onShareQRSelected(QrScan qrCode);
 
         void onEditHistory(boolean isEdit);
 
-        void onDeleteQRSelected(int position);
+        void onDeleteQRSelected(QrScan qrScan);
 
         void onItemSelected(boolean isSelected);
 
-        void onSelectedMultiPosition(List<MultiSelected> integerList);
+
     }
 
-    public class MultiSelected {
-        private int position;
 
-        public MultiSelected(int position) {
-            this.position = position;
-        }
-
-        public int getPosition() {
-            return position;
-        }
-
-        public void setPosition(int position) {
-            this.position = position;
-        }
-    }
 }

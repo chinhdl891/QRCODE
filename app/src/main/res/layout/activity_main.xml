@@ -16,15 +16,16 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_above="@+id/nv_activityMain_menu" />
+
       <com.google.android.material.bottomnavigation.BottomNavigationView
           android:id="@+id/nv_activityMain_menu"
           android:layout_width="match_parent"
-          app:itemIconTint="@drawable/select_item"
           android:layout_height="60dp"
           android:layout_alignParentBottom="true"
+          app:itemIconTint="@drawable/select_item"
           app:itemTextColor="@drawable/select_item"
           app:labelVisibilityMode="labeled"
-          app:menu="@menu/menu_item_main" >
+          app:menu="@menu/menu_item_main">
 
 
       </com.google.android.material.bottomnavigation.BottomNavigationView>
@@ -80,4 +81,9 @@
         android:id="@+id/con_activityMain_resultView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    <ImageView
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imv_main_qr_test"/>
 </RelativeLayout>

@@ -28,12 +28,15 @@ import com.example.qrscaner.application.MyApplication;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.example.qrscaner.view.fonts.TextViewPoppinThin;
 
+import java.nio.channels.SelectableChannel;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistoryAdapter.GenerateQrCodeHistoryViewHolder> {
     private List<QrGenerate> generateItemList;
     private boolean isEdit;
     private EditGenerateListener editGenerateListener;
+
 
     public GenerateHistoryAdapter(List<QrGenerate> generateItemList, boolean isEdit, EditGenerateListener listener) {
         this.generateItemList = generateItemList;
@@ -184,13 +187,14 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
     }
 
     public class GenerateQrCodeHistoryViewHolder extends RecyclerView.ViewHolder {
-        ConstraintLayout ctlItemHistoryDate, ctlItemHistoryQrGenerate;
-        TextViewPoppinBold tvItemHistoryQrContent;
-        TextView tvItemHistoryDate;
-        TextView tvItemHistoryQrDate;
-        CardView cvItemHistoryQr, cvItemHistoryEdit;
-        ImageView imvItemScanType, imvItemScanMenu, imvItemCheck, imvItemCancel;
-        TextView imvItemShare, imvItemEdit, imvItemDelete;
+        private ConstraintLayout ctlItemHistoryDate, ctlItemHistoryQrGenerate;
+        private TextViewPoppinBold tvItemHistoryQrContent;
+        private TextView tvItemHistoryDate;
+        private TextView tvItemHistoryQrDate;
+        private CardView cvItemHistoryQr, cvItemHistoryEdit;
+        private ImageView imvItemScanType, imvItemScanMenu, imvItemCheck, imvItemCancel;
+        private TextView imvItemShare, imvItemEdit, imvItemDelete;
+
 
         public GenerateQrCodeHistoryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -283,7 +287,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                 @Override
                 public void onClick(View view) {
                     notifyItemRemoved(getLayoutPosition());
-                    editGenerateListener.onDeleteGenerate(generateItemList.get(getLayoutPosition()), getLayoutPosition());
+                    editGenerateListener.onDeleteGenerate(generateItemList.get(getLayoutPosition()));
                 }
             });
             if (isEdit) {
@@ -291,14 +295,18 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                     @Override
                     public void onClick(View view) {
                         QrGenerate qrGenerate = generateItemList.get(getLayoutPosition());
+
                         if (!qrGenerate.isEdit()) {
+
                             qrGenerate.setEdit(isEdit);
                             ctlItemHistoryQrGenerate.setBackgroundResource(R.drawable.background_boder_selected);
                             editGenerateListener.onSelectedItem(true);
                             imvItemCheck.setImageResource(R.drawable.ic_check);
+
                         } else {
-                            qrGenerate.setEdit(!isEdit);
+
                             editGenerateListener.onSelectedItem(false);
+                            qrGenerate.setEdit(!isEdit);
                             ctlItemHistoryQrGenerate.setBackgroundResource(R.drawable.background_boder_unselect);
                             imvItemCheck.setImageResource(R.drawable.ic_uncheck);
                         }
@@ -312,11 +320,12 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
     public interface EditGenerateListener {
         void onShareGenerate(String s, QrScan.QRType type);
 
-        void onDeleteGenerate(QrGenerate qrGenerate, int position);
+        void onDeleteGenerate(QrGenerate qrGenerate);
 
         void onEditGenerate(boolean isEdit);
 
         void onSelectedItem(boolean isSelect);
+
     }
 
 }
