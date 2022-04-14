@@ -35,7 +35,7 @@ public class QrEmail extends QrScan {
 
         this.sendBy = content[2].replace(";SUB", "").trim();
         this.sendTo = content[3].replace(";BODY", "").trim();
-        this.content = content[4];
+        this.content = content[4].replace(";;","");
 
     }
 

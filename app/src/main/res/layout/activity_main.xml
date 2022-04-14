@@ -34,6 +34,7 @@
             android:id="@+id/csl_main__edit"
             android:layout_width="match_parent"
             android:layout_height="72dp"
+            android:background="#FFFFFF"
             android:layout_alignParentBottom="true"
             android:visibility="gone">
 

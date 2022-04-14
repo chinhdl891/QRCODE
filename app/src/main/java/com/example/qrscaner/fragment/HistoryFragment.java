@@ -7,8 +7,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrMess;
@@ -32,16 +31,17 @@ import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.config.Constant;
 import com.example.qrscaner.myshareferences.MyDataLocal;
+import com.example.qrscaner.view.ResultHistoryQr;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class HistoryFragment extends Fragment implements View.OnClickListener, HistoryAdapter.HistoryAdapterListener {
+public class HistoryFragment extends Fragment implements View.OnClickListener, HistoryAdapter.HistoryAdapterListener, HistoryAdapter.ShowHistory, ResultHistoryQr.BackToHistory {
     private Button btnGotoScan;
     private RecyclerView rcvHistoryScan;
     private LinearLayout lnlHTRGotoScan;
-    private ImageView imvEdit;
+    private ImageView imvHistoryEdit, imvHistoryGotoScan;
     private HistoryAdapter historyAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private MainActivity mMainActivity;
@@ -49,6 +49,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     private List<QrScan> mQRScannedList = new ArrayList<>();
     private boolean isEditable = false;
     private int mNumQRSelect = 0;
+    private ResultHistoryQr rslHistoryFragmentShowQr;
+    private RelativeLayout rltHistoryFragmentUp,rltHistoryFragmentBelow;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,7 +59,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         init(view);
         getListScan();
-        historyAdapter = new HistoryAdapter(getActivity(), mQRScannedList, this);
+        historyAdapter = new HistoryAdapter(getActivity(), mQRScannedList, this,this);
 
         if (MyDataLocal.getShowHistory()) {
             layoutManager = new LinearLayoutManager(getActivity());
@@ -67,9 +69,10 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         }
 
         rcvHistoryScan.setAdapter(historyAdapter);
-        imvEdit = view.findViewById(R.id.imv_history_historyEdit);
+        imvHistoryEdit = view.findViewById(R.id.imv_history_historyEdit);
         btnGotoScan.setOnClickListener(this);
-        imvEdit.setOnClickListener(this);
+        imvHistoryGotoScan.setOnClickListener(this);
+        imvHistoryEdit.setOnClickListener(this);
         qrHistoryReceiver = new QRHistoryReceiver();
         mMainActivity.registerReceiver(qrHistoryReceiver, new IntentFilter(Constant.ACTION_DELETE_MULTIPLE_QRCODE));
         mMainActivity.registerReceiver(qrHistoryReceiver, new IntentFilter(Constant.ACTION_SHARE_MULTIPLE_QRCODE_GEN));
@@ -78,10 +81,14 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     }
 
     private void init(View view) {
+        rltHistoryFragmentBelow = view.findViewById(R.id.rlt_scanHistory_below);
+        rltHistoryFragmentUp = view.findViewById(R.id.rlt_scanHistory__Upto);
+        rslHistoryFragmentShowQr = view.findViewById(R.id.rsq_historyFragment__showQr);
         lnlHTRGotoScan = view.findViewById(R.id.lnl_historyFragment__gotoScan);
         btnGotoScan = view.findViewById(R.id.btn_historyFragment__gotoScan);
         rcvHistoryScan = view.findViewById(R.id.rcv_historyFragment__qrScan);
         mMainActivity = (MainActivity) getActivity();
+        imvHistoryGotoScan = view.findViewById(R.id.imv_scan_goto__Scan);
     }
 
     private void getListScan() {
@@ -94,18 +101,17 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
 
     @Override
     public void onClick(View view) {
-        if (view == btnGotoScan) {
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if (view == btnGotoScan || view == imvHistoryGotoScan) {
             ScannerFragment scannerFragment = new ScannerFragment();
-            fragmentTransaction.replace(R.id.frame_main__content, scannerFragment);
-            fragmentTransaction.commit();
-        } else if (view == imvEdit) {
+            mMainActivity.fragmentLoad(scannerFragment, scannerFragment.getClass().getSimpleName());
+            mMainActivity.getBottomNavigationView().setSelectedItemId(R.id.scan);
+
+        } else if (view == imvHistoryEdit) {
             if (!isEditable) {
-                imvEdit.setImageResource(R.drawable.ic_close);
+                imvHistoryEdit.setImageResource(R.drawable.ic_close);
                 isEditable = true;
             } else {
-                imvEdit.setImageResource(R.drawable.pen_edit_1);
+                imvHistoryEdit.setImageResource(R.drawable.pen_edit_1);
                 isEditable = false;
                 mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
                 mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
@@ -175,14 +181,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
                 shareContent = qrProduct.getShare();
                 break;
             case ERROR:
-                break;
             case BAR39:
-                break;
             case BAR93:
-                break;
             case BAR128:
-                break;
-            default:
                 break;
         }
         Intent intentShare = new Intent(Intent.ACTION_SEND);
@@ -194,7 +195,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     @Override
     public void onEditHistory(boolean isEdit) {
         if (isEdit) {
-            imvEdit.setImageResource(R.drawable.ic_close);
+            imvHistoryEdit.setImageResource(R.drawable.ic_close);
             isEditable = isEdit;
         }
     }
@@ -221,7 +222,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
             mMainActivity.getCtlMainEditItem().setVisibility(View.VISIBLE);
             mMainActivity.getTvMainNumItem().setText(mNumQRSelect + "");
         } else {
-            imvEdit.performClick();
+            imvHistoryEdit.performClick();
         }
     }
 
@@ -231,6 +232,27 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
             mQRScannedList.remove(qrScan);
         }
     }
+
+    @Override
+    public void ShowListener(QrScan qrScan) {
+        rcvHistoryScan.setVisibility(View.GONE);
+        rltHistoryFragmentUp.setVisibility(View.GONE);
+        rltHistoryFragmentBelow.setVisibility(View.GONE);
+        rslHistoryFragmentShowQr.setVisibility(View.VISIBLE);
+        rslHistoryFragmentShowQr.setupData(qrScan,this);
+
+    }
+
+    @Override
+    public void backListener() {
+
+        rcvHistoryScan.setVisibility(View.VISIBLE);
+        rltHistoryFragmentUp.setVisibility(View.VISIBLE);
+        rltHistoryFragmentBelow.setVisibility(View.VISIBLE);
+        rslHistoryFragmentShowQr.setVisibility(View.GONE);
+
+    }
+
 
     public class QRHistoryReceiver extends BroadcastReceiver {
         @Override
@@ -242,18 +264,17 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
                         i--;
                     }
                 }
-                imvEdit.performClick();
+                imvHistoryEdit.performClick();
             }
             if (intent.getAction().equals(Constant.ACTION_SHARE_MULTIPLE_QRCODE_GEN)) {
                 for (int i = 0; i < mQRScannedList.size(); i++) {
                     if (mQRScannedList.get(i).isChecked()) {
                         QrScan qrScan = mQRScannedList.get(i);
-
                         onShareHistory(qrScan);
                         i--;
                         mNumQRSelect--;
-                        if (mNumQRSelect == 0){
-                            imvEdit.performClick();
+                        if (mNumQRSelect == 0) {
+                            imvHistoryEdit.performClick();
                         }
                     }
                 }
