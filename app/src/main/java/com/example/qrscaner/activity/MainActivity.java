@@ -42,8 +42,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Fragment fragment;
     private ConstraintLayout ctlMainEditItem;
     private TextViewPoppinBold tvMainNumItem;
-    private ImageView imvMainItemShare, imvMainItemDelete,imvMainQrTest;
+    private ImageView imvMainItemShare, imvMainItemDelete, imvMainQrTest;
     public final static int REQUEST_CAM = 100;
+    private static int TIME_WAIT = 3000;
+    private long time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(ScannerFragment.class.getSimpleName());
             if (fragment instanceof ScannerFragment) {
                 ((ScannerFragment) fragment).resumeCamera();
+
             }
         });
     }
@@ -110,13 +113,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void fragmentLoad(Fragment fragment, String tag) {
+    public void fragmentLoad(Fragment fragment, String tag) {
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_main__content, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
 
     @Override
     public void sendQr(QrScan qr) {
@@ -190,4 +194,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        ScannerFragment scannerFragment = new ScannerFragment();
+        if (fragmentManager.getBackStackEntryCount()==1){
+            if (time+TIME_WAIT>System.currentTimeMillis()){
+                System.exit(0);
+            }else {
+                time = System.currentTimeMillis();
+                Toast.makeText(this, "Back again to exit", Toast.LENGTH_SHORT).show();
+            }
+
+        }else {
+            super.onBackPressed();
+        }
+    }
 }

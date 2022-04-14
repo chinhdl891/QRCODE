@@ -177,7 +177,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     public void onPause() {
         super.onPause();
         if (zXingScannerView != null){
-            zXingScannerView.stopCameraPreview();
+//            zXingScannerView.stopCameraPreview();
             zXingScannerView.stopCamera();
         }
     }

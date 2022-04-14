@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -20,6 +21,7 @@ import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
+import com.example.qrscaner.view.ResultHistoryQr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +33,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     private boolean isEdit = false;
     private final Context mContext;
     private HistoryAdapterListener mHistoryAdapterListener;
+    private ShowHistory showHistory;
 
 
-    public HistoryAdapter(Context mContext, List<QrScan> qrList, HistoryAdapterListener listener) {
+    public HistoryAdapter(Context mContext, List<QrScan> qrList, HistoryAdapterListener listener, ShowHistory showHistory) {
         this.qrList = qrList;
         this.mContext = mContext;
         mHistoryAdapterListener = listener;
+        this.showHistory = showHistory;
     }
 
     public void setEdit(boolean edit) {
         isEdit = edit;
         notifyDataSetChanged();
     }
+
 
     @NonNull
     @Override
@@ -148,6 +153,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                 }
             }
         }
+
         if (isEdit) {
             holder.imvItemHistoryScannedCheck.setVisibility(View.VISIBLE);
             if (qrScan.getIsChecked()) {
@@ -228,6 +234,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                 }
             });
 
+
             imvItemHistoryEditCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -273,12 +280,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                             mHistoryAdapterListener.onItemSelected(isSelect);
                         }
                     } else {
-                        //show detail QR code
+                        showHistory.ShowListener(qrList.get(getLayoutPosition()));
                     }
                 }
             });
 
         }
+
 
     }
 
@@ -293,6 +301,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         void onItemSelected(boolean isSelected);
 
 
+    }
+
+    public interface ShowHistory {
+        void ShowListener(QrScan qrScan);
     }
 
 

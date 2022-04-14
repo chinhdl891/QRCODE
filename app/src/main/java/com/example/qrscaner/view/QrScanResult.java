@@ -280,7 +280,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         lnlPhone.addView(tvNameWifi);
         lnlPhone.addView(tvWifiName);
         lnlResultInfo.addView(lnlPhone);
-//        lnlResultInfo.addView(drawView);
+
         LinearLayout lnlPass = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryPass = new TextViewPoppinBold(mContext);
         tvNameCategoryPass.setText("Password:   ");
@@ -293,6 +293,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         lnlPass.addView(tvNameCategoryPass);
         lnlPass.addView(tvPassContent);
         lnlResultInfo.addView(lnlPass);
+
         LinearLayout lnlType = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryType = new TextViewPoppinBold(mContext);
         tvNameCategoryType.setText("EAP:      ");

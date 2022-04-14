@@ -60,7 +60,7 @@
 
     <TextView
 
-        android:id="@+id/textView"
+        android:id="@+id/tv_result_category"
         android:layout_width="wrap_content"
         android:layout_height="19dp"
         android:layout_marginTop="24dp"
@@ -80,7 +80,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/tv_result_category"
         app:srcCompat="@drawable/background_dialog" />
 
     <ImageView
@@ -129,6 +129,14 @@
             android:id="@+id/imv_result_qr_render"
             android:layout_width="250dp"
             android:layout_height="250dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:id="@+id/lnl_result__contentHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
     <ScrollView
