@@ -66,10 +66,10 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        zXingScannerView = view.findViewById(R.id.scv_ScanFragment_view);
-        zXingScannerView.setResultHandler(this);
         imvScanFragmentOpenCam = view.findViewById(R.id.imv_ScanFragment_openPhoto);
         imvScanFragmentSwitchFlash = view.findViewById(R.id.imv_scanFragment_openFlash);
+        zXingScannerView = view.findViewById(R.id.scv_ScanFragment_view);
+        zXingScannerView.setResultHandler(this);
         imvScanFragmentSwitchFlash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

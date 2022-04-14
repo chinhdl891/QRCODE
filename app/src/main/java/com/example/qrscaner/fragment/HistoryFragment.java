@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,10 +55,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_history, container, false);
-        lnlHTRGotoScan = view.findViewById(R.id.lnl_historyFragment_gotoScan);
-        btnGotoScan = view.findViewById(R.id.btn_historyFragment_gotoScan);
-        rcvHistoryScan = view.findViewById(R.id.rcv_historyFragment_qrScan);
-        mMainActivity = (MainActivity) getActivity();
+        init(view);
         getListScan();
         historyAdapter = new HistoryAdapter(getActivity(), mQRScannedList, this);
 
@@ -81,6 +77,13 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         return view;
     }
 
+    private void init(View view) {
+        lnlHTRGotoScan = view.findViewById(R.id.lnl_historyFragment__gotoScan);
+        btnGotoScan = view.findViewById(R.id.btn_historyFragment__gotoScan);
+        rcvHistoryScan = view.findViewById(R.id.rcv_historyFragment__qrScan);
+        mMainActivity = (MainActivity) getActivity();
+    }
+
     private void getListScan() {
         mQRScannedList = QrHistoryDatabase.getInstance(getActivity()).qrDao().getListQrHistory();
         if (mQRScannedList.size() > 0) {
@@ -95,7 +98,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             ScannerFragment scannerFragment = new ScannerFragment();
-            fragmentTransaction.replace(R.id.frame_content, scannerFragment);
+            fragmentTransaction.replace(R.id.frame_main__content, scannerFragment);
             fragmentTransaction.commit();
         } else if (view == imvEdit) {
             if (!isEditable) {
@@ -245,8 +248,13 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
                 for (int i = 0; i < mQRScannedList.size(); i++) {
                     if (mQRScannedList.get(i).isChecked()) {
                         QrScan qrScan = mQRScannedList.get(i);
+
                         onShareHistory(qrScan);
                         i--;
+                        mNumQRSelect--;
+                        if (mNumQRSelect == 0){
+                            imvEdit.performClick();
+                        }
                     }
                 }
             }
@@ -298,13 +306,13 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
                 shareContent = qrProduct.getShare();
                 break;
             case ERROR:
-                break;
+
             case BAR39:
-                break;
+
             case BAR93:
-                break;
+
             case BAR128:
-                break;
+
             default:
                 break;
         }

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -93,14 +92,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
-        tvMainNumItem = findViewById(R.id.tv_main_num_select);
-        imvMainItemDelete = findViewById(R.id.imv_main_delete);
-        imvMainItemShare = findViewById(R.id.imv_main_share);
-        ctlMainEditItem = findViewById(R.id.csl_main_edit);
+        tvMainNumItem = findViewById(R.id.tv_main__numSelect);
+        imvMainItemDelete = findViewById(R.id.imv_main__delete);
+        imvMainItemShare = findViewById(R.id.imv_main__share);
+        ctlMainEditItem = findViewById(R.id.csl_main__edit);
         rrlMainActivity = findViewById(R.id.rll_main_activity);
-        bottomNavigationView = findViewById(R.id.nv_activityMain_menu);
-        conActivityMainResultView = findViewById(R.id.con_activityMain_resultView);
-        imvMainQrTest = findViewById(R.id.imv_main_qr_test);
+        bottomNavigationView = findViewById(R.id.nv_activityMain__menu);
+        conActivityMainResultView = findViewById(R.id.con_activityMain__resultView);
+
     }
 
     private void checkPermission() {
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void fragmentLoad(Fragment fragment, String tag) {
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_content, fragment, tag);
+        fragmentTransaction.replace(R.id.frame_main__content, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }

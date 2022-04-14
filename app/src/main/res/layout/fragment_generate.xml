@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imv_generate_edit"
+        android:id="@+id/imv_generate__edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="@+id/imv_generate_background" />
 
     <ImageView
-        android:id="@+id/imv_generate_create_qr"
+        android:id="@+id/imv_generate__createQr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -40,8 +40,8 @@
         android:layout_marginTop="8dp"
         android:text="CREATE"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/imv_generate_create_qr"
-        app:layout_constraintTop_toBottomOf="@+id/imv_generate_create_qr" />
+        app:layout_constraintStart_toStartOf="@+id/imv_generate__createQr"
+        app:layout_constraintTop_toBottomOf="@+id/imv_generate__createQr" />
 
     <com.example.qrscaner.view.fonts.TextViewPoppinBold
         android:id="@+id/tv_generate_title"
@@ -54,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_generate_create" />
     <LinearLayout
         android:paddingBottom="10dp"
-        android:id="@+id/nsv_genFragment_gotoGenerate"
+        android:id="@+id/nsv_genFragment__gotoGenerate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -84,7 +84,7 @@
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/nsv_generate_create"
+        android:id="@+id/nsv_generate__create"
         android:visibility="gone"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
@@ -95,7 +95,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nsv_genFragment_gotoGenerate">
+        app:layout_constraintTop_toBottomOf="@+id/nsv_genFragment__gotoGenerate">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                 android:text="QR CODE" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcv_generate_qrcode"
+                android:id="@+id/rcv_generate__qrcode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -122,7 +122,7 @@
                 android:layout_marginBottom="10dp"
                 android:text="BAR CODE" />
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcv_generate_barcode"
+                android:id="@+id/rcv_generate__barcode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -132,17 +132,17 @@
 
     <com.example.qrscaner.view.generate.ViewGenerateQRCode
         android:visibility="gone"
-        android:id="@+id/vgq_generate_createQr"
+        android:id="@+id/vgq_generate__createQr"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
       />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_generate_fragment_history"
+        android:id="@+id/rcv_generate_fragment__history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nsv_genFragment_gotoGenerate" />
+        app:layout_constraintTop_toBottomOf="@+id/nsv_genFragment__gotoGenerate" />
 </androidx.constraintlayout.widget.ConstraintLayout>

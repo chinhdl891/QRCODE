@@ -8,17 +8,13 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,8 +41,6 @@ import com.example.qrscaner.adapter.GenerateHistoryAdapter;
 import com.example.qrscaner.adapter.QrCodeGenerateAdapter;
 import com.example.qrscaner.config.Constant;
 
-import com.example.qrscaner.utils.QRGContents;
-import com.example.qrscaner.utils.QRGEncoder;
 import com.example.qrscaner.view.generate.ViewGenerateQRCode;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -112,15 +106,15 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
     private void init(View view) {
         mMainActivity = (MainActivity) getActivity();
-        rcvGenerateFragmentHistory = view.findViewById(R.id.rcv_generate_fragment_history);
-        rcvGenerateFragmentBarCode = view.findViewById(R.id.rcv_generate_barcode);
-        imvGenerateGotoCreate = view.findViewById(R.id.imv_generate_create_qr);
-        nsvGenQrItem = view.findViewById(R.id.nsv_generate_create);
-        lnlGenQrGotoCreate = view.findViewById(R.id.nsv_genFragment_gotoGenerate);
-        rcvGenerateFragmentQrCode = view.findViewById(R.id.rcv_generate_qrcode);
+        rcvGenerateFragmentHistory = view.findViewById(R.id.rcv_generate_fragment__history);
+        rcvGenerateFragmentBarCode = view.findViewById(R.id.rcv_generate__barcode);
+        imvGenerateGotoCreate = view.findViewById(R.id.imv_generate__createQr);
+        nsvGenQrItem = view.findViewById(R.id.nsv_generate__create);
+        lnlGenQrGotoCreate = view.findViewById(R.id.nsv_genFragment__gotoGenerate);
+        rcvGenerateFragmentQrCode = view.findViewById(R.id.rcv_generate__qrcode);
         btnGenerateGoTo = view.findViewById(R.id.btn_generate_create);
-        viewGenerateQRCode = view.findViewById(R.id.vgq_generate_createQr);
-        imvGenerateEdit = view.findViewById(R.id.imv_generate_edit);
+        viewGenerateQRCode = view.findViewById(R.id.vgq_generate__createQr);
+        imvGenerateEdit = view.findViewById(R.id.imv_generate__edit);
 
     }
 
@@ -166,12 +160,12 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                 nsvGenQrItem.setVisibility(View.VISIBLE);
                 lnlGenQrGotoCreate.setVisibility(View.GONE);
                 break;
-            case R.id.imv_generate_create_qr:
+            case R.id.imv_generate__createQr:
                 nsvGenQrItem.setVisibility(View.VISIBLE);
                 lnlGenQrGotoCreate.setVisibility(View.GONE);
                 rcvGenerateFragmentHistory.setVisibility(View.GONE);
                 break;
-            case R.id.imv_generate_edit:
+            case R.id.imv_generate__edit:
                 if (!edit) {
                     edit = true;
                     generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this);
@@ -314,7 +308,6 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
             }
         }
 
-
     }
 
     private void setImage(String s) {
@@ -397,18 +390,19 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                 for (int i = 0; i < qrGenerateList.size(); i++) {
                     if (qrGenerateList.get(i).isEdit()) {
                         shareMulti(qrGenerateList.get(i).getContent(), qrGenerateList.get(i).getQrType());
+                        i--;
                         mSelected--;
+                        if (mSelected == 0) {
+                            imvGenerateEdit.performClick();
+                        }
                     }
-                }
-                if (mSelected == 0) {
-                    imvGenerateEdit.performClick();
                 }
             }
         }
     }
 
     private void shareMulti(String s, QrScan.QRType type) {
-        if (type == QrScan.QRType.TEXT) {
+        if (type != QrScan.QRType.BAR128 || type != QrScan.QRType.BAR93 || type != QrScan.QRType.BAR39) {
             setImage(s);
             sharePalette(bmShare);
         } else {
