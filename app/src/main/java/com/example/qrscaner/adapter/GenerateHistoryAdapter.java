@@ -36,12 +36,14 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
     private List<QrGenerate> generateItemList;
     private boolean isEdit;
     private EditGenerateListener editGenerateListener;
+    private OnShowData onShowData;
 
 
-    public GenerateHistoryAdapter(List<QrGenerate> generateItemList, boolean isEdit, EditGenerateListener listener) {
+    public GenerateHistoryAdapter(List<QrGenerate> generateItemList, boolean isEdit, EditGenerateListener listener, OnShowData onShowDataListener) {
         this.generateItemList = generateItemList;
         this.isEdit = isEdit;
         this.editGenerateListener = listener;
+        this.onShowData = onShowDataListener;
 
     }
 
@@ -297,7 +299,6 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                         QrGenerate qrGenerate = generateItemList.get(getLayoutPosition());
 
                         if (!qrGenerate.isEdit()) {
-
                             qrGenerate.setEdit(isEdit);
                             ctlItemHistoryQrGenerate.setBackgroundResource(R.drawable.background_boder_selected);
                             editGenerateListener.onSelectedItem(true);
@@ -310,6 +311,13 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                             ctlItemHistoryQrGenerate.setBackgroundResource(R.drawable.background_boder_unselect);
                             imvItemCheck.setImageResource(R.drawable.ic_uncheck);
                         }
+                    }
+                });
+            } else {
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onShowData.onShowListener(generateItemList.get(getLayoutPosition()));
                     }
                 });
             }
@@ -328,4 +336,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
 
     }
 
+    public interface OnShowData {
+        void onShowListener(QrGenerate qrGenerate);
+    }
 }

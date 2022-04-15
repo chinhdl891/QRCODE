@@ -145,4 +145,10 @@
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nsv_genFragment__gotoGenerate" />
+
+   <com.example.qrscaner.view.generate.ResultHistoryGenQr
+       android:visibility="gone"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:id="@+id/rhs_genFragment__showHistory"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

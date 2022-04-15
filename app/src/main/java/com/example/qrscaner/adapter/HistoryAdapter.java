@@ -59,7 +59,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     @Override
     public void onBindViewHolder(@NonNull HistoryHolder holder, int position) {
         QrScan qrScan = qrList.get(position);
-        holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
+        holder.tvItemHistoryMonthCreate.setText(qrScan.getDateString());
         if (position > 0) {
             QrScan qrScanUndo = qrList.get(position - 1);
             if (qrScanUndo.getDateString().equals(qrScan.getDateString())) {
