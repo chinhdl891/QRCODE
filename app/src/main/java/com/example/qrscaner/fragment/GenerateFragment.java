@@ -41,6 +41,7 @@ import com.example.qrscaner.adapter.GenerateHistoryAdapter;
 import com.example.qrscaner.adapter.QrCodeGenerateAdapter;
 import com.example.qrscaner.config.Constant;
 
+import com.example.qrscaner.view.ResultHistoryQr;
 import com.example.qrscaner.view.generate.ViewGenerateQRCode;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -53,7 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener {
+public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.OnShowData {
     private static final int REQUEST_WRITE_STORAGE = 1000;
     private static final int REQUEST_READ_STORAGE = 999;
     private static final int BITMAP_WIDTH = 955;
@@ -72,7 +73,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     private int mSelected = 0;
     private GenerateReceiver generateReceiver;
     private Bitmap bmShare;
-
+    private ResultHistoryQr resultHistoryQr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,7 +95,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         rcvGenerateFragmentQrCode.setLayoutManager(new GridLayoutManager(getActivity(), 3, RecyclerView.VERTICAL, false));
         rcvGenerateFragmentBarCode.setLayoutManager(new GridLayoutManager(getActivity(), 3, RecyclerView.VERTICAL, false));
         rcvGenerateFragmentHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this);
+        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this,this);
         rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
 
         btnGenerateGoTo.setOnClickListener(this);
@@ -168,7 +169,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
             case R.id.imv_generate__edit:
                 if (!edit) {
                     edit = true;
-                    generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this);
+                    generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
                     rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
                     imvGenerateEdit.setImageResource(R.drawable.ic_close);
 
@@ -185,7 +186,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                     }
                     imvGenerateEdit.setImageResource(R.drawable.pen_edit_1);
                     edit = false;
-                    generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this);
+                    generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
                     rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
 
                 }
@@ -203,7 +204,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         lnlGenQrGotoCreate.setVisibility(View.GONE);
         rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
         nsvGenQrItem.setVisibility(View.GONE);
-        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this);
+        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
         rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
 
 
@@ -371,6 +372,12 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         } else {
             imvGenerateEdit.performClick();
         }
+    }
+
+    @Override
+    public void onShowListener(QrGenerate qrGenerate) {
+
+
     }
 
     public class GenerateReceiver extends BroadcastReceiver {
