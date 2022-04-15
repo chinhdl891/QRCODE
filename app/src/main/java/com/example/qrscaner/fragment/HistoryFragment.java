@@ -31,6 +31,7 @@ import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.config.Constant;
 import com.example.qrscaner.myshareferences.MyDataLocal;
+import com.example.qrscaner.utils.ShareUtils;
 import com.example.qrscaner.view.ResultHistoryQr;
 
 import java.util.ArrayList;
@@ -101,6 +102,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
 
     @Override
     public void onClick(View view) {
+
         if (view == btnGotoScan || view == imvHistoryGotoScan) {
             ScannerFragment scannerFragment = new ScannerFragment();
             mMainActivity.fragmentLoad(scannerFragment, scannerFragment.getClass().getSimpleName());
@@ -137,59 +139,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
 
     @Override
     public void onShareQRSelected(QrScan qrCode) {
-        String[] content = qrCode.getScanText().split(":");
-        String shareContent = "";
-        switch (qrCode.getTypeQR()) {
-            case WIFI:
-                QrWifi qrWifi = new QrWifi();
-                StringBuilder stringBuilder = new StringBuilder();
-                String[] contentWifi = qrCode.getScanText().split(";");
-                for (String value : contentWifi) {
-                    stringBuilder.append(value);
-                }
-                String contentWifi2 = stringBuilder.toString();
-                String[] contentWifi3 = contentWifi2.split(":");
-                qrWifi.compileWifi(contentWifi, contentWifi3);
-                shareContent = qrWifi.getShare();
-                break;
-            case TEXT:
-                shareContent = qrCode.getScanText();
-                break;
-            case PHONE:
-                QreTelephone qreTelephone = new QreTelephone();
-                qreTelephone.compile(content);
-                shareContent = qreTelephone.getShare();
-                break;
-            case EMAIL:
-                QrEmail qrEmail = new QrEmail();
-                qrEmail.compileEmail(content);
-                shareContent = qrEmail.getShare();
-                break;
-            case SMS:
-                QrMess qrMess = new QrMess();
-                qrMess.compileSMS(content);
-                shareContent = qrMess.getShare();
-                break;
-            case URL:
-                QrUrl qrUrl = new QrUrl();
-                qrUrl.compileUrl(content);
-                shareContent = qrUrl.getShare();
-                break;
-            case PRODUCT:
-                QrProduct qrProduct = (QrProduct) qrCode;
-                qrProduct.compileProduct(qrCode.getScanText());
-                shareContent = qrProduct.getShare();
-                break;
-            case ERROR:
-            case BAR39:
-            case BAR93:
-            case BAR128:
-                break;
-        }
-        Intent intentShare = new Intent(Intent.ACTION_SEND);
-        intentShare.setType("text/plain");
-        intentShare.putExtra(Intent.EXTRA_TEXT, shareContent);
-        getActivity().startActivity(intentShare);
+        ShareUtils.shareQR(getActivity(),qrCode);
     }
 
     @Override
@@ -244,7 +194,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     }
 
     @Override
-    public void backListener() {
+    public void onBackListener() {
 
         rcvHistoryScan.setVisibility(View.VISIBLE);
         rltHistoryFragmentUp.setVisibility(View.VISIBLE);

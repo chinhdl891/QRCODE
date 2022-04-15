@@ -12,16 +12,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
@@ -41,7 +44,7 @@ import com.example.qrscaner.adapter.GenerateHistoryAdapter;
 import com.example.qrscaner.adapter.QrCodeGenerateAdapter;
 import com.example.qrscaner.config.Constant;
 
-import com.example.qrscaner.view.ResultHistoryQr;
+import com.example.qrscaner.view.generate.ResultHistoryGenQr;
 import com.example.qrscaner.view.generate.ViewGenerateQRCode;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -54,7 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.OnShowData {
+public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, ResultHistoryGenQr.BackToGenerate {
     private static final int REQUEST_WRITE_STORAGE = 1000;
     private static final int REQUEST_READ_STORAGE = 999;
     private static final int BITMAP_WIDTH = 955;
@@ -67,13 +70,15 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     private NestedScrollView nsvGenQrItem;
     private List<QrGenerate> qrGenerateList;
     private GenerateHistoryAdapter generateHistoryAdapter;
-    private ImageView imvGenerateGotoCreate, imvGenerateEdit;
+    private ImageView imvGenerateGotoCreate, imvGenerateEdit, imvGenerateBackground;
+    private TextView tvGenerateCreate, tvGenerateCreateTitle;
     private boolean edit;
     private MainActivity mMainActivity;
     private int mSelected = 0;
     private GenerateReceiver generateReceiver;
     private Bitmap bmShare;
-    private ResultHistoryQr resultHistoryQr;
+
+    private ResultHistoryGenQr resultHistoryGenQr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,12 +96,15 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         QrCodeGenerateAdapter adapterBarCode = new QrCodeGenerateAdapter(getQrCode(), getActivity(), this);
         rcvGenerateFragmentBarCode.setAdapter(barcodeAdapter);
         rcvGenerateFragmentQrCode.setAdapter(adapterBarCode);
+        rcvGenerateFragmentBarCode.setNestedScrollingEnabled(true);
+        rcvGenerateFragmentQrCode.setNestedScrollingEnabled(true);
 
         rcvGenerateFragmentQrCode.setLayoutManager(new GridLayoutManager(getActivity(), 3, RecyclerView.VERTICAL, false));
         rcvGenerateFragmentBarCode.setLayoutManager(new GridLayoutManager(getActivity(), 3, RecyclerView.VERTICAL, false));
         rcvGenerateFragmentHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this,this);
+        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
         rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
+
 
         btnGenerateGoTo.setOnClickListener(this);
         imvGenerateGotoCreate.setOnClickListener(this);
@@ -106,7 +114,11 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     }
 
     private void init(View view) {
+
         mMainActivity = (MainActivity) getActivity();
+        tvGenerateCreate = view.findViewById(R.id.tv_generate_create);
+        imvGenerateEdit = view.findViewById(R.id.imv_generate__edit);
+        imvGenerateBackground = view.findViewById(R.id.imv_generate__background);
         rcvGenerateFragmentHistory = view.findViewById(R.id.rcv_generate_fragment__history);
         rcvGenerateFragmentBarCode = view.findViewById(R.id.rcv_generate__barcode);
         imvGenerateGotoCreate = view.findViewById(R.id.imv_generate__createQr);
@@ -115,7 +127,8 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         rcvGenerateFragmentQrCode = view.findViewById(R.id.rcv_generate__qrcode);
         btnGenerateGoTo = view.findViewById(R.id.btn_generate_create);
         viewGenerateQRCode = view.findViewById(R.id.vgq_generate__createQr);
-        imvGenerateEdit = view.findViewById(R.id.imv_generate__edit);
+        tvGenerateCreateTitle = view.findViewById(R.id.tv_generate_title);
+        resultHistoryGenQr = (ResultHistoryGenQr) view.findViewById(R.id.rhs_generate__showHistory);
 
     }
 
@@ -158,9 +171,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_generate_create:
-                nsvGenQrItem.setVisibility(View.VISIBLE);
-                lnlGenQrGotoCreate.setVisibility(View.GONE);
-                break;
+
             case R.id.imv_generate__createQr:
                 nsvGenQrItem.setVisibility(View.VISIBLE);
                 lnlGenQrGotoCreate.setVisibility(View.GONE);
@@ -376,7 +387,23 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
     @Override
     public void onShowListener(QrGenerate qrGenerate) {
+        imvGenerateGotoCreate.setVisibility(View.GONE);
+        imvGenerateBackground.setVisibility(View.GONE);
+        tvGenerateCreate.setVisibility(View.GONE);
+        tvGenerateCreateTitle.setVisibility(View.GONE);
 
+        resultHistoryGenQr.setVisibility(View.VISIBLE);
+        resultHistoryGenQr.setupData(qrGenerate, this);
+
+    }
+
+    @Override
+    public void onBackGenerate() {
+        imvGenerateGotoCreate.setVisibility(View.VISIBLE);
+        imvGenerateBackground.setVisibility(View.VISIBLE);
+        tvGenerateCreate.setVisibility(View.VISIBLE);
+        tvGenerateCreateTitle.setVisibility(View.VISIBLE);
+        resultHistoryGenQr.setVisibility(View.GONE);
 
     }
 

@@ -1,9 +1,7 @@
 package com.example.qrscaner.view;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
@@ -300,7 +298,7 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
 
     private void setContentMess(long date, QrMess qrMess) {
         lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-        imvResultHistoryCategory.setImageResource(R.drawable.add_text);
+        imvResultHistoryCategory.setImageResource(R.drawable.add_sms);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvResultHistoryDateCreate.setText(dateString);
         tvResultHistoryCategory.setText("QR CODE");
@@ -370,13 +368,14 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
     @Override
     public void onClick(View view) {
         if (view == imvResultHistoryBack) {
-            backToHistory.backListener();
+            lnlResultHistoryContent.removeAllViews();
+            backToHistory.onBackListener();
         }
     }
 
     public interface BackToHistory {
 
-        void backListener();
+        void onBackListener();
 
     }
 }
