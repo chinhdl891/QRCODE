@@ -1,13 +1,10 @@
 package com.example.qrscaner.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -24,22 +21,18 @@ import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
-import com.example.qrscaner.application.MyApplication;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
-import com.example.qrscaner.view.fonts.TextViewPoppinThin;
 
-import java.nio.channels.SelectableChannel;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistoryAdapter.GenerateQrCodeHistoryViewHolder> {
     private List<QrGenerate> generateItemList;
     private boolean isEdit;
     private EditGenerateListener editGenerateListener;
-    private OnShowData onShowData;
+    private ShowData onShowData;
 
 
-    public GenerateHistoryAdapter(List<QrGenerate> generateItemList, boolean isEdit, EditGenerateListener listener, OnShowData onShowDataListener) {
+    public GenerateHistoryAdapter(List<QrGenerate> generateItemList, boolean isEdit, EditGenerateListener listener, ShowData onShowDataListener) {
         this.generateItemList = generateItemList;
         this.isEdit = isEdit;
         this.editGenerateListener = listener;
@@ -305,7 +298,6 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                             imvItemCheck.setImageResource(R.drawable.ic_check);
 
                         } else {
-
                             editGenerateListener.onSelectedItem(false);
                             qrGenerate.setEdit(!isEdit);
                             ctlItemHistoryQrGenerate.setBackgroundResource(R.drawable.background_boder_unselect);
@@ -318,6 +310,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                     @Override
                     public void onClick(View view) {
                         onShowData.onShowListener(generateItemList.get(getLayoutPosition()));
+
                     }
                 });
             }
@@ -336,7 +329,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
 
     }
 
-    public interface OnShowData {
+    public interface ShowData {
         void onShowListener(QrGenerate qrGenerate);
     }
 }
