@@ -30,6 +30,9 @@ public class QrGenerate {
         isEdit = edit;
     }
 
+    public QrGenerate() {
+    }
+
     public QrGenerate(long date, String content, QrScan.QRType qrType) {
         this.date = date;
         this.content = content;

@@ -195,8 +195,20 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
 
     @Override
     public void onDestroy() {
-        zXingScannerView.stopCamera();
+        zXingScannerView.stopCameraPreview();
         super.onDestroy();
     }
 
+    @Override
+    public void onDetach() {
+        zXingScannerView.stopCameraPreview();
+        super.onDetach();
+    }
+
+    @Override
+    public void onStart() {
+        zXingScannerView.startCamera();
+        zXingScannerView.setResultHandler(this);
+        super.onStart();
+    }
 }

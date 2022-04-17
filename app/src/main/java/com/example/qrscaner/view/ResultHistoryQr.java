@@ -1,6 +1,7 @@
 package com.example.qrscaner.view;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +26,7 @@ import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
+import com.example.qrscaner.utils.IntentUtils;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 
 import java.util.Date;
@@ -63,6 +66,7 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         tvResultHistoryShare = mRootView.findViewById(R.id.tv_scanResult_share);
         tvResultHistoryCategoryQR = mRootView.findViewById(R.id.tv_result_history_qr__categoryName);
         imvResultHistoryBack.setOnClickListener(this);
+        tvResultHistoryOptionOne.setOnClickListener(this);
 
     }
 
@@ -216,7 +220,7 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         lnlContent.addView(tvContent);
         lnlContent.addView(tvContentText);
         lnlResultHistoryContent.addView(lnlContent);
-
+        tvResultHistoryOptionOne.setText("Send Email");
 
     }
 
@@ -236,8 +240,9 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         tvContentText.setText("    " + qreTelephone.getTel());
         lnlContent.addView(tvContent);
         lnlContent.addView(tvContentText);
-        lnlResultHistoryContent.addView(lnlContent);
 
+        lnlResultHistoryContent.addView(lnlContent);
+        tvResultHistoryOptionOne.setText("Call");
 
     }
 
@@ -259,6 +264,7 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         lnlContent.addView(tvContent);
         lnlContent.addView(tvContentText);
         lnlResultHistoryContent.addView(lnlContent);
+        tvResultHistoryOptionOne.setText("Search Browser");
 
     }
 
@@ -278,21 +284,22 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         tvContentText.setText(qrText.getText());
         tvContentText.setMaxLines(5);
         tvContent.setEllipsize(TextUtils.TruncateAt.END);
+        lnlContent.addView(tvContent);
+        lnlContent.addView(tvContentText);
         TextView tvMore = new TextView(mContext);
         tvMore.setText("More ");
-        Drawable myDrawable = getResources().getDrawable(R.drawable.ic_arrow_down);
-        tvMore.setCompoundDrawables(null, null, myDrawable, null);
+        tvMore.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_down, 0);
         tvMore.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                tvContentText.setMaxLines(999);
+                tvContentText.setMaxLines(10);
+
+                tvContentText.setText(qrText.getText());
             }
         });
-
         lnlContent.addView(tvMore);
-        lnlContent.addView(tvContent);
-        lnlContent.addView(tvContentText);
         lnlResultHistoryContent.addView(lnlContent);
+        tvResultHistoryOptionOne.setText("Copy");
 
     }
 
@@ -327,6 +334,7 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         lnlSub.addView(tvSMSSub);
         lnlSub.addView(tvSubContent);
         lnlResultHistoryContent.addView(lnlSub);
+        tvResultHistoryOptionOne.setText("Send SMS");
 
 
     }
@@ -351,7 +359,7 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         lnlEmail.addView(tvWifiCategoryName);
         lnlEmail.addView(tvEmailName);
         lnlResultHistoryContent.addView(lnlEmail);
-
+        tvResultHistoryOptionOne.setText("Open Browser");
 
     }
 
@@ -370,6 +378,11 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         if (view == imvResultHistoryBack) {
             lnlResultHistoryContent.removeAllViews();
             backToHistory.onBackListener();
+        }
+        if (view == tvResultHistoryOptionOne) {
+
+            IntentUtils intentUtils = new IntentUtils();
+            intentUtils.IntentAction(mContext, mqrScan.getScanText(), mqrScan.getTypeQR());
         }
     }
 

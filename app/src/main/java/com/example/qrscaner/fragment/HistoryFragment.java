@@ -180,6 +180,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         if (mQRScannedList != null) {
             QrHistoryDatabase.getInstance(getActivity()).qrDao().deleteQr(qrScan);
             mQRScannedList.remove(qrScan);
+            historyAdapter.notifyDataSetChanged();
         }
     }
 
