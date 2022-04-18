@@ -281,8 +281,9 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             imvItemDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    notifyItemRemoved(getLayoutPosition());
                     editGenerateListener.onDeleteGenerate(generateItemList.get(getLayoutPosition()));
+                    notifyItemRemoved(getLayoutPosition());
+                    notifyDataSetChanged();
                 }
             });
             if (isEdit) {

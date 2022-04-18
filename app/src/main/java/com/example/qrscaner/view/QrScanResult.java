@@ -32,9 +32,11 @@ import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
+import com.example.qrscaner.utils.IntentUtils;
 import com.example.qrscaner.utils.QRGContents;
 import com.example.qrscaner.utils.QRGEncoder;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
+
 import java.util.Date;
 
 
@@ -306,6 +308,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         lnlType.addView(tvNameCategoryType);
         lnlType.addView(tvEAP);
         lnlResultInfo.addView(lnlType);
+
     }
 
     private void setContentMail(long date, QrEmail qrEmail) {
@@ -440,8 +443,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
                 setVisibility(View.GONE);
                 lnlResultInfo.removeAllViews();
                 saveQrScanListener.saveQr(mqrScan);
-
                 break;
+
         }
 
     }

@@ -35,9 +35,12 @@ import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
+import com.example.qrscaner.utils.IntentUtils;
 import com.example.qrscaner.utils.ShareUtils;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +54,7 @@ public class ResultHistoryGenQr extends ConstraintLayout implements View.OnClick
     private BackToGenerate backToGenerate;
     private QrGenerate mQrGenerate;
     private QrScan qrScan;
-
+private String qrContent;
 
     public ResultHistoryGenQr(@NonNull Context context) {
         super(context);
@@ -87,7 +90,7 @@ public class ResultHistoryGenQr extends ConstraintLayout implements View.OnClick
         qrScan = new QrScan();
         this.backToGenerate = backToGenerate;
         mQrGenerate = qrGenerate;
-        String qrContent = qrGenerate.getContent();
+         qrContent = qrGenerate.getContent();
         String[] content = qrContent.split(":");
         if (checkIsProduct(content[0])) {
 
@@ -168,6 +171,7 @@ public class ResultHistoryGenQr extends ConstraintLayout implements View.OnClick
             lnlContent.addView(tvContent);
             lnlContent.addView(tvContentText);
             lnlResultHistoryContent.addView(lnlContent);
+            tvResultHistoryOptionOne.setText("Open Browser");
 
         }
     }
@@ -205,7 +209,7 @@ public class ResultHistoryGenQr extends ConstraintLayout implements View.OnClick
             lnlEmail.addView(tvWifiCategoryName);
             lnlEmail.addView(tvEmailName);
             lnlResultHistoryContent.addView(lnlEmail);
-
+            tvResultHistoryOptionOne.setText("Open Browser");
 
         }
     }
@@ -252,7 +256,7 @@ public class ResultHistoryGenQr extends ConstraintLayout implements View.OnClick
             lnlContent.addView(tvContent);
             lnlContent.addView(tvContentText);
             lnlResultHistoryContent.addView(lnlContent);
-
+            tvResultHistoryOptionOne.setText("Send Email");
 
         }
     }
@@ -314,7 +318,6 @@ public class ResultHistoryGenQr extends ConstraintLayout implements View.OnClick
         lnlWifiPass.addView(tvWifiPass);
         lnlResultHistoryContent.addView(lnlWifiPass);
 
-
         LinearLayout lnlWifiEAP = new LinearLayout(mContext);
         lnlWifiEAP.setOrientation(LinearLayout.HORIZONTAL);
         TextViewPoppinBold tvWifiCategoryEAP = new TextViewPoppinBold(mContext);
@@ -324,8 +327,6 @@ public class ResultHistoryGenQr extends ConstraintLayout implements View.OnClick
         lnlWifiEAP.addView(tvWifiCategoryEAP);
         lnlWifiEAP.addView(tvWifiEAP);
         lnlResultHistoryContent.addView(lnlWifiEAP);
-
-
         tvResultHistoryOptionOne.setText("Connect to \n Network");
 
     }
@@ -386,6 +387,7 @@ public class ResultHistoryGenQr extends ConstraintLayout implements View.OnClick
         lnlSub.addView(tvSubContent);
         lnlResultHistoryContent.addView(lnlSub);
         tvResultHistoryOptionOne.setText("Send Mess");
+
     }
 
 
@@ -397,62 +399,8 @@ public class ResultHistoryGenQr extends ConstraintLayout implements View.OnClick
         } else if (view == tvResultHistoryShare) {
             ShareUtils.shareGenQR(mContext, mQrGenerate);
         } else if (view == tvResultHistoryOptionOne) {
-            if (mQrGenerate.getQrType() == QrScan.QRType.PHONE) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse(mQrGenerate.getContent()));
-                mContext.startActivity(intent);
-            } else if (mQrGenerate.getQrType() == QrScan.QRType.TEXT) {
-
-                ClipData clipData = ClipData.newPlainText("text", mQrGenerate.getContent());
-
-                ClipboardManager clipboardManager = null;
-
-                clipboardManager.setPrimaryClip(clipData);
-
-                Toast.makeText(mContext, "Data Copied to Clipboard", Toast.LENGTH_SHORT).show();
-            } else if (mQrGenerate.getQrType() == QrScan.QRType.SMS) {
-                QrMess qrMess = new QrMess();
-                String[] mess = qrScan.getScanText().split(":");
-                qrMess.compileSMS(mess);
-                Uri uri = Uri.parse("smsto:" + qrMess.getSendBy());
-                Intent it = new Intent(Intent.ACTION_SENDTO, uri);
-                it.putExtra("sms_body", qrMess.getContent());
-                mContext.startActivity(it);
-            } else if (mQrGenerate.getQrType() == QrScan.QRType.URL) {
-                QrUrl qrUrl = new QrUrl();
-                String[] url = qrUrl.getScanText().split(":");
-                qrUrl.compileUrl(url);
-
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(qrUrl.getUrl()));
-                mContext.startActivity(i);
-            } else if (mQrGenerate.getQrType() == QrScan.QRType.WIFI) {
-
-                StringBuilder stringBuilder = new StringBuilder();
-                String[] contentWifi = qrScan.getScanText().split(";");
-                for (String value : contentWifi) {
-                    stringBuilder.append(value);
-                }
-                String contentWifi2 = stringBuilder.toString();
-                String[] contentWifi3 = contentWifi2.split(":");
-                QrWifi qrWifi = new QrWifi();
-                qrWifi.compileWifi(contentWifi, contentWifi3);
-                connectWifi(qrWifi.getWifiName(),qrWifi.getPass());
-            }
-            else if (mQrGenerate.getQrType()== QrScan.QRType.EMAIL){
-                QrEmail qrEmail = new QrEmail();
-                String[] email = qrScan.getScanText().split(":");
-                qrEmail.compileEmail(email);
-
-                Uri uri = Uri.parse("mailto:" + qrEmail.getSendBy())
-                        .buildUpon()
-                        .appendQueryParameter("subject", qrEmail.getSendTo())
-                        .appendQueryParameter("body", qrEmail.getContent())
-                        .build();
-
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, uri);
-                mContext.startActivity(Intent.createChooser(emailIntent, "email"));
-            }
+            IntentUtils intentUtils = new IntentUtils();
+            intentUtils.IntentAction(mContext,qrContent, mQrGenerate.getQrType());
         }
 
 
@@ -463,23 +411,5 @@ public class ResultHistoryGenQr extends ConstraintLayout implements View.OnClick
         void onBackGenerate();
     }
 
-    private void  connectWifi(String ssid, String password){
-        WifiConfiguration wifiConfig = new WifiConfiguration();
-        wifiConfig.SSID = String.format("\"%s\"", ssid);
-        wifiConfig.preSharedKey = String.format("\"%s\"", password);
-        WifiManager wifiManager = (WifiManager) mContext.getSystemService(WIFI_SERVICE);
-        //remember id
-        int netId = wifiManager.addNetwork(wifiConfig);
-        wifiManager.disconnect();
-        wifiManager.enableNetwork(netId, true);
-
-        boolean isConnectionSuccessful = wifiManager.reconnect();
-
-        if(isConnectionSuccessful){
-            Toast.makeText(mContext, "Connection successful", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(mContext, "Invalid credential", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 }

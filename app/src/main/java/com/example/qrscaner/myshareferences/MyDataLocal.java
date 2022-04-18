@@ -27,6 +27,7 @@ public class MyDataLocal {
 
     }
     public static boolean getFistInstall(){
+
       return   MyDataLocal.getInstance().mySharePreference.getData(KEY_PREFERENCE_FIRST);
     }
     public static void setVibrate(Boolean vibrate){

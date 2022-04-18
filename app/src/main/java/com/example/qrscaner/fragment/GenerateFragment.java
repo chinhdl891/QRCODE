@@ -391,7 +391,6 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         imvGenerateBackground.setVisibility(View.GONE);
         tvGenerateCreate.setVisibility(View.GONE);
         tvGenerateCreateTitle.setVisibility(View.GONE);
-
         resultHistoryGenQr.setVisibility(View.VISIBLE);
         resultHistoryGenQr.setupData(qrGenerate, this);
 

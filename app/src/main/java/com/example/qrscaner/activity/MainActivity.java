@@ -28,6 +28,7 @@ import com.example.qrscaner.fragment.SettingFragment;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
+import com.example.qrscaner.myshareferences.MyDataLocal;
 import com.example.qrscaner.view.QrScanResult;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -47,11 +48,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static int TIME_WAIT = 3000;
     private long time;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         checkPermission();
+        if (!MyDataLocal.getFistInstall()) {
+            MyDataLocal.setShowHistory(true);
+        }
         setContentView(R.layout.activity_main);
         init();
         imvMainItemDelete.setOnClickListener(this);
@@ -117,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_main__content, fragment, tag);
-        fragmentTransaction.addToBackStack(null);
+//        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
@@ -197,16 +202,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         ScannerFragment scannerFragment = new ScannerFragment();
-        if (fragmentManager.getBackStackEntryCount()==1){
-            if (time+TIME_WAIT>System.currentTimeMillis()){
-                System.exit(0);
-            }else {
-                time = System.currentTimeMillis();
-                Toast.makeText(this, "Back again to exit", Toast.LENGTH_SHORT).show();
-            }
-
-        }else {
+//        if (fragmentManager.getBackStackEntryCount()==1){
+        if (time + TIME_WAIT > System.currentTimeMillis()) {
             super.onBackPressed();
+        } else {
+            time = System.currentTimeMillis();
+            Toast.makeText(this, "Back again to exit", Toast.LENGTH_SHORT).show();
         }
+
+//        }else {
+//            super.onBackPressed();
+//        }
     }
 }
