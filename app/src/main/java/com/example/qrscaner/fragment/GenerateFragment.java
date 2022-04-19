@@ -43,6 +43,7 @@ import com.example.qrscaner.adapter.QrCodeGenerateAdapter;
 import com.example.qrscaner.config.Constant;
 
 import com.example.qrscaner.view.QrScanResult;
+import com.example.qrscaner.view.SaveQRGenerate;
 import com.example.qrscaner.view.generate.ResultScanQr;
 import com.example.qrscaner.view.generate.ViewGenerateQRCode;
 import com.google.zxing.BarcodeFormat;
@@ -56,7 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, ResultScanQr.BackToGenerate {
+public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, ResultScanQr.BackToGenerate , SaveQRGenerate.SaveBackToGenerate {
     private static final int REQUEST_WRITE_STORAGE = 1000;
     private static final int REQUEST_READ_STORAGE = 999;
     private static final int BITMAP_WIDTH = 955;
@@ -78,6 +79,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     private Bitmap bmShare;
     private boolean isGenMenu;
     private QrScanResult mResultHistoryGen;
+    private SaveQRGenerate saveQRGenerate;
 
 
     @Override
@@ -114,6 +116,8 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     }
 
     private void init(View view) {
+
+        saveQRGenerate = view.findViewById(R.id.save_generateFragment);
         mResultHistoryGen = view.findViewById(R.id.rhs_generateFragment_show);
         mMainActivity = (MainActivity) getActivity();
         tvGenerateCreate = view.findViewById(R.id.tv_generate_create);
@@ -226,12 +230,18 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     public void saveQr(QrGenerate qrGenerate) {
 
         checkPermissionWrite();
-        QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().insertQrGenerate(qrGenerate);
-        lnlGenQrGotoCreate.setVisibility(View.GONE);
-        rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
-        nsvGenQrItem.setVisibility(View.GONE);
-        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
-        rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
+        saveQRGenerate.setUpdate(qrGenerate,this);
+        mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
+        saveQRGenerate.setVisibility(View.VISIBLE);
+
+
+//        QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().insertQrGenerate(qrGenerate);
+//        lnlGenQrGotoCreate.setVisibility(View.GONE);
+//        rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
+//        nsvGenQrItem.setVisibility(View.GONE);
+//        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
+//        rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
+
 
 
     }
@@ -416,8 +426,6 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
     @Override
     public void onBackGenerate() {
-        isGenMenu = false;
-        imvGenerateGotoCreate.setImageResource(R.drawable.imv_history_plus_history);
 
         isGenMenu = false;
         imvGenerateGotoCreate.setImageResource(R.drawable.imv_history_plus_history);
@@ -435,6 +443,11 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         tvGenerateCreateTitle.setVisibility(View.VISIBLE);
         mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
         mResultHistoryGen.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSaveBackToGenerate() {
+        saveQRGenerate.setVisibility(View.GONE);
     }
 
     public class GenerateReceiver extends BroadcastReceiver {

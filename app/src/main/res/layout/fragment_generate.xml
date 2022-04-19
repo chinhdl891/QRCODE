@@ -161,5 +161,9 @@
         android:layout_height="match_parent"
         android:focusable="true"
         android:clickable="true"/>
-
+<com.example.qrscaner.view.SaveQRGenerate
+    android:visibility="gone"
+    android:id="@+id/save_generateFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
