@@ -13,23 +13,27 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
+import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.myshareferences.MyDataLocal;
+import com.example.qrscaner.view.generate.ResultScanQr;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
@@ -46,12 +50,8 @@ import java.io.IOException;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 
-///**
-// * A simple {@link Fragment} subclass.
-// * Use the {@link ScannerFragment#newInstance} factory method to
-// * create an instance of this fragment.
-// */
-public class ScannerFragment extends Fragment implements ZXingScannerView.ResultHandler {
+
+public class ScannerFragment extends Fragment implements ZXingScannerView.ResultHandler, ResultScanQr.BackToScan {
     public ZXingScannerView zXingScannerView;
 
     private SendData sendData;
@@ -60,16 +60,20 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
 
     private ImageView imvScanFragmentOpenCam, imvScanFragmentSwitchFlash;
     private boolean isFlash = false;
-    private  Vibrator vibrator ;
+    private Vibrator vibrator;
+    private ResultScanQr resultScan;
+    private LinearLayout lnlScanFragmentZoom;
+    private CardView cvScanFragmentMenu;
+    private MainActivity mMainActivity;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
-        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        imvScanFragmentOpenCam = view.findViewById(R.id.imv_ScanFragment_openPhoto);
-        imvScanFragmentSwitchFlash = view.findViewById(R.id.imv_scanFragment_openFlash);
-        zXingScannerView = view.findViewById(R.id.scv_ScanFragment_view);
+       init(view);
         zXingScannerView.setResultHandler(this);
+
         imvScanFragmentSwitchFlash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,6 +93,17 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         });
 
         return view;
+    }
+
+    private void init(View view) {
+        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        imvScanFragmentOpenCam = view.findViewById(R.id.imv_ScanFragment_openPhoto);
+        imvScanFragmentSwitchFlash = view.findViewById(R.id.imv_scanFragment_openFlash);
+        zXingScannerView = view.findViewById(R.id.scv_ScanFragment_view);
+        resultScan = view.findViewById(R.id.rhs_scanFragment_show);
+        lnlScanFragmentZoom = view.findViewById(R.id.lnl_scanFragment_zoom);
+        cvScanFragmentMenu = view.findViewById(R.id.cv_fragment_scanner_menu);
+        mMainActivity = (MainActivity) getActivity();
     }
 
 
@@ -142,24 +157,31 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     }
 
     private void processQr(String s) {
+        zXingScannerView.stopCameraPreview();
         QrScan qrScan = new QrScan();
         qrScan.setScanText(s);
         qrScan.setDate();
-        sendData.sendQr(qrScan);
+        zXingScannerView.setVisibility(View.GONE);
+        lnlScanFragmentZoom.setVisibility(View.GONE);
+        cvScanFragmentMenu.setVisibility(View.GONE);
+        mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
+        resultScan.setVisibility(View.VISIBLE);
+        resultScan.setupData(qrScan,this);
+
 
     }
 
     @Override
     public void handleResult(Result result) {
-        if (MyDataLocal.getVibrate()){
-             VibrationEffect vibrationEffect;
+        if (MyDataLocal.getVibrate()) {
+            VibrationEffect vibrationEffect;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 vibrationEffect = VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE);
                 vibrator.cancel();
                 vibrator.vibrate(vibrationEffect);
             }
-        }else if (MyDataLocal.getBeep()){
-            MediaPlayer mediaPlayer = MediaPlayer.create(getActivity(),R.raw.beep);
+        } else if (MyDataLocal.getBeep()) {
+            MediaPlayer mediaPlayer = MediaPlayer.create(getActivity(), R.raw.beep);
             mediaPlayer.start();
         }
         processQr(result.getText());
@@ -176,7 +198,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     @Override
     public void onPause() {
         super.onPause();
-        if (zXingScannerView != null){
+        if (zXingScannerView != null) {
 //            zXingScannerView.stopCameraPreview();
             zXingScannerView.stopCamera();
         }
@@ -188,7 +210,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         sendData = ((SendData) context);
     }
 
-    public void resumeCamera(){
+    public void resumeCamera() {
         zXingScannerView.startCamera();
         zXingScannerView.setResultHandler(this);
     }
@@ -211,4 +233,18 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         zXingScannerView.setResultHandler(this);
         super.onStart();
     }
+
+
+    @Override
+    public void onBackScan() {
+        zXingScannerView.startCamera();
+        zXingScannerView.setResultHandler(this);
+        lnlScanFragmentZoom.setVisibility(View.VISIBLE);
+        cvScanFragmentMenu.setVisibility(View.VISIBLE);
+        zXingScannerView.setVisibility(View.VISIBLE);
+        mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
+        resultScan.setVisibility(View.GONE);
+    }
+
+
 }

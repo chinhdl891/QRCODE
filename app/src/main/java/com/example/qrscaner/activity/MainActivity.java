@@ -129,8 +129,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void sendQr(QrScan qr) {
-        conActivityMainResultView.setVisibility(View.VISIBLE);
-        conActivityMainResultView.setupData(qr, this);
+//        conActivityMainResultView.setVisibility(View.VISIBLE);
+//        conActivityMainResultView.setupData(qr, this);
 
     }
 

@@ -281,9 +281,8 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             imvItemDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    editGenerateListener.onDeleteGenerate(generateItemList.get(getLayoutPosition()));
-                    notifyItemRemoved(getLayoutPosition());
-                    notifyDataSetChanged();
+                    editGenerateListener.onDeleteGenerate(generateItemList.get(getLayoutPosition()), getLayoutPosition());
+
                 }
             });
             if (isEdit) {
@@ -322,7 +321,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
     public interface EditGenerateListener {
         void onShareGenerate(String s, QrScan.QRType type);
 
-        void onDeleteGenerate(QrGenerate qrGenerate);
+        void onDeleteGenerate(QrGenerate qrGenerate, int i);
 
         void onEditGenerate(boolean isEdit);
 

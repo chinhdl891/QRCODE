@@ -42,12 +42,12 @@
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
         android:background="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/tv_generate_save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/v_generate_qr_background">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cv_gen__item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -65,17 +65,18 @@
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+        <com.example.qrscaner.view.fonts.TextViewPoppinBold
+            android:layout_marginTop="20dp"
+            android:id="@+id/tv_generate_save"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/cv_gen__item"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="CREATE"
+            android:textColor="#3C52F5"
+            />
 
     </RelativeLayout>
-    <com.example.qrscaner.view.fonts.TextViewPoppinBold
-        android:id="@+id/tv_generate_save"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="CREATE"
-        android:textColor="#3C52F5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

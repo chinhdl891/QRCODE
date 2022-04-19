@@ -24,6 +24,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.Model.QrEmail;
+import com.example.qrscaner.Model.QrGenerate;
 import com.example.qrscaner.Model.QrMess;
 import com.example.qrscaner.Model.QrProduct;
 import com.example.qrscaner.Model.QrScan;
@@ -36,6 +37,7 @@ import com.example.qrscaner.utils.IntentUtils;
 import com.example.qrscaner.utils.QRGContents;
 import com.example.qrscaner.utils.QRGEncoder;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
+import com.example.qrscaner.view.generate.ResultScanQr;
 
 import java.util.Date;
 
@@ -48,6 +50,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     private TextView tvQrScanResultCategoryName, tvQrScanResultDate, tvQrScanResultCancel, tvQrScanResultSave;
     private Bitmap bitmap;
     private QRGEncoder qrgEncoder;
+    private ResultScanQr.BackToGenerate backToGenerate;
 
     private LinearLayout lnlResultInfo;
     private DrawView drawView;
@@ -81,8 +84,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         tvQrScanResultSave = findViewById(R.id.tv_scanResult_save);
         imvQrScanResultBack.setOnClickListener(this);
         tvQrScanResultCancel.setOnClickListener(this);
-        tvQrScanResultSave.setOnClickListener(this);
-        imvQrScanResultIconCategory.setOnClickListener(this);
+//        tvQrScanResultSave.setOnClickListener(this);
+//        imvQrScanResultIconCategory.setOnClickListener(this);
         mRootView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -95,10 +98,14 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     }
 
 
-    public void setupData(QrScan qrScan, iSaveQrScan listener) {
-        mqrScan = qrScan;
-        saveQrScanListener = listener;
-        String s = qrScan.getScanText();
+    public void setupData(QrGenerate qrScan, ResultScanQr.BackToGenerate backToGenerate) {
+        this.backToGenerate = backToGenerate;
+        mqrScan = new QrScan();
+        mqrScan.setScanText(qrScan.getContent());
+        mqrScan.setTypeQR(qrScan.getQrType());
+        mqrScan.setDate(qrScan.getDate());
+        String s = mqrScan.getScanText();
+
         String[] content = s.split(":");
         setImage(s);
 
@@ -142,9 +149,9 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
             setContentTel(qrScan.getDate(), qreTelephone);
 
         } else {
-            if (checkIsProduct(qrScan.getScanText())) {
+            if (checkIsProduct(qrScan.getContent())) {
                 QrProduct qrProduct = new QrProduct();
-                qrProduct.setProduct(Long.parseLong(qrScan.getScanText()));
+                qrProduct.setProduct(Long.parseLong(qrScan.getContent()));
                 setContentProduct(qrScan.getDate(), qrProduct);
             } else {
                 QrText qrText = new QrText();
@@ -437,7 +444,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
             case R.id.tv_scanResult_cancel:
                 setVisibility(GONE);
                 lnlResultInfo.removeAllViews();
-                callbackCancelResult.cancel();
+               backToGenerate.onBackGenerate();
                 break;
             case R.id.tv_scanResult_save:
                 setVisibility(View.GONE);
@@ -464,6 +471,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     public void setCallbackCancelResult(CallbackCancelResult callbackCancelResult) {
         this.callbackCancelResult = callbackCancelResult;
     }
+
 
 
 }
