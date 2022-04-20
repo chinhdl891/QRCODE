@@ -1,9 +1,12 @@
 package com.example.qrscaner.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -45,18 +48,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextViewPoppinBold tvMainNumItem;
     private ImageView imvMainItemShare, imvMainItemDelete, imvMainQrTest;
     public final static int REQUEST_CAM = 100;
+    public final static int REQUEST_WRITE = 100;
     private static int TIME_WAIT = 3000;
     private long time;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         checkPermission();
         if (!MyDataLocal.getFistInstall()) {
             MyDataLocal.setShowHistory(true);
         }
+
         setContentView(R.layout.activity_main);
         init();
         imvMainItemDelete.setOnClickListener(this);
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         fragment = new SettingFragment();
                         fragmentLoad(fragment, SettingFragment.class.getSimpleName());
                         break;
-                    case R.id.scan:
+                    default :
                         fragment = new ScannerFragment();
                         fragmentLoad(fragment, ScannerFragment.class.getSimpleName());
                         break;
@@ -113,8 +117,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAM);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAM);
         }
+
 
     }
 
@@ -129,8 +134,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void sendQr(QrScan qr) {
-        conActivityMainResultView.setVisibility(View.VISIBLE);
-        conActivityMainResultView.setupData(qr, this);
+//        conActivityMainResultView.setVisibility(View.VISIBLE);
+//        conActivityMainResultView.setupData(qr, this);
 
     }
 
@@ -182,9 +187,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CAM) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            } else {
-                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            for (int i = 0; i < permissions.length ; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED){
+                    if (i==0){
+                        Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(this, "Write permission denied", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         }
     }
@@ -201,8 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        ScannerFragment scannerFragment = new ScannerFragment();
-//        if (fragmentManager.getBackStackEntryCount()==1){
+
         if (time + TIME_WAIT > System.currentTimeMillis()) {
             super.onBackPressed();
         } else {
@@ -210,8 +219,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Back again to exit", Toast.LENGTH_SHORT).show();
         }
 
-//        }else {
-//            super.onBackPressed();
-//        }
+
     }
 }

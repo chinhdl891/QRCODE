@@ -20,6 +20,7 @@
         app:roundedCorner="false"
         app:squaredFinder="true" />
     <LinearLayout
+        android:id="@+id/lnl_scanFragment_zoom"
         android:gravity="center"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
@@ -95,4 +96,10 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <com.example.qrscaner.view.generate.ResultScanQr
+        android:id="@+id/rhs_scanFragment_show"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>

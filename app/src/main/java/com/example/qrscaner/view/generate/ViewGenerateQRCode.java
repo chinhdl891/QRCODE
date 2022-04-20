@@ -2,6 +2,7 @@ package com.example.qrscaner.view.generate;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -71,6 +72,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
             tvCategoryText.setText("BAR 39");
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtPhone);
@@ -98,6 +100,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             tvCategoryText.setText("BAR93");
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
@@ -120,8 +123,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                 }
             });
 
-        }
-        else if (id == 13) {
+        } else if (id == 13) {
             typeQR = QrScan.QRType.PHONE;
             tvGenCategory.setText("Phone");
             LinearLayout lnlContentText = new LinearLayout(mContext);
@@ -132,6 +134,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtPhone);
             lnlGenContent.addView(lnlContentText);
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             edtPhone.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -160,6 +163,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtPhone);
             lnlGenContent.addView(lnlContentText);
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             edtPhone.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -173,12 +177,11 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    contentQr =  editable.toString();
+                    contentQr = editable.toString();
                 }
             });
 
-        }
-        else if (id == 13) {
+        } else if (id == 13) {
             typeQR = QrScan.QRType.PHONE;
             tvGenCategory.setText("Phone");
             LinearLayout lnlContentText = new LinearLayout(mContext);
@@ -189,6 +192,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtPhone);
             lnlGenContent.addView(lnlContentText);
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             edtPhone.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -282,9 +286,6 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                     contentEmail = edtContent.toString();
                 }
             });
-            //
-            //mailto:chinh@gmail.com?subject=yl@gmail.com&body=Chinh1234567890
-
 
         } else if (id == 15) {
             typeQR = QrScan.QRType.URL;
@@ -319,6 +320,8 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryPhone = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
+
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             tvCategoryPhone.setText("Phone");
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryPhone);
@@ -327,7 +330,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentSMS = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryContentSMS = new TextViewPoppinBold(mContext);
             EditText edtSMS = new EditText(mContext);
-            tvCategoryContentSMS.setText("Phone");
+            tvCategoryContentSMS.setText("Content");
             lnlContentSMS.setOrientation(LinearLayout.VERTICAL);
             lnlContentSMS.addView(tvCategoryContentSMS);
             lnlContentSMS.addView(edtSMS);
@@ -489,6 +492,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
         switch (view.getId()) {
             case R.id.imv_generate_qr_back:
                 lnlGenContent.removeAllViews();
+                backToGenerate.onBackItemToGenerate();
                 setVisibility(View.GONE);
                 break;
             case R.id.tv_generate_save:
@@ -537,7 +541,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
         }
     }
 
-    ISaveQrGenerate saveQrGenerate;
+    private ISaveQrGenerate saveQrGenerate;
 
     public void setInterface(ISaveQrGenerate saveQrGenerate) {
         this.saveQrGenerate = saveQrGenerate;
@@ -545,5 +549,12 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
 
     public interface ISaveQrGenerate {
         void saveQr(QrGenerate qrGenerate);
+    }
+    public interface IBackToGenerate{
+        void onBackItemToGenerate();
+    }
+    private IBackToGenerate backToGenerate;
+    public void setInterFace(IBackToGenerate backToGenerate){
+        this.backToGenerate = backToGenerate;
     }
 }

@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
@@ -44,7 +42,9 @@ import com.example.qrscaner.adapter.GenerateHistoryAdapter;
 import com.example.qrscaner.adapter.QrCodeGenerateAdapter;
 import com.example.qrscaner.config.Constant;
 
-import com.example.qrscaner.view.generate.ResultHistoryGenQr;
+import com.example.qrscaner.view.QrScanResult;
+import com.example.qrscaner.view.SaveQRGenerate;
+import com.example.qrscaner.view.generate.ResultScanQr;
 import com.example.qrscaner.view.generate.ViewGenerateQRCode;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -57,7 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, ResultHistoryGenQr.BackToGenerate {
+public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, SaveQRGenerate.SavaQr, ViewGenerateQRCode.IBackToGenerate, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, ResultScanQr.BackToGenerate, SaveQRGenerate.SaveBackToGenerate {
     private static final int REQUEST_WRITE_STORAGE = 1000;
     private static final int REQUEST_READ_STORAGE = 999;
     private static final int BITMAP_WIDTH = 955;
@@ -72,13 +72,15 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     private GenerateHistoryAdapter generateHistoryAdapter;
     private ImageView imvGenerateGotoCreate, imvGenerateEdit, imvGenerateBackground;
     private TextView tvGenerateCreate, tvGenerateCreateTitle;
-    private boolean edit;
+    private boolean edit = false;
     private MainActivity mMainActivity;
     private int mSelected = 0;
     private GenerateReceiver generateReceiver;
     private Bitmap bmShare;
+    private boolean isGenMenu;
+    private QrScanResult mResultHistoryGen;
+    private SaveQRGenerate saveQRGenerate;
 
-    private ResultHistoryGenQr resultHistoryGenQr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -115,6 +117,8 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
     private void init(View view) {
 
+        saveQRGenerate = view.findViewById(R.id.save_generateFragment);
+        mResultHistoryGen = view.findViewById(R.id.rhs_generateFragment_show);
         mMainActivity = (MainActivity) getActivity();
         tvGenerateCreate = view.findViewById(R.id.tv_generate_create);
         imvGenerateEdit = view.findViewById(R.id.imv_generate__edit);
@@ -128,8 +132,6 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         btnGenerateGoTo = view.findViewById(R.id.btn_generate_create);
         viewGenerateQRCode = view.findViewById(R.id.vgq_generate__createQr);
         tvGenerateCreateTitle = view.findViewById(R.id.tv_generate_title);
-        resultHistoryGenQr = (ResultHistoryGenQr) view.findViewById(R.id.rhs_generate__showHistory);
-
     }
 
 
@@ -163,8 +165,10 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     @Override
     public void createListener(int id) {
         viewGenerateQRCode.setInterface(this);
+        viewGenerateQRCode.setInterFace(this);
         viewGenerateQRCode.setVisibility(View.VISIBLE);
         viewGenerateQRCode.setUpData(id);
+        nsvGenQrItem.setVisibility(View.GONE);
     }
 
     @Override
@@ -173,35 +177,57 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
             case R.id.btn_generate_create:
 
             case R.id.imv_generate__createQr:
-                nsvGenQrItem.setVisibility(View.VISIBLE);
-                lnlGenQrGotoCreate.setVisibility(View.GONE);
-                rcvGenerateFragmentHistory.setVisibility(View.GONE);
+                if (!isGenMenu) {
+                    imvGenerateGotoCreate.setImageResource(R.drawable.ic_close);
+                    isGenMenu = true;
+                    nsvGenQrItem.setVisibility(View.VISIBLE);
+                    lnlGenQrGotoCreate.setVisibility(View.GONE);
+                    rcvGenerateFragmentHistory.setVisibility(View.GONE);
+                } else {
+
+                    isGenMenu = false;
+                    imvGenerateGotoCreate.setImageResource(R.drawable.imv_history_plus_history);
+                    nsvGenQrItem.setVisibility(View.GONE);
+                    if (qrGenerateList.size() > 0) {
+                        lnlGenQrGotoCreate.setVisibility(View.GONE);
+                        rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
+                    } else {
+                        lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
+
+                    }
+                }
+
+
                 break;
             case R.id.imv_generate__edit:
-                if (!edit) {
-                    edit = true;
-                    generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
-                    rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
-                    imvGenerateEdit.setImageResource(R.drawable.ic_close);
+                if (qrGenerateList.size() > 0) {
+                    if (!edit) {
+                        edit = true;
+                        generateHistoryAdapter.setEdit(true);
+                        imvGenerateEdit.setImageResource(R.drawable.ic_close);
 
+                    } else {
+                        mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
+                        mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
+                        mSelected = 0;
+                        for (QrGenerate qrScan : qrGenerateList) {
+                            qrScan.setEdit(false);
+                        }
+                        if (qrGenerateList.size() == 0) {
+                            rcvGenerateFragmentHistory.setVisibility(View.GONE);
+                            lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
+                        }
+                        imvGenerateEdit.setImageResource(R.drawable.pen_edit_1);
+                        edit = false;
+                        generateHistoryAdapter.setEdit(false);
+
+
+                    }
+                    generateHistoryAdapter.setEdit(edit);
                 } else {
-                    mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
-                    mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
-                    mSelected = 0;
-                    for (QrGenerate qrScan : qrGenerateList) {
-                        qrScan.setEdit(false);
-                    }
-                    if (qrGenerateList.size() == 0) {
-                        rcvGenerateFragmentHistory.setVisibility(View.GONE);
-                        lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
-                    }
-                    imvGenerateEdit.setImageResource(R.drawable.pen_edit_1);
-                    edit = false;
-                    generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
-                    rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
-
+                    Toast.makeText(mMainActivity, "Khong co gi de chon", Toast.LENGTH_SHORT).show();
                 }
-                generateHistoryAdapter.setEdit(edit);
+
                 break;
         }
     }
@@ -209,14 +235,18 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     @Override
     public void saveQr(QrGenerate qrGenerate) {
 
-
         checkPermissionWrite();
-        QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().insertQrGenerate(qrGenerate);
-        lnlGenQrGotoCreate.setVisibility(View.GONE);
-        rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
-        nsvGenQrItem.setVisibility(View.GONE);
-        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
-        rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
+        saveQRGenerate.setUpdate(qrGenerate, this, this);
+        mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
+        saveQRGenerate.setVisibility(View.VISIBLE);
+
+
+//        QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().insertQrGenerate(qrGenerate);
+//        lnlGenQrGotoCreate.setVisibility(View.GONE);
+//        rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
+//        nsvGenQrItem.setVisibility(View.GONE);
+//        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
+//        rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
 
 
     }
@@ -269,20 +299,20 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
 
     @Override
-    public void onShareGenerate(String s, QrScan.QRType type) {
+    public void onShareGenerate(String s, QrScan.QRType type, int color) {
         checkPermissionRead();
         if (type == QrScan.QRType.TEXT) {
-            setImage(s);
+            setImage(s, color);
             sharePalette(bmShare);
         } else {
             if (type == QrScan.QRType.BAR39) {
                 MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                 try {
                     BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_39, BITMAP_WIDTH, BITMAP_HEIGHT);
-                    Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
+                    Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.ARGB_8888);
                     for (int i = 0; i < BITMAP_WIDTH; i++) {
                         for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
                         }
                     }
                     sharePalette(bitmap);
@@ -296,7 +326,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                     Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
                     for (int i = 0; i < BITMAP_WIDTH; i++) {
                         for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
                         }
                     }
                     sharePalette(bitmap);
@@ -310,7 +340,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                     Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
                     for (int i = 0; i < BITMAP_WIDTH; i++) {
                         for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                            bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
                         }
                     }
                     sharePalette(bitmap);
@@ -322,16 +352,16 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
     }
 
-    private void setImage(String s) {
+    private void setImage(String s, int color) {
         QRCodeWriter writer = new QRCodeWriter();
         try {
             BitMatrix bitMatrix = writer.encode(s, BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
-            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? color : Color.WHITE);
                 }
             }
             bmShare = bmp;
@@ -344,29 +374,29 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
 
     @Override
-    public void onDeleteGenerate(QrGenerate qrGenerate) {
-        QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().deleteQrGenerate(qrGenerate);
-        qrGenerateList.remove(qrGenerate);
-        if (qrGenerateList.size() == 0) {
+    public void onDeleteGenerate(QrGenerate qrGenerate, int i) {
+        if (getListQrHistory().size() == 1) {
             lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
+            rcvGenerateFragmentHistory.setVisibility(View.GONE);
             mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
             mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
             mSelected = 0;
         }
+        QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().deleteQrGenerate(qrGenerate);
+
     }
 
     @Override
     public void onEditGenerate(boolean isEdit) {
-        if (isEdit) {
+        if (!isEdit) {
             edit = true;
-            rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
             imvGenerateEdit.setImageResource(R.drawable.pen_edit_1);
         } else {
-            edit = true;
-            rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
+            edit = false;
             imvGenerateEdit.setImageResource(R.drawable.ic_close);
         }
-        generateHistoryAdapter.setEdit(edit);
+        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), isEdit, this, this);
+        rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
     }
 
     @Override
@@ -387,22 +417,80 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
     @Override
     public void onShowListener(QrGenerate qrGenerate) {
+        mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
         imvGenerateGotoCreate.setVisibility(View.GONE);
         imvGenerateBackground.setVisibility(View.GONE);
         tvGenerateCreate.setVisibility(View.GONE);
         tvGenerateCreateTitle.setVisibility(View.GONE);
-        resultHistoryGenQr.setVisibility(View.VISIBLE);
-        resultHistoryGenQr.setupData(qrGenerate, this);
+        mResultHistoryGen.setVisibility(View.VISIBLE);
+        mResultHistoryGen.setupData(qrGenerate, this);
+
 
     }
 
     @Override
     public void onBackGenerate() {
+
+        isGenMenu = false;
+        imvGenerateGotoCreate.setImageResource(R.drawable.imv_history_plus_history);
+        if (qrGenerateList.size() > 0) {
+            lnlGenQrGotoCreate.setVisibility(View.GONE);
+            rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
+
+        } else {
+            lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
+            nsvGenQrItem.setVisibility(View.GONE);
+        }
         imvGenerateGotoCreate.setVisibility(View.VISIBLE);
         imvGenerateBackground.setVisibility(View.VISIBLE);
         tvGenerateCreate.setVisibility(View.VISIBLE);
         tvGenerateCreateTitle.setVisibility(View.VISIBLE);
-        resultHistoryGenQr.setVisibility(View.GONE);
+        mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
+        mResultHistoryGen.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSaveBackToGenerate() {
+
+        imvGenerateGotoCreate.setImageResource(R.drawable.imv_history_plus_history);
+        isGenMenu = false;
+
+        if (qrGenerateList.size() > 0) {
+            rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
+            lnlGenQrGotoCreate.setVisibility(View.GONE);
+
+        } else {
+            lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
+            rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
+        }
+        mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void onBackItemToGenerate() {
+        mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
+        isGenMenu = false;
+        imvGenerateGotoCreate.setImageResource(R.drawable.imv_history_plus_history);
+        if (qrGenerateList.size() > 0) {
+            rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
+        } else {
+            rcvGenerateFragmentHistory.setVisibility(View.GONE);
+            lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    @Override
+    public void onSaveQr(QrGenerate qrGenerate) {
+        isGenMenu = false;
+        mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
+        imvGenerateGotoCreate.setImageResource(R.drawable.imv_history_plus_history);
+        saveQRGenerate.setVisibility(View.VISIBLE);
+        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), false, this, this);
+        rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
+        lnlGenQrGotoCreate.setVisibility(View.GONE);
+        rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
 
     }
 
@@ -413,16 +501,19 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
             if (intent.getAction().equals(Constant.ACTION_DELETE_MULTIPLE_QRCODE)) {
                 for (int i = 0; i < qrGenerateList.size(); i++) {
                     if (qrGenerateList.get(i).isEdit()) {
-                        onDeleteGenerate(qrGenerateList.get(i));
+                        onDeleteGenerate(qrGenerateList.get(i), i);
                         i--;
                     }
+                }if (qrGenerateList.size()==0){
+                    rcvGenerateFragmentHistory.setVisibility(View.GONE);
+                    lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
                 }
             }
 
             if (intent.getAction().equals(Constant.ACTION_SHARE_MULTIPLE_QRCODE_GEN)) {
                 for (int i = 0; i < qrGenerateList.size(); i++) {
                     if (qrGenerateList.get(i).isEdit()) {
-                        shareMulti(qrGenerateList.get(i).getContent(), qrGenerateList.get(i).getQrType());
+                        shareMulti(qrGenerateList.get(i).getContent(), qrGenerateList.get(i).getQrType(), qrGenerateList.get(i).getColor());
                         i--;
                         mSelected--;
                         if (mSelected == 0) {
@@ -434,9 +525,9 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         }
     }
 
-    private void shareMulti(String s, QrScan.QRType type) {
+    private void shareMulti(String s, QrScan.QRType type, int color) {
         if (type != QrScan.QRType.BAR128 || type != QrScan.QRType.BAR93 || type != QrScan.QRType.BAR39) {
-            setImage(s);
+            setImage(s, color);
             sharePalette(bmShare);
         } else {
             if (type == QrScan.QRType.BAR39) {
@@ -490,4 +581,5 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         mMainActivity.unregisterReceiver(generateReceiver);
         super.onDestroy();
     }
+
 }

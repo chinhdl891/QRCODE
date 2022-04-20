@@ -109,6 +109,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/lnl_historyFragment__gotoScan"
             android:layout_marginStart="20dp"
+            android:paddingBottom="50dp"
+            android:clipToPadding="false"
             android:layout_marginTop="20dp" />
     </RelativeLayout>
 

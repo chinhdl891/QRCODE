@@ -65,7 +65,6 @@ public class SettingFragment extends Fragment {
     private void init(View view) {
         swSettingFragmentVibrate = view.findViewById(R.id.sw_settingFragment_Vibrate);
         swSettingFragmentBeep = view.findViewById(R.id.sw_settingFragment_Beep);
-        swSettingFragmentBarcode = view.findViewById(R.id.sw_settingFragment_Barcode);
         swSettingFragmentHistory = view.findViewById(R.id.sw_settingFragment_His);
     }
 }
