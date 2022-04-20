@@ -231,15 +231,15 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                         if (qrGenerate.getQrType() == QrScan.QRType.EMAIL) {
                             QrEmail qrEmail = new QrEmail();
                             qrEmail.compileEmail(content);
-                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT, qrGenerate.getColor());
                         } else if (qrGenerate.getQrType() == QrScan.QRType.SMS) {
                             QrMess qrMess = new QrMess();
                             qrMess.compileSMS(content);
-                            editGenerateListener.onShareGenerate(qrMess.getShare(), QrScan.QRType.SMS);
+                            editGenerateListener.onShareGenerate(qrMess.getShare(), QrScan.QRType.SMS, qrGenerate.getColor());
                         } else if (qrGenerate.getQrType() == QrScan.QRType.PRODUCT) {
                             QrProduct qrProduct = new QrProduct();
                             qrProduct.compileProduct(qrGenerate.getContent());
-                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT,qrGenerate.getColor());
                         } else if (qrGenerate.getQrType() == QrScan.QRType.WIFI) {
                             QrWifi qrWifi = new QrWifi();
                             StringBuilder stringBuilder = new StringBuilder();
@@ -250,24 +250,24 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                             String contentWifi2 = stringBuilder.toString();
                             String[] contentWifi3 = contentWifi2.split(":");
                             qrWifi.compileWifi(contentWifi, contentWifi3);
-                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT, qrGenerate.getColor());
                         } else if (qrGenerate.getQrType() == QrScan.QRType.PHONE) {
                             QreTelephone qreTelephone = new QreTelephone();
                             qreTelephone.compile(content);
-                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT, qrGenerate.getColor());
                         } else if (qrGenerate.getQrType() == QrScan.QRType.TEXT) {
                             QrText qrText = new QrText();
-                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT, qrGenerate.getColor());
                         } else if (qrGenerate.getQrType() == QrScan.QRType.URL) {
                             QrUrl qrUrl = new QrUrl();
                             qrUrl.compileUrl(content);
-                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT, qrGenerate.getColor());
                         } else if (qrGenerate.getQrType() == QrScan.QRType.BAR39) {
-                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.BAR39);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.BAR39, qrGenerate.getColor());
                         } else if (qrGenerate.getQrType() == QrScan.QRType.BAR93) {
-                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.BAR93);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.BAR93, qrGenerate.getColor());
                         } else if (qrGenerate.getQrType() == QrScan.QRType.BAR128) {
-                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.BAR128);
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.BAR128, qrGenerate.getColor());
                         }
                     }
                 }
@@ -319,7 +319,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
     }
 
     public interface EditGenerateListener {
-        void onShareGenerate(String s, QrScan.QRType type);
+        void onShareGenerate(String s, QrScan.QRType type, int color);
 
         void onDeleteGenerate(QrGenerate qrGenerate, int i);
 

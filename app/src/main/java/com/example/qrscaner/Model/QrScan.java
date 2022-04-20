@@ -34,6 +34,7 @@ public class QrScan implements Serializable {
     private String scanText;
     @ColumnInfo(name = "date")
     private long date;
+
     @Ignore
     private boolean isEdit;
 
@@ -44,6 +45,8 @@ public class QrScan implements Serializable {
         this.scanText = scanText;
         this.date = date;
     }
+
+
 
     public QRType getTypeQR() {
         return typeQR;

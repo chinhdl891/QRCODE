@@ -120,8 +120,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                 }
             });
 
-        }
-        else if (id == 13) {
+        } else if (id == 13) {
             typeQR = QrScan.QRType.PHONE;
             tvGenCategory.setText("Phone");
             LinearLayout lnlContentText = new LinearLayout(mContext);
@@ -173,12 +172,11 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    contentQr =  editable.toString();
+                    contentQr = editable.toString();
                 }
             });
 
-        }
-        else if (id == 13) {
+        } else if (id == 13) {
             typeQR = QrScan.QRType.PHONE;
             tvGenCategory.setText("Phone");
             LinearLayout lnlContentText = new LinearLayout(mContext);
@@ -489,6 +487,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
         switch (view.getId()) {
             case R.id.imv_generate_qr_back:
                 lnlGenContent.removeAllViews();
+                backToGenerate.onBackItemToGenerate();
                 setVisibility(View.GONE);
                 break;
             case R.id.tv_generate_save:
@@ -537,7 +536,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
         }
     }
 
-    ISaveQrGenerate saveQrGenerate;
+    private ISaveQrGenerate saveQrGenerate;
 
     public void setInterface(ISaveQrGenerate saveQrGenerate) {
         this.saveQrGenerate = saveQrGenerate;
@@ -545,5 +544,12 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
 
     public interface ISaveQrGenerate {
         void saveQr(QrGenerate qrGenerate);
+    }
+    public interface IBackToGenerate{
+        void onBackItemToGenerate();
+    }
+    private IBackToGenerate backToGenerate;
+    public void setInterFace(IBackToGenerate backToGenerate){
+        this.backToGenerate = backToGenerate;
     }
 }

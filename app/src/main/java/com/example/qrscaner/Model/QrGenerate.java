@@ -19,6 +19,8 @@ public class QrGenerate {
     private String content;
     @ColumnInfo(name = "qrType")
     private QrScan.QRType qrType;
+    @ColumnInfo(name = "color")
+    private int color;
     @Ignore
     private boolean isEdit;
 
@@ -37,6 +39,13 @@ public class QrGenerate {
         this.date = date;
         this.content = content;
         this.qrType = qrType;
+    }
+
+    public QrGenerate(long date, String content, QrScan.QRType qrType, int color) {
+        this.date = date;
+        this.content = content;
+        this.qrType = qrType;
+        this.color = color;
     }
 
     public QrScan.QRType getQrType() {
@@ -80,5 +89,13 @@ public class QrGenerate {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }
