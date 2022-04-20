@@ -2,6 +2,7 @@ package com.example.qrscaner.view.generate;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -71,6 +72,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
             tvCategoryText.setText("BAR 39");
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtPhone);
@@ -98,6 +100,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             tvCategoryText.setText("BAR93");
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
@@ -131,6 +134,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtPhone);
             lnlGenContent.addView(lnlContentText);
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             edtPhone.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -159,6 +163,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtPhone);
             lnlGenContent.addView(lnlContentText);
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             edtPhone.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -187,6 +192,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtPhone);
             lnlGenContent.addView(lnlContentText);
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             edtPhone.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -280,9 +286,6 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                     contentEmail = edtContent.toString();
                 }
             });
-            //
-            //mailto:chinh@gmail.com?subject=yl@gmail.com&body=Chinh1234567890
-
 
         } else if (id == 15) {
             typeQR = QrScan.QRType.URL;
@@ -317,6 +320,8 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryPhone = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
+
+            edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             tvCategoryPhone.setText("Phone");
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryPhone);
@@ -325,7 +330,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentSMS = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryContentSMS = new TextViewPoppinBold(mContext);
             EditText edtSMS = new EditText(mContext);
-            tvCategoryContentSMS.setText("Phone");
+            tvCategoryContentSMS.setText("Content");
             lnlContentSMS.setOrientation(LinearLayout.VERTICAL);
             lnlContentSMS.addView(tvCategoryContentSMS);
             lnlContentSMS.addView(edtSMS);

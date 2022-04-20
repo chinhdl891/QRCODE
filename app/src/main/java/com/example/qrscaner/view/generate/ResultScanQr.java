@@ -281,7 +281,6 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
             tvResultHistoryDateCreate.setText(dateString);
             tvResultHistoryCategory.setText("QR CODE");
             tvResultHistoryCategoryQR.setText("Phone");
-
             LinearLayout lnlContent = new LinearLayout(mContext);
             lnlContent.setOrientation(LinearLayout.HORIZONTAL);
             TextViewPoppinBold tvContent = new TextViewPoppinBold(mContext);

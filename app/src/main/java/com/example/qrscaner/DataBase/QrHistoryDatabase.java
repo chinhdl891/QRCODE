@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.dao.QrDao;
 
-@Database(entities = {QrScan.class}, version = 1)
+@Database(entities = {QrScan.class}, version = 2)
 public abstract class QrHistoryDatabase extends RoomDatabase {
 
 

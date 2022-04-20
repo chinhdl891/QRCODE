@@ -204,56 +204,7 @@
                     android:background="#E0E0E0" />
             </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginStart="26dp"
 
-                android:layout_marginEnd="26dp"
-                android:paddingTop="5dp">
-
-                <ImageView
-                    android:id="@+id/imv_settingFragment_Barcode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:src="@drawable/barcode" />
-
-                <TextView
-                    android:id="@+id/tv_settingFragment_Barcode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_toRightOf="@+id/imv_settingFragment_Barcode"
-                    android:text="Scan Barcode Automatically"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_settingFragment_Barcode"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_toRightOf="@id/imv_settingFragment_Barcode"
-                    android:hint="Take longer time when scaning" />
-
-                <Switch
-                    android:id="@+id/sw_settingFragment_Barcode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@id/sw_settingFragment_Barcode"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="10dp"
-                    android:background="#E0E0E0" />
-            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"

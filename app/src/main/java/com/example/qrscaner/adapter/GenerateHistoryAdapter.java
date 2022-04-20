@@ -29,14 +29,14 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
     private List<QrGenerate> generateItemList;
     private boolean isEdit;
     private EditGenerateListener editGenerateListener;
-    private ShowData onShowData;
+    private ShowData showData;
 
 
     public GenerateHistoryAdapter(List<QrGenerate> generateItemList, boolean isEdit, EditGenerateListener listener, ShowData onShowDataListener) {
         this.generateItemList = generateItemList;
         this.isEdit = isEdit;
         this.editGenerateListener = listener;
-        this.onShowData = onShowDataListener;
+        this.showData = onShowDataListener;
 
     }
 
@@ -62,9 +62,10 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
 
         }
         holder.cvItemHistoryEdit.setVisibility(View.GONE);
-        if (isEdit) {
-            holder.imvItemEdit.setVisibility(View.GONE);
-        }
+//        if (isEdit) {
+//            holder.imvItemEdit.setVisibility(View.GONE);
+//        }
+
         holder.tvItemHistoryDate.setText(qrGenerate.getStringDate());
         if (position > 0) {
             QrGenerate qrScanUndo = generateItemList.get(position - 1);
@@ -239,7 +240,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                         } else if (qrGenerate.getQrType() == QrScan.QRType.PRODUCT) {
                             QrProduct qrProduct = new QrProduct();
                             qrProduct.compileProduct(qrGenerate.getContent());
-                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT,qrGenerate.getColor());
+                            editGenerateListener.onShareGenerate(qrGenerate.getContent(), QrScan.QRType.TEXT, qrGenerate.getColor());
                         } else if (qrGenerate.getQrType() == QrScan.QRType.WIFI) {
                             QrWifi qrWifi = new QrWifi();
                             StringBuilder stringBuilder = new StringBuilder();
@@ -275,45 +276,44 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             imvItemEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    editGenerateListener.onEditGenerate(isEdit);
+//
+                    editGenerateListener.onEditGenerate(!isEdit);
                 }
             });
             imvItemDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     editGenerateListener.onDeleteGenerate(generateItemList.get(getLayoutPosition()), getLayoutPosition());
-
+                    notifyItemRemoved(getLayoutPosition());
+                    notifyDataSetChanged();
                 }
             });
-            if (isEdit) {
-                cvItemHistoryQr.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        QrGenerate qrGenerate = generateItemList.get(getLayoutPosition());
 
+
+            cvItemHistoryQr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QrGenerate qrGenerate = generateItemList.get(getLayoutPosition());
+                    if (isEdit) {
                         if (!qrGenerate.isEdit()) {
-                            qrGenerate.setEdit(isEdit);
+                            qrGenerate.setEdit(true);
                             ctlItemHistoryQrGenerate.setBackgroundResource(R.drawable.background_boder_selected);
-                            editGenerateListener.onSelectedItem(true);
                             imvItemCheck.setImageResource(R.drawable.ic_check);
-
+                            editGenerateListener.onSelectedItem(true);
                         } else {
-                            editGenerateListener.onSelectedItem(false);
-                            qrGenerate.setEdit(!isEdit);
+                            qrGenerate.setEdit(false);
                             ctlItemHistoryQrGenerate.setBackgroundResource(R.drawable.background_boder_unselect);
                             imvItemCheck.setImageResource(R.drawable.ic_uncheck);
+                            editGenerateListener.onSelectedItem(false);
                         }
-                    }
-                });
-            } else {
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onShowData.onShowListener(generateItemList.get(getLayoutPosition()));
 
+
+                    } else {
+                        showData.onShowListener(qrGenerate);
                     }
-                });
-            }
+                }
+            });
+
 
         }
     }

@@ -1,6 +1,7 @@
 package com.example.qrscaner.view;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.example.qrscaner.adapter.ColorAdapter;
 import com.example.qrscaner.utils.BitMapUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.SelectColor, View.OnClickListener {
@@ -53,6 +55,7 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
         LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mRootView = layoutInflater.inflate(R.layout.save_item_custom, this, true);
         mRcvSaveColor = mRootView.findViewById(R.id.rcv_save__selectColor);
+        tvSaveDateCreate = mRootView.findViewById(R.id.tv_save_date_create);
         imvSaveBarCode = mRootView.findViewById(R.id.imv_save_qr_render);
         imvSaveCateGory = mRootView.findViewById(R.id.imv_save_qr_category);
         imvSaveBack = mRootView.findViewById(R.id.imv_save_back);
@@ -92,7 +95,9 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
         return colorList;
     }
 
-    public void setUpdate(QrGenerate qrGenerate, SaveBackToGenerate saveBackToGenerate , SavaQr savaQr) {
+    public void setUpdate(QrGenerate qrGenerate, SaveBackToGenerate saveBackToGenerate, SavaQr savaQr) {
+        String date = DateFormat.format("dd/MM/yyyy", new Date(qrGenerate.getDate())).toString();
+        tvSaveDateCreate.setText(date);
         type = qrGenerate.getQrType();
         this.saveBackToGenerate = saveBackToGenerate;
         this.savaQr = savaQr;
@@ -102,54 +107,60 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("Text");
             imvSaveCateGory.setImageResource(R.drawable.add_text);
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.RED));
-            imvSaveBarCode.getLayoutParams().height = 100;
-            imvSaveBarCode.getLayoutParams().width = 100;
+            imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.getLayoutParams().width = 300;
+            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
 
 
         } else if (type == QrScan.QRType.PHONE) {
+
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("Phone");
             imvSaveCateGory.setImageResource(R.drawable.add_call);
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
-            imvSaveBarCode.getLayoutParams().width = 300;
             imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.getLayoutParams().width = 300;
+            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+
 
         } else if (type == QrScan.QRType.EMAIL) {
             tvSaveTitleQR.setText("QR CODE");
-            tvSaveCateGoryName.setText("Phone");
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+            tvSaveCateGoryName.setText("Email");
+            imvSaveCateGory.setImageResource(R.drawable.add_email);
             imvSaveBarCode.getLayoutParams().width = 300;
             imvSaveBarCode.getLayoutParams().height = 300;
-            imvSaveCateGory.setImageResource(R.drawable.add_email);
+            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+
         } else if (type == QrScan.QRType.SMS) {
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("SMS");
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
             imvSaveBarCode.getLayoutParams().width = 300;
             imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+
             imvSaveCateGory.setImageResource(R.drawable.add_sms);
 
         } else if (type == QrScan.QRType.WIFI) {
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("WIFI");
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
             imvSaveBarCode.getLayoutParams().width = 300;
             imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+
             imvSaveCateGory.setImageResource(R.drawable.add_wifi);
         } else if (type == QrScan.QRType.URL) {
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("Uri");
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
             imvSaveBarCode.getLayoutParams().width = 300;
             imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
             imvSaveCateGory.setImageResource(R.drawable.add_uri);
         } else if (type == QrScan.QRType.PRODUCT) {
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("Product");
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
             imvSaveBarCode.getLayoutParams().width = 300;
             imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+
             imvSaveCateGory.setImageResource(R.drawable.ic_product);
         } else if (type == QrScan.QRType.BAR39) {
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
@@ -171,7 +182,6 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
             imvSaveBarCode.getLayoutParams().width = 404;
             imvSaveBarCode.getLayoutParams().height = 250;
-
             tvSaveTitleQR.setText("BAR CODE");
             tvSaveCateGoryName.setText("Bar 128");
             imvSaveCateGory.setImageResource(R.drawable.ic_product);
@@ -191,12 +201,12 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
     @Override
     public void onClick(View view) {
         if (view == imvSaveBack || view == tvSaveCancel) {
-            saveBackToGenerate.onSaveBackToGenerate();
-        }
-        else if (view == tvSave){
             setVisibility(View.GONE);
-            QrGenerateDataBase.getInstance(mContext).qrGenerateDao().insertQrGenerate(new QrGenerate(System.currentTimeMillis(),qrContent,type,color));
-            savaQr.onSaveQr(new QrGenerate(System.currentTimeMillis(),qrContent,type,color));
+            saveBackToGenerate.onSaveBackToGenerate();
+        } else if (view == tvSave) {
+            QrGenerateDataBase.getInstance(mContext).qrGenerateDao().insertQrGenerate(new QrGenerate(System.currentTimeMillis(), qrContent, type, color));
+            savaQr.onSaveQr(new QrGenerate(System.currentTimeMillis(), qrContent, type, color));
+            imvSaveBack.performClick();
         }
     }
 
@@ -206,9 +216,10 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
 
 
     }
+
     private SavaQr savaQr;
 
-    public interface SavaQr{
+    public interface SavaQr {
         void onSaveQr(QrGenerate qrGenerate);
     }
 

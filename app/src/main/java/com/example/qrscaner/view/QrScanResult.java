@@ -1,19 +1,20 @@
 package com.example.qrscaner.view;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrGenerate;
 import com.example.qrscaner.Model.QrMess;
@@ -33,12 +33,14 @@ import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
-import com.example.qrscaner.utils.IntentUtils;
-import com.example.qrscaner.utils.QRGContents;
-import com.example.qrscaner.utils.QRGEncoder;
+import com.example.qrscaner.utils.BitMapUtils;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.example.qrscaner.view.generate.ResultScanQr;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Date;
 
 
@@ -48,13 +50,12 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     private Context mContext;
     private ImageView imvQrScanResultRender, imvQrScanResultIconCategory, imvQrScanResultBack;
     private TextView tvQrScanResultCategoryName, tvQrScanResultDate, tvQrScanResultCancel, tvQrScanResultSave;
-    private Bitmap bitmap;
-    private QRGEncoder qrgEncoder;
     private ResultScanQr.BackToGenerate backToGenerate;
 
     private LinearLayout lnlResultInfo;
     private DrawView drawView;
     private QrScan.QRType type;
+    private BitMapUtils bitMapUtils;
 
 
     public QrScanResult(@NonNull Context context) {
@@ -74,17 +75,19 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     private void initView() {
         LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mRootView = layoutInflater.inflate(R.layout.result_scan_layout, this, true);
+
         imvQrScanResultRender = mRootView.findViewById(R.id.imv_result_qr_render);
         imvQrScanResultIconCategory = mRootView.findViewById(R.id.imv_result_qr_category);
         tvQrScanResultCategoryName = mRootView.findViewById(R.id.tv_result_qr_category_name);
-        tvQrScanResultDate = mRootView.findViewById(R.id.tv_result_qr_date_create);
+        tvQrScanResultDate = mRootView.findViewById(R.id.tv_save_date_create);
         lnlResultInfo = mRootView.findViewById(R.id.ll_result_qr_string);
         imvQrScanResultBack = mRootView.findViewById(R.id.imv_scanResult_back);
         tvQrScanResultCancel = mRootView.findViewById(R.id.tv_scanResult_cancel);
         tvQrScanResultSave = findViewById(R.id.tv_scanResult_save);
         imvQrScanResultBack.setOnClickListener(this);
         tvQrScanResultCancel.setOnClickListener(this);
-//        tvQrScanResultSave.setOnClickListener(this);
+        bitMapUtils = new BitMapUtils();
+        tvQrScanResultSave.setOnClickListener(this);
 //        imvQrScanResultIconCategory.setOnClickListener(this);
         mRootView.setOnTouchListener(new OnTouchListener() {
             @Override
@@ -98,30 +101,26 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     }
 
 
-    public void setupData(QrGenerate qrScan, ResultScanQr.BackToGenerate backToGenerate) {
+    public void setupData(QrGenerate qrGenerate, ResultScanQr.BackToGenerate backToGenerate) {
         this.backToGenerate = backToGenerate;
         mqrScan = new QrScan();
-        mqrScan.setScanText(qrScan.getContent());
-        mqrScan.setTypeQR(qrScan.getQrType());
-        mqrScan.setDate(qrScan.getDate());
+        mqrScan.setScanText(qrGenerate.getContent());
+        mqrScan.setTypeQR(qrGenerate.getQrType());
+        mqrScan.setDate(qrGenerate.getDate());
         String s = mqrScan.getScanText();
-
         String[] content = s.split(":");
-        setImage(s);
-
         if (content[0].equals("SMSTO")) {
             QrMess qrMess = new QrMess();
             qrMess.compileSMS(content);
+            setContentMess(qrGenerate.getDate(), qrMess);
+            imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
 
-            setContentMess(qrScan.getDate(), qrMess);
-
-        } else if (content[0].equals("Error")) {
-            setContentError();
 
         } else if (content[0].equals("http") || content[0].equals("https")) {
             QrUrl qrUrl = new QrUrl();
             qrUrl.compileUrl(content);
-            setContentUrl(qrScan.getDate(), qrUrl);
+            setContentUrl(qrGenerate.getDate(), qrUrl);
+            imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
         } else if (content[0].equals("WIFI")) {
             StringBuilder stringBuilder = new StringBuilder();
             String[] contentWifi = s.split(";");
@@ -132,7 +131,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
             String[] contentWifi3 = contentWifi2.split(":");
             QrWifi qrWifi = new QrWifi();
             qrWifi.compileWifi(contentWifi, contentWifi3);
-            setContentWifi(qrScan.getDate(), qrWifi);
+            setContentWifi(qrGenerate.getDate(), qrWifi);
+            imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
         } else if (content[0].equals("MATMSG")) {
             QrEmail qrEmail = new QrEmail();
             StringBuilder stringBuilder = new StringBuilder();
@@ -141,22 +141,33 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
             }
 
             qrEmail.compileEmail(content);
-            setContentMail(qrScan.getDate(), qrEmail);
-
+            setContentMail(qrGenerate.getDate(), qrEmail);
+            imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
         } else if (content[0].equals("tel")) {
             QreTelephone qreTelephone = new QreTelephone();
             qreTelephone.compile(content);
-            setContentTel(qrScan.getDate(), qreTelephone);
-
+            setContentTel(qrGenerate.getDate(), qreTelephone);
+            imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
         } else {
-            if (checkIsProduct(qrScan.getContent())) {
+            if (checkIsProduct(qrGenerate.getContent())) {
                 QrProduct qrProduct = new QrProduct();
-                qrProduct.setProduct(Long.parseLong(qrScan.getContent()));
-                setContentProduct(qrScan.getDate(), qrProduct);
+                qrProduct.setProduct(Long.parseLong(qrGenerate.getContent()));
+                setContentProduct(qrGenerate.getDate(), qrProduct);
+                if (qrGenerate.getQrType() == QrScan.QRType.BAR39) {
+                    imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.BAR39, qrGenerate.getContent(), qrGenerate.getColor()));
+                } else if (qrGenerate.getQrType() == QrScan.QRType.BAR93) {
+                    imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.BAR39, qrGenerate.getContent(), qrGenerate.getColor()));
+                } else if (qrGenerate.getQrType() == QrScan.QRType.BAR128) {
+                    imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.BAR128, qrGenerate.getContent(), qrGenerate.getColor()));
+                }
+
+
             } else {
+                imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
                 QrText qrText = new QrText();
                 qrText.setText(s);
-                setContentText(qrScan.getDate(), qrText);
+                setContentText(qrGenerate.getDate(), qrText);
+
             }
 
 
@@ -417,25 +428,6 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 
     }
 
-    private void setImage(String s) {
-        WindowManager manager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        Display display = manager.getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
-        int width = point.x;
-        int height = point.y;
-        int smallerDimension = Math.min(width, height);
-        smallerDimension = smallerDimension * 3 / 4;
-        qrgEncoder = new QRGEncoder(
-                s, null,
-                QRGContents.Type.TEXT,
-                smallerDimension);
-        qrgEncoder.setColorBlack(Color.BLACK);
-        qrgEncoder.setColorWhite(Color.WHITE);
-        bitmap = qrgEncoder.getBitmap();
-        imvQrScanResultRender.setImageBitmap(bitmap);
-
-    }
 
     @Override
     public void onClick(View view) {
@@ -444,12 +436,15 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
             case R.id.tv_scanResult_cancel:
                 setVisibility(GONE);
                 lnlResultInfo.removeAllViews();
-               backToGenerate.onBackGenerate();
+                backToGenerate.onBackGenerate();
                 break;
             case R.id.tv_scanResult_save:
                 setVisibility(View.GONE);
-                lnlResultInfo.removeAllViews();
-                saveQrScanListener.saveQr(mqrScan);
+                BitmapDrawable drawable = (BitmapDrawable) imvQrScanResultRender.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                saveImage(bitmap);
+                imvQrScanResultBack.performClick();
+
                 break;
 
         }
@@ -472,6 +467,61 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         this.callbackCancelResult = callbackCancelResult;
     }
 
+    private void saveImage(Bitmap bitmap) {
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            ContentValues values = contentValues();
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/" + mContext.getString(R.string.app_name));
+            values.put(MediaStore.Images.Media.IS_PENDING, true);
 
+            Uri uri = mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            if (uri != null) {
+                try {
+                    saveImageToStream(bitmap, mContext.getContentResolver().openOutputStream(uri));
+                    values.put(MediaStore.Images.Media.IS_PENDING, false);
+                    mContext.getContentResolver().update(uri, values, null, null);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
+            }
+        } else {
+            File directory = new File(Environment.getExternalStorageDirectory().toString() + '/' + mContext.getString(R.string.app_name));
+
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            String fileName = System.currentTimeMillis() + ".png";
+            File file = new File(directory, fileName);
+            try {
+                saveImageToStream(bitmap, new FileOutputStream(file));
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+                mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private ContentValues contentValues() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+        }
+        return values;
+    }
+
+    private void saveImageToStream(Bitmap bitmap, OutputStream outputStream) {
+        if (outputStream != null) {
+            try {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                outputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

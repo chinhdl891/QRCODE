@@ -381,7 +381,6 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
             backToHistory.onBackListener();
         }
         if (view == tvResultHistoryOptionOne) {
-
             IntentUtils intentUtils = new IntentUtils();
             intentUtils.IntentAction(mContext, mqrScan.getScanText(), mqrScan.getTypeQR());
         }
