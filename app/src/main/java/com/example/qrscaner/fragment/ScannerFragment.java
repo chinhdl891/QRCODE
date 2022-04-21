@@ -188,7 +188,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
             mediaPlayer.start();
         }
         processQr(result.getText());
-        zXingScannerView.stopCameraPreview();
+//        zXingScannerView.stopCameraPreview();
     }
 
     @Override
@@ -217,25 +217,26 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     }
 
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        zXingScannerView.stopCameraPreview();
-        zXingScannerView.stopCamera();
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         zXingScannerView.stopCameraPreview();
-        zXingScannerView.stopCamera();
+
     }
 
     @Override
     public void onStart() {
+        super.onStart();
         zXingScannerView.startCamera();
         zXingScannerView.setResultHandler(this);
-        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        zXingScannerView.stopCameraPreview();
+
     }
 
 
