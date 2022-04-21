@@ -112,6 +112,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
             if (!isEditable) {
                 imvHistoryEdit.setImageResource(R.drawable.ic_close);
                 isEditable = true;
+
+
             } else {
                 imvHistoryEdit.setImageResource(R.drawable.pen_edit_1);
                 isEditable = false;
@@ -186,6 +188,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
 
     @Override
     public void ShowListener(QrScan qrScan) {
+        mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
         rcvHistoryScan.setVisibility(View.GONE);
         rltHistoryFragmentUp.setVisibility(View.GONE);
         rltHistoryFragmentBelow.setVisibility(View.GONE);
@@ -196,7 +199,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
 
     @Override
     public void onBackListener() {
-
+        mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
         rcvHistoryScan.setVisibility(View.VISIBLE);
         rltHistoryFragmentUp.setVisibility(View.VISIBLE);
         rltHistoryFragmentBelow.setVisibility(View.VISIBLE);

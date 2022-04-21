@@ -1,5 +1,6 @@
 package com.example.qrscaner.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,14 +58,16 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
         QrGenerate qrGenerate = generateItemList.get(position);
         if (!isEdit) {
             holder.imvItemCheck.setVisibility(View.GONE);
+            holder.ctlItemHistoryQrGenerate.setBackgroundResource(R.drawable.background_boder_unselect);
+
         } else {
             holder.imvItemCheck.setVisibility(View.VISIBLE);
+            if (!qrGenerate.isEdit()){
+                holder.imvItemCheck.setImageResource(R.drawable.ic_uncheck);
+            }
 
         }
         holder.cvItemHistoryEdit.setVisibility(View.GONE);
-//        if (isEdit) {
-//            holder.imvItemEdit.setVisibility(View.GONE);
-//        }
 
         holder.tvItemHistoryDate.setText(qrGenerate.getStringDate());
         if (position > 0) {
@@ -276,7 +279,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             imvItemEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//
+
                     editGenerateListener.onEditGenerate(!isEdit);
                 }
             });
@@ -307,12 +310,13 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
                             editGenerateListener.onSelectedItem(false);
                         }
 
-
                     } else {
                         showData.onShowListener(qrGenerate);
+
                     }
                 }
             });
+
 
 
         }

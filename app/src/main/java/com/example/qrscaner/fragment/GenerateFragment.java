@@ -394,6 +394,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         } else {
             edit = false;
             imvGenerateEdit.setImageResource(R.drawable.ic_close);
+
         }
         generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), isEdit, this, this);
         rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);

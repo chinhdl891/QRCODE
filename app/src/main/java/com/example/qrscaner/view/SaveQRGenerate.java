@@ -103,7 +103,6 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
         this.savaQr = savaQr;
         qrContent = qrGenerate.getContent();
         if (type == QrScan.QRType.TEXT) {
-
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("Text");
             imvSaveCateGory.setImageResource(R.drawable.add_text);

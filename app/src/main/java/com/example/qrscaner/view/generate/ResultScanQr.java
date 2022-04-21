@@ -56,7 +56,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
     private TextView tvResultHistoryCategoryQR, tvResultHistoryDateCreate, tvResultHistoryCategory, tvResultHistoryShare, tvResultHistoryOptionOne;
     private LinearLayout lnlResultHistoryContent;
     private BackToScan backToScan;
-    private QrGenerate mQrGenerate;
+
     private QrScan qrScan;
     private String[] content;
     private String qrContent;
@@ -161,7 +161,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
             }
 
         }
-        QrHistoryDatabase.getInstance(mContext).qrDao().insertQr(new QrScan(type,qrContent,System.currentTimeMillis()));
+        QrHistoryDatabase.getInstance(mContext).qrDao().insertQr(new QrScan(type, qrContent, System.currentTimeMillis()));
 
     }
 
@@ -408,7 +408,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
             backToScan.onBackScan();
             lnlResultHistoryContent.removeAllViews();
         } else if (view == tvResultHistoryShare) {
-            ShareUtils.shareGenQR(mContext, mQrGenerate);
+            ShareUtils.shareQR(mContext, qrScan);
         } else if (view == tvResultHistoryOptionOne) {
             IntentUtils intentUtils = new IntentUtils();
             intentUtils.IntentAction(mContext, qrContent, type);
