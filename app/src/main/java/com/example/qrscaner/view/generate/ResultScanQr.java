@@ -198,7 +198,6 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(300, 300);
         imvError.setLayoutParams(params);
         lnlResultHistoryContent.setGravity(Gravity.CENTER);
-
         lnlResultHistoryContent.addView(imvError);
 
     }
@@ -241,7 +240,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         {
 
             lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-            imvResultHistoryCategory.setImageResource(R.drawable.add_text);
+            imvResultHistoryCategory.setImageResource(R.drawable.add_uri);
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
             tvResultHistoryDateCreate.setText(dateString);
             tvResultHistoryCategory.setText("QR CODE");
@@ -382,6 +381,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
 
     private void setContentText(long date, QrText qrText) {
         lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
+
         imvResultHistoryCategory.setImageResource(R.drawable.add_text);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvResultHistoryDateCreate.setText(dateString);
@@ -401,6 +401,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         lnlContent.addView(tvContentText);
         lnlResultHistoryContent.addView(lnlContent);
         tvResultHistoryOptionOne.setText("Copy");
+        imvResultHistoryCategory.setVisibility(VISIBLE);
     }
 
     private void setContentMess(long date, QrMess qrMess) {

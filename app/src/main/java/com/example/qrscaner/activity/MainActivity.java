@@ -229,10 +229,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (fragmentManager.getFragments().size() > 1) {
             tag = fragmentManager.getFragments().remove(fragmentManager.getFragments().size() - 2).getTag();
+            if (bottomNavigationView.getVisibility()==View.GONE||bottomNavigationView.getVisibility()==View.INVISIBLE){
+                bottomNavigationView.setVisibility(View.VISIBLE);
+
+            }
             setIdBottom(tag);
 
             super.onBackPressed();
         } else {
+
             if (time + TIME_WAIT > System.currentTimeMillis()) {
                 System.exit(0);
             } else {

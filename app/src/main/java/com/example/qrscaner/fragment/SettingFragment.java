@@ -37,7 +37,6 @@ public class SettingFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    MyDataLocal.setBeep(false);
                     swSettingFragmentBeep.setChecked(MyDataLocal.getBeep());
                 }
                 MyDataLocal.setVibrate(b);
@@ -47,7 +46,6 @@ public class SettingFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    MyDataLocal.setVibrate(false);
                     swSettingFragmentVibrate.setChecked(MyDataLocal.getVibrate());
                 }
                 MyDataLocal.setBeep(b);

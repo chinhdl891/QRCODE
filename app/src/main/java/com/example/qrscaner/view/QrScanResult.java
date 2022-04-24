@@ -34,6 +34,7 @@ import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
 import com.example.qrscaner.utils.BitMapUtils;
+import com.example.qrscaner.utils.ShareUtils;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.example.qrscaner.view.generate.ResultScanQr;
 
@@ -49,7 +50,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     private View mRootView;
     private Context mContext;
     private ImageView imvQrScanResultRender, imvQrScanResultIconCategory, imvQrScanResultBack;
-    private TextView tvQrScanResultCategoryName, tvQrScanResultDate, tvQrScanResultCancel, tvQrScanResultSave;
+    private TextView tvQrScanResultCategoryName, tvQrScanResultDate, tvQrScanResultCancel, tvQrScanResultShare;
     private ResultScanQr.BackToGenerate backToGenerate;
 
     private LinearLayout lnlResultInfo;
@@ -83,12 +84,13 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         lnlResultInfo = mRootView.findViewById(R.id.ll_result_qr_string);
         imvQrScanResultBack = mRootView.findViewById(R.id.imv_scanResult_back);
         tvQrScanResultCancel = mRootView.findViewById(R.id.tv_scanResult_cancel);
-        tvQrScanResultSave = findViewById(R.id.tv_scanResult_save);
+        tvQrScanResultShare = findViewById(R.id.tv_scanResult_save);
         imvQrScanResultBack.setOnClickListener(this);
         tvQrScanResultCancel.setOnClickListener(this);
         bitMapUtils = new BitMapUtils();
-        tvQrScanResultSave.setOnClickListener(this);
-//        imvQrScanResultIconCategory.setOnClickListener(this);
+        tvQrScanResultShare.setOnClickListener(this);
+
+
         mRootView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -442,7 +444,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
                 setVisibility(View.GONE);
                 BitmapDrawable drawable = (BitmapDrawable) imvQrScanResultRender.getDrawable();
                 Bitmap bitmap = drawable.getBitmap();
-                saveImage(bitmap);
+//                saveImage(bitmap);
+                ShareUtils.sharePalette(bitmap,mContext);
                 imvQrScanResultBack.performClick();
 
                 break;

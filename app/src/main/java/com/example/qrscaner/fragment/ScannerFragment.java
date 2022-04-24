@@ -53,7 +53,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 
 public class ScannerFragment extends Fragment implements ZXingScannerView.ResultHandler, ResultScanQr.BackToScan {
-    public ZXingScannerView zXingScannerView;
+    public static ZXingScannerView zXingScannerView;
 
     private SendData sendData;
     private String strImgFromPhoto, mCameraId;
@@ -73,7 +73,8 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
 
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
         init(view);
-        zXingScannerView.setResultHandler(this);
+
+        resumeCamera();
 
         imvScanFragmentSwitchFlash.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,14 +85,15 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         imvScanFragmentOpenCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                zXingScannerView.startCamera();
 
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity()
                             , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
                 } else {
+
                     selectImage();
                 }
+
             }
         });
 
@@ -121,6 +123,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     }
 
     private void selectImage() {
+        zXingScannerView.stopCameraPreview();
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Select Image"), 100);
@@ -142,6 +145,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             Uri uri = data.getData();
             try {
+                resumeCamera();
                 Bitmap bMap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
                 int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
                 bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(), bMap.getHeight());
@@ -160,7 +164,6 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     }
 
     private void processQr(String s) {
-
         QrScan qrScan = new QrScan();
         qrScan.setScanText(s);
         qrScan.setDate();
@@ -188,8 +191,9 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
             mediaPlayer.start();
         }
         processQr(result.getText());
-//        zXingScannerView.stopCameraPreview();
+
     }
+
 
     @Override
     public void onResume() {
@@ -197,12 +201,11 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         resumeCamera();
     }
 
+
     @Override
     public void onPause() {
         super.onPause();
-        if (zXingScannerView != null) {
-            zXingScannerView.stopCameraPreview();
-        }
+        zXingScannerView.stopCameraPreview();
     }
 
     @Override
@@ -211,39 +214,26 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         sendData = ((SendData) context);
     }
 
+
     public void resumeCamera() {
         zXingScannerView.startCamera();
         zXingScannerView.setResultHandler(this);
     }
 
 
-
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         zXingScannerView.stopCameraPreview();
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        zXingScannerView.startCamera();
-        zXingScannerView.setResultHandler(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        zXingScannerView.stopCameraPreview();
+        zXingScannerView.stopCamera();
+        ;
 
     }
 
 
     @Override
     public void onBackScan() {
-        zXingScannerView.startCamera();
-        zXingScannerView.setResultHandler(this);
+        resumeCamera();
         lnlScanFragmentZoom.setVisibility(View.VISIBLE);
         cvScanFragmentMenu.setVisibility(View.VISIBLE);
         zXingScannerView.setVisibility(View.VISIBLE);

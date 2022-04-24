@@ -2,6 +2,9 @@ package com.example.qrscaner.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrGenerate;
@@ -123,5 +126,16 @@ public class ShareUtils {
         intentShare.setType("text/plain");
         intentShare.putExtra(Intent.EXTRA_TEXT, shareContent);
         context.startActivity(intentShare);
+    }
+
+    public static void sharePalette(Bitmap bitmap,Context context) {
+
+        String bitmapPath = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "palette", "share palette");
+        Uri bitmapUri = Uri.parse(bitmapPath);
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/png");
+        intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+        context.startActivity(Intent.createChooser(intent, "Share"));
     }
 }
