@@ -15,10 +15,10 @@ public class BitMapUtils {
 
     private static final int BITMAP_WIDTH = 512;
     private static final int BITMAP_HEIGHT = 512;
-    private Bitmap bitmap;
 
-    public  Bitmap bitmapQR(QrScan.QRType type, String s, int color) {
 
+    public static Bitmap bitmapQR(QrScan.QRType type, String s, int color) {
+          Bitmap bitmap = null;
         if (type == QrScan.QRType.BAR39) {
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
             try {

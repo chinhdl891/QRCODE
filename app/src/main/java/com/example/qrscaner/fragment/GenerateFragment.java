@@ -1,5 +1,7 @@
 package com.example.qrscaner.fragment;
 
+import static com.example.qrscaner.utils.ShareUtils.sharePalette;
+
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -236,31 +238,14 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     public void saveQr(QrGenerate qrGenerate) {
 
         checkPermissionWrite();
+        mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
         saveQRGenerate.setUpdate(qrGenerate, this, this);
         mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
         saveQRGenerate.setVisibility(View.VISIBLE);
-
-
-//        QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().insertQrGenerate(qrGenerate);
-//        lnlGenQrGotoCreate.setVisibility(View.GONE);
-//        rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
-//        nsvGenQrItem.setVisibility(View.GONE);
-//        generateHistoryAdapter = new GenerateHistoryAdapter(getListQrHistory(), edit, this, this);
-//        rcvGenerateFragmentHistory.setAdapter(generateHistoryAdapter);
-
-
+        
     }
 
 
-    private void sharePalette(Bitmap bitmap) {
-
-        String bitmapPath = MediaStore.Images.Media.insertImage(mMainActivity.getContentResolver(), bitmap, "" + System.currentTimeMillis(), null);
-        Uri bitmapUri = Uri.parse(bitmapPath);
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("image/png");
-        intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
-        startActivity(Intent.createChooser(intent, "Share"));
-    }
 
 
     private void checkPermissionWrite() {
@@ -303,7 +288,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         checkPermissionRead();
         if (type == QrScan.QRType.TEXT) {
             setImage(s, color);
-            sharePalette(bmShare);
+            sharePalette(getActivity(),bmShare);
         } else {
             if (type == QrScan.QRType.BAR39) {
                 MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
@@ -315,7 +300,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                             bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
                         }
                     }
-                    sharePalette(bitmap);
+                    sharePalette(getActivity(),bitmap);
                 } catch (Exception e) {
 
                 }
@@ -329,7 +314,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                             bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
                         }
                     }
-                    sharePalette(bitmap);
+                    sharePalette(getActivity(),bitmap);
                 } catch (Exception e) {
 
                 }
@@ -343,7 +328,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                             bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
                         }
                     }
-                    sharePalette(bitmap);
+                     sharePalette(getActivity(),bitmap);
                 } catch (Exception e) {
 
                 }
@@ -500,12 +485,20 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constant.ACTION_DELETE_MULTIPLE_QRCODE)) {
-                for (int i = 0; i < qrGenerateList.size(); i++) {
-                    if (qrGenerateList.get(i).isEdit()) {
-                        onDeleteGenerate(qrGenerateList.get(i), i);
-                        i--;
+
+                for (QrGenerate qrGenerate : qrGenerateList) {
+                    if (qrGenerate.isEdit()) {
+                        QrGenerateDataBase.getInstance(getActivity()).qrGenerateDao().deleteQrGenerate(qrGenerate);
                     }
-                }if (qrGenerateList.size()==0){
+
+                }
+
+                generateHistoryAdapter.setGenerateItemList(getListQrHistory());
+                mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);
+                mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
+
+                if (qrGenerateList.size() == 0) {
+                    imvGenerateEdit.setImageResource(R.drawable.pen_edit_1);
                     rcvGenerateFragmentHistory.setVisibility(View.GONE);
                     lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
                 }
@@ -529,7 +522,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     private void shareMulti(String s, QrScan.QRType type, int color) {
         if (type != QrScan.QRType.BAR128 || type != QrScan.QRType.BAR93 || type != QrScan.QRType.BAR39) {
             setImage(s, color);
-            sharePalette(bmShare);
+            sharePalette(getActivity(),bmShare);
         } else {
             if (type == QrScan.QRType.BAR39) {
                 MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
@@ -541,7 +534,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                             bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
                         }
                     }
-                    sharePalette(bitmap);
+                    sharePalette(getActivity(),bitmap);
                 } catch (Exception e) {
 
                 }
@@ -555,7 +548,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                             bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
                         }
                     }
-                    sharePalette(bitmap);
+                    sharePalette(getActivity(),bitmap);
                 } catch (Exception e) {
 
                 }
@@ -569,7 +562,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                             bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
                         }
                     }
-                    sharePalette(bitmap);
+                     sharePalette(getActivity(),bitmap);
                 } catch (Exception e) {
 
                 }

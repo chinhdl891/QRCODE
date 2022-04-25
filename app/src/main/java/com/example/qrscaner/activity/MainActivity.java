@@ -233,8 +233,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bottomNavigationView.setVisibility(View.VISIBLE);
 
             }
-            setIdBottom(tag);
 
+            setIdBottom(tag);
             super.onBackPressed();
         } else {
 
@@ -271,6 +271,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ScannerFragment.zXingScannerView.stopCameraPreview();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ScannerFragment.zXingScannerView.stopCamera();
+    }
+
 
 
 }

@@ -15,11 +15,13 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,7 +31,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
@@ -46,6 +47,8 @@ import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Reader;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
+import com.journeyapps.barcodescanner.camera.CameraConfigurationUtils;
+import com.journeyapps.barcodescanner.camera.CameraParametersCallback;
 
 import java.io.IOException;
 
@@ -58,7 +61,6 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     private SendData sendData;
     private String strImgFromPhoto, mCameraId;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
-    private CameraManager camera;
     private ImageView imvScanFragmentOpenCam, imvScanFragmentSwitchFlash;
     private boolean isFlash;
     private Vibrator vibrator;
@@ -66,6 +68,8 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     private LinearLayout lnlScanFragmentZoom;
     private CardView cvScanFragmentMenu;
     private MainActivity mMainActivity;
+    private SeekBar mSkbScannerFragmentZoom;
+
 
 
     @Override
@@ -73,8 +77,8 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
 
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
         init(view);
-
         resumeCamera();
+        zXingScannerView.setAutoFocus(true);
 
         imvScanFragmentSwitchFlash.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +94,6 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
                     ActivityCompat.requestPermissions(getActivity()
                             , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
                 } else {
-
                     selectImage();
                 }
 
@@ -109,6 +112,8 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         lnlScanFragmentZoom = view.findViewById(R.id.lnl_scanFragment_zoom);
         cvScanFragmentMenu = view.findViewById(R.id.cv_fragment_scanner_menu);
         mMainActivity = (MainActivity) getActivity();
+
+
     }
 
 
@@ -215,9 +220,11 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     }
 
 
-    public void resumeCamera() {
+    public  void resumeCamera() {
+
         zXingScannerView.startCamera();
         zXingScannerView.setResultHandler(this);
+
     }
 
 
@@ -225,14 +232,14 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     public void onDestroyView() {
         super.onDestroyView();
         zXingScannerView.stopCameraPreview();
-        zXingScannerView.stopCamera();
-        ;
+//        zXingScannerView.stopCamera();
 
     }
 
 
     @Override
     public void onBackScan() {
+        zXingScannerView.setAutoFocus(true);
         resumeCamera();
         lnlScanFragmentZoom.setVisibility(View.VISIBLE);
         cvScanFragmentMenu.setVisibility(View.VISIBLE);

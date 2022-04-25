@@ -41,6 +41,11 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
 
     }
 
+    public void setGenerateItemList(List<QrGenerate> generateItemList) {
+        this.generateItemList = generateItemList;
+        notifyDataSetChanged();
+    }
+
     public void setEdit(boolean edit) {
         isEdit = edit;
         notifyDataSetChanged();
