@@ -41,9 +41,11 @@
         app:srcCompat="@drawable/background_dialog" />
 
     <LinearLayout
-
+        android:id="@+id/lnl_resultScan__action"
         android:layout_width="296dp"
         android:layout_height="50dp"
+        android:layout_marginStart="-3dp"
+        android:layout_marginEnd="-3dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="10.5"
@@ -52,7 +54,6 @@
         app:layout_constraintStart_toStartOf="@+id/imv_result_history_alert">
 
         <TextView
-
             android:id="@+id/tv_scanResult_optionOne"
             android:layout_width="0dp"
             android:layout_height="50dp"
@@ -96,13 +97,13 @@
         app:srcCompat="@drawable/add_email" />
 
     <TextView
-        android:textStyle="bold"
         android:id="@+id/tv_result_history_qr__categoryName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:text="Email"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/imv_result_history_qr__category"
         app:layout_constraintTop_toTopOf="@+id/imv_result_history_alert" />
 
@@ -126,18 +127,18 @@
         app:layout_constraintEnd_toEndOf="@+id/imv_result_history_alert"
         app:layout_constraintStart_toStartOf="@+id/imv_result_history_alert"
         app:layout_constraintTop_toBottomOf="@+id/tv_result_history_qr__dateCreate">
+
         <LinearLayout
-            android:layout_marginTop="10dp"
-            android:padding="10dp"
-            android:orientation="vertical"
             android:id="@+id/lnl_result_history__contentHistory"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:padding="10dp">
 
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

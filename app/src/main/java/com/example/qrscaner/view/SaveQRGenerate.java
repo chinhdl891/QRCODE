@@ -1,6 +1,14 @@
 package com.example.qrscaner.view;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -19,14 +27,22 @@ import com.example.qrscaner.Model.Color;
 import com.example.qrscaner.Model.QrGenerate;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
+import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.adapter.ColorAdapter;
 import com.example.qrscaner.utils.BitMapUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.SelectColor, View.OnClickListener {
+    private static final String IMAGES_FOLDER_NAME = "QR";
     private Context mContext;
     private View mRootView;
     private RecyclerView mRcvSaveColor;
@@ -38,6 +54,7 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
     private String qrContent;
     private BitMapUtils bitMapUtils;
     private SaveBackToGenerate saveBackToGenerate;
+    private boolean isSelect;
 
     public SaveQRGenerate(@NonNull Context context) {
         super(context);
@@ -103,12 +120,12 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
         this.savaQr = savaQr;
         qrContent = qrGenerate.getContent();
         if (type == QrScan.QRType.TEXT) {
-
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("Text");
             imvSaveCateGory.setImageResource(R.drawable.add_text);
-            imvSaveBarCode.getLayoutParams().height = 300;
-            imvSaveBarCode.getLayoutParams().width = 300;
+            
+            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
+            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
 
 
@@ -117,8 +134,8 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("Phone");
             imvSaveCateGory.setImageResource(R.drawable.add_call);
-            imvSaveBarCode.getLayoutParams().height = 300;
-            imvSaveBarCode.getLayoutParams().width = 300;
+            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
+            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
 
 
@@ -126,15 +143,15 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("Email");
             imvSaveCateGory.setImageResource(R.drawable.add_email);
-            imvSaveBarCode.getLayoutParams().width = 300;
-            imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
+            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
 
         } else if (type == QrScan.QRType.SMS) {
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("SMS");
-            imvSaveBarCode.getLayoutParams().width = 300;
-            imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
+            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
 
             imvSaveCateGory.setImageResource(R.drawable.add_sms);
@@ -142,46 +159,46 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
         } else if (type == QrScan.QRType.WIFI) {
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("WIFI");
-            imvSaveBarCode.getLayoutParams().width = 300;
-            imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
+            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
 
             imvSaveCateGory.setImageResource(R.drawable.add_wifi);
         } else if (type == QrScan.QRType.URL) {
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("Uri");
-            imvSaveBarCode.getLayoutParams().width = 300;
-            imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
+            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
             imvSaveCateGory.setImageResource(R.drawable.add_uri);
         } else if (type == QrScan.QRType.PRODUCT) {
             tvSaveTitleQR.setText("QR CODE");
             tvSaveCateGoryName.setText("Product");
-            imvSaveBarCode.getLayoutParams().width = 300;
-            imvSaveBarCode.getLayoutParams().height = 300;
+            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
+            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
 
             imvSaveCateGory.setImageResource(R.drawable.ic_product);
         } else if (type == QrScan.QRType.BAR39) {
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
-            imvSaveBarCode.getLayoutParams().width = 404;
-            imvSaveBarCode.getLayoutParams().height = 250;
+            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.68);
+            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.35);
             tvSaveTitleQR.setText("BAR CODE");
             tvSaveCateGoryName.setText("Bar 39");
             imvSaveCateGory.setImageResource(R.drawable.ic_product);
 
         } else if (type == QrScan.QRType.BAR93) {
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
-            imvSaveBarCode.getLayoutParams().width = 404;
-            imvSaveBarCode.getLayoutParams().height = 250;
+            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.68);
+            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.35);
             tvSaveTitleQR.setText("BAR CODE");
             tvSaveCateGoryName.setText("Bar 93");
             imvSaveCateGory.setImageResource(R.drawable.ic_product);
 
         } else if (type == QrScan.QRType.BAR128) {
             imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
-            imvSaveBarCode.getLayoutParams().width = 404;
-            imvSaveBarCode.getLayoutParams().height = 250;
+            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.68);
+            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.35);
             tvSaveTitleQR.setText("BAR CODE");
             tvSaveCateGoryName.setText("Bar 128");
             imvSaveCateGory.setImageResource(R.drawable.ic_product);
@@ -206,8 +223,53 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
         } else if (view == tvSave) {
             QrGenerateDataBase.getInstance(mContext).qrGenerateDao().insertQrGenerate(new QrGenerate(System.currentTimeMillis(), qrContent, type, color));
             savaQr.onSaveQr(new QrGenerate(System.currentTimeMillis(), qrContent, type, color));
+            saveImage(BitMapUtils.bitmapQR(type, qrContent, color));
             imvSaveBack.performClick();
         }
+    }
+
+    private void saveImage(Bitmap bitmapQR) {
+        OutputStream fos = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ContentResolver resolver = mContext.getContentResolver();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis() + "");
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png");
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "DCIM/" + IMAGES_FOLDER_NAME);
+            Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            try {
+                fos = resolver.openOutputStream(imageUri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            String imagesDir = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DCIM).toString() + File.separator + IMAGES_FOLDER_NAME;
+
+            File file = new File(imagesDir);
+
+            if (!file.exists()) {
+                file.mkdir();
+            }
+
+            File image = new File(imagesDir, System.currentTimeMillis() + ".png");
+            try {
+                fos = new FileOutputStream(image);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        try {
+            bitmapQR.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public interface SaveBackToGenerate {

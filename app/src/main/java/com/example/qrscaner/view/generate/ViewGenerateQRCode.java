@@ -1,6 +1,7 @@
 package com.example.qrscaner.view.generate;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -8,11 +9,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.InputMethod;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.qrscaner.DataBase.QrGenerateDataBase;
 import com.example.qrscaner.Model.QrGenerate;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
@@ -37,6 +35,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
     private int id;
     private EditText edtContent;
     private QrScan.QRType typeQR;
+    private boolean isCheckWifi = true;
 
     public ViewGenerateQRCode(@NonNull Context context) {
         super(context);
@@ -403,6 +402,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlTypeWifi = new LinearLayout(mContext);
             lnlTypeWifi.setOrientation(LinearLayout.HORIZONTAL);
             AppCompatButton acbFree = new AppCompatButton(mContext);
+            acbFree.setBackgroundColor(Color.BLUE);
             acbFree.setBackgroundResource(R.drawable.corner_left);
             acbFree.setText("Free");
             AppCompatButton acbWpa = new AppCompatButton(mContext);
@@ -468,18 +468,39 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                 @Override
                 public void onClick(View view) {
                     type = "NoPass";
+                    if (isCheckWifi){
+                        isCheckWifi = false;
+                        acbFree.setTextColor(Color.BLUE);
+                    }else {
+                        isCheckWifi = true;
+                        acbFree.setTextColor(Color.BLACK);
+                    }
                 }
             });
             acbWep.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     type = "WEP";
+                    if (isCheckWifi){
+                        isCheckWifi = false;
+                        acbFree.setTextColor(Color.BLUE);
+                    }else {
+                        isCheckWifi = true;
+                        acbFree.setTextColor(Color.BLACK);
+                    }
                 }
             });
             acbWpa.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     type = "WPA";
+                    if (isCheckWifi){
+                        isCheckWifi = false;
+                        acbFree.setTextColor(Color.BLUE);
+                    }else {
+                        isCheckWifi = true;
+                        acbFree.setTextColor(Color.BLACK);
+                    }
                 }
             });
 
@@ -550,11 +571,14 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
     public interface ISaveQrGenerate {
         void saveQr(QrGenerate qrGenerate);
     }
-    public interface IBackToGenerate{
+
+    public interface IBackToGenerate {
         void onBackItemToGenerate();
     }
+
     private IBackToGenerate backToGenerate;
-    public void setInterFace(IBackToGenerate backToGenerate){
+
+    public void setInterFace(IBackToGenerate backToGenerate) {
         this.backToGenerate = backToGenerate;
     }
 }

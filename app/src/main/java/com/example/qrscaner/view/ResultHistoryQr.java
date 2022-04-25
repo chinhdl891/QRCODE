@@ -1,5 +1,7 @@
 package com.example.qrscaner.view;
 
+import static com.example.qrscaner.view.generate.ResultScanQr.resizeImage;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -35,11 +37,11 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
     private Context mContext;
     private View mRootView;
     private ImageView imvResultHistoryBack, imvResultHistoryCategory;
+    private  ImageView imvShowHistoryItemBackGround;
     private TextView tvResultHistoryCategoryQR, tvResultHistoryDateCreate, tvResultHistoryCategory, tvResultHistoryShare, tvResultHistoryOptionOne;
-    private LinearLayout lnlResultHistoryContent;
+    private LinearLayout lnlResultHistoryContent,lnlResultHistoryOption;
     private QrScan mqrScan;
     private BackToHistory backToHistory;
-
 
     public ResultHistoryQr(@NonNull Context context) {
         super(context);
@@ -58,7 +60,11 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
 
         LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mRootView = layoutInflater.inflate(R.layout.result_view_history, this, true);
+        lnlResultHistoryOption = mRootView.findViewById(R.id.lnl_resultScan__action);
+
         imvResultHistoryBack = mRootView.findViewById(R.id.imv_scan_result_history__back);
+        imvShowHistoryItemBackGround = mRootView.findViewById(R.id.imv_result_history_alert);
+        resizeImage(imvShowHistoryItemBackGround,288,366);
         imvResultHistoryCategory = mRootView.findViewById(R.id.imv_result_history_qr__category);
         tvResultHistoryCategory = mRootView.findViewById(R.id.tv_result_history__category);
         tvResultHistoryDateCreate = mRootView.findViewById(R.id.tv_result_history_qr__dateCreate);
@@ -66,10 +72,13 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         tvResultHistoryOptionOne = mRootView.findViewById(R.id.tv_scanResult_optionOne);
         tvResultHistoryShare = mRootView.findViewById(R.id.tv_scanResult_share);
         tvResultHistoryCategoryQR = mRootView.findViewById(R.id.tv_result_history_qr__categoryName);
+        lnlResultHistoryOption.getLayoutParams().width = imvShowHistoryItemBackGround.getWidth();
         imvResultHistoryBack.setOnClickListener(this);
         tvResultHistoryOptionOne.setOnClickListener(this);
 
     }
+
+
 
     public void setupData(QrScan qrScan, BackToHistory backToHistory) {
         mqrScan = qrScan;

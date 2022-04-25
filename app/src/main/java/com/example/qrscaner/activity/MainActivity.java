@@ -1,14 +1,14 @@
 package com.example.qrscaner.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -37,6 +37,8 @@ import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, QrScanResult.iSaveQrScan {
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager;
@@ -47,10 +49,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ConstraintLayout ctlMainEditItem;
     private TextViewPoppinBold tvMainNumItem;
     private ImageView imvMainItemShare, imvMainItemDelete, imvMainQrTest;
+    private FrameLayout mFrlMainContent;
     public final static int REQUEST_CAM = 100;
     public final static int REQUEST_WRITE = 100;
     private static int TIME_WAIT = 3000;
     private long time;
+    public static int WIDTH = 0;
+    public static int HEIGHT = 0;
+    private String tag;
 
 
     @Override
@@ -60,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!MyDataLocal.getFistInstall()) {
             MyDataLocal.setShowHistory(true);
         }
-
+        getInfoDisPlay();
         setContentView(R.layout.activity_main);
         init();
         imvMainItemDelete.setOnClickListener(this);
@@ -84,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         fragment = new SettingFragment();
                         fragmentLoad(fragment, SettingFragment.class.getSimpleName());
                         break;
-                    default :
+                    default:
                         fragment = new ScannerFragment();
                         fragmentLoad(fragment, ScannerFragment.class.getSimpleName());
                         break;
@@ -103,7 +109,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private void getInfoDisPlay() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        HEIGHT = displayMetrics.heightPixels;
+        WIDTH = displayMetrics.widthPixels;
+    }
+
     private void init() {
+
+        mFrlMainContent = findViewById(R.id.frame_main__content);
         tvMainNumItem = findViewById(R.id.tv_main__numSelect);
         imvMainItemDelete = findViewById(R.id.imv_main__delete);
         imvMainItemShare = findViewById(R.id.imv_main__share);
@@ -117,25 +132,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAM);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAM);
         }
 
 
     }
 
     public void fragmentLoad(Fragment fragment, String tag) {
+
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_main__content, fragment, tag);
-//        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.add(R.id.frame_main__content, fragment, tag);
+        fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
+
     }
 
 
     @Override
     public void sendQr(QrScan qr) {
-//        conActivityMainResultView.setVisibility(View.VISIBLE);
-//        conActivityMainResultView.setupData(qr, this);
 
     }
 
@@ -187,11 +202,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CAM) {
-            for (int i = 0; i < permissions.length ; i++) {
-                if (grantResults[i] == PackageManager.PERMISSION_DENIED){
-                    if (i==0){
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                    if (i == 0) {
                         Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         Toast.makeText(this, "Write permission denied", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -212,13 +227,63 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
 
-        if (time + TIME_WAIT > System.currentTimeMillis()) {
+        if (fragmentManager.getFragments().size() > 1) {
+            tag = fragmentManager.getFragments().remove(fragmentManager.getFragments().size() - 2).getTag();
+            if (bottomNavigationView.getVisibility()==View.GONE||bottomNavigationView.getVisibility()==View.INVISIBLE){
+                bottomNavigationView.setVisibility(View.VISIBLE);
+
+            }
+
+            setIdBottom(tag);
             super.onBackPressed();
         } else {
-            time = System.currentTimeMillis();
-            Toast.makeText(this, "Back again to exit", Toast.LENGTH_SHORT).show();
+
+            if (time + TIME_WAIT > System.currentTimeMillis()) {
+                System.exit(0);
+            } else {
+                time = System.currentTimeMillis();
+                Toast.makeText(this, "Back again to exit", Toast.LENGTH_SHORT).show();
+            }
         }
 
 
     }
+
+    private void setIdBottom(String tag) {
+        if (tag.equals(ScannerFragment.class.getSimpleName())) {
+            updateNavigationBarState(R.id.scan);
+        } else if (tag.equals(HistoryFragment.class.getSimpleName())) {
+            updateNavigationBarState(R.id.history);
+        } else if (tag.equals(SettingFragment.class.getSimpleName())) {
+            updateNavigationBarState(R.id.setting);
+        } else if (tag.equals(GenerateFragment.class.getSimpleName())) {
+            updateNavigationBarState(R.id.generate);
+        }
+    }
+
+
+    private void updateNavigationBarState(int actionId) {
+        Menu menu = bottomNavigationView.getMenu();
+        for (int i = 0, size = menu.size(); i < size; i++) {
+            MenuItem item = menu.getItem(i);
+            if (item.getItemId() == actionId) {
+                item.setChecked(true);
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ScannerFragment.zXingScannerView.stopCameraPreview();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ScannerFragment.zXingScannerView.stopCamera();
+    }
+
+
+
 }
