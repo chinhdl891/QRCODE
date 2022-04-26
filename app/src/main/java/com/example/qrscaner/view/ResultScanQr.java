@@ -1,4 +1,4 @@
-package com.example.qrscaner.view.generate;
+package com.example.qrscaner.view;
 
 import static android.content.Context.WIFI_SERVICE;
 
@@ -57,7 +57,6 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
     private ImageView imvResultGenerateBack, imvResultHistoryCategory;
     private TextView tvResultHistoryCategoryQR, tvResultHistoryDateCreate, tvResultHistoryCategory, tvResultHistoryShare, tvResultHistoryOptionOne;
     private LinearLayout lnlResultHistoryContent, lnlResultOption;
-    private BackToScan backToScan;
     private ImageView imvResultScanQRBackGround;
     private QrScan qrScan;
     private String[] content;
@@ -99,6 +98,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         tvResultHistoryOptionOne.setOnClickListener(this);
 
 
+
     }
 
     public static void resizeImage(View view, int originWidth, int originHeight) {
@@ -110,9 +110,8 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
     }
 
 
-    public void setupData(QrScan qrScan, BackToScan backToScan) {
-
-        this.backToScan = backToScan;
+    public void setupData(QrScan qrScan,Context context) {
+        mMainActivity = (MainActivity) context;
         this.qrScan = qrScan;
         qrContent = qrScan.getScanText();
         content = qrScan.getScanText().split(":");
@@ -181,9 +180,9 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
             }
 
         }
-       if (!qrScan.getScanText().equals("Error")){
-           QrHistoryDatabase.getInstance(mContext).qrDao().insertQr(new QrScan(type, qrContent, System.currentTimeMillis()));
-       }
+        if (!qrScan.getScanText().equals("Error")) {
+            QrHistoryDatabase.getInstance(mContext).qrDao().insertQr(new QrScan(type, qrContent, System.currentTimeMillis()));
+        }
 
     }
 
@@ -442,9 +441,12 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
+
         if (view == imvResultGenerateBack) {
-            backToScan.onBackScan();
+
             lnlResultHistoryContent.removeAllViews();
+            mMainActivity.onBackPressed();
+
         } else if (view == tvResultHistoryShare) {
             ShareUtils.shareQR(mContext, qrScan);
         } else if (view == tvResultHistoryOptionOne) {
@@ -455,9 +457,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
 
     }
 
-    public interface BackToScan {
-        void onBackScan();
-    }
+
 
     public interface BackToGenerate {
         void onBackGenerate();

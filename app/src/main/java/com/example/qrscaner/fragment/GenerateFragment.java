@@ -10,10 +10,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,10 +42,10 @@ import com.example.qrscaner.adapter.GenerateHistoryAdapter;
 import com.example.qrscaner.adapter.QrCodeGenerateAdapter;
 import com.example.qrscaner.config.Constant;
 
-import com.example.qrscaner.view.QrScanResult;
+import com.example.qrscaner.view.QrGenerateResult;
 import com.example.qrscaner.view.SaveQRGenerate;
-import com.example.qrscaner.view.generate.ResultScanQr;
-import com.example.qrscaner.view.generate.ViewGenerateQRCode;
+import com.example.qrscaner.view.ResultScanQr;
+import com.example.qrscaner.view.ViewGenerateQRCode;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -80,7 +78,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     private GenerateReceiver generateReceiver;
     private Bitmap bmShare;
     private boolean isGenMenu;
-    private QrScanResult mResultHistoryGen;
+    private QrGenerateResult mResultHistoryGen;
     private SaveQRGenerate saveQRGenerate;
 
 
@@ -468,7 +466,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     }
 
     @Override
-    public void onSaveQr(QrGenerate qrGenerate) {
+    public void onSaveQr() {
         isGenMenu = false;
         mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
         imvGenerateGotoCreate.setImageResource(R.drawable.imv_history_plus_history);

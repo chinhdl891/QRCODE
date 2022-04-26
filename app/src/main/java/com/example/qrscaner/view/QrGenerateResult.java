@@ -36,7 +36,6 @@ import com.example.qrscaner.R;
 import com.example.qrscaner.utils.BitMapUtils;
 import com.example.qrscaner.utils.ShareUtils;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
-import com.example.qrscaner.view.generate.ResultScanQr;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,7 +44,7 @@ import java.io.OutputStream;
 import java.util.Date;
 
 
-public class QrScanResult extends ConstraintLayout implements View.OnClickListener {
+public class QrGenerateResult extends ConstraintLayout implements View.OnClickListener {
     private QrScan mqrScan;
     private View mRootView;
     private Context mContext;
@@ -59,13 +58,13 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     private BitMapUtils bitMapUtils;
 
 
-    public QrScanResult(@NonNull Context context) {
+    public QrGenerateResult(@NonNull Context context) {
         super(context);
         mContext = context;
         initView();
     }
 
-    public QrScanResult(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public QrGenerateResult(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
         initView();
@@ -445,7 +444,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
                 BitmapDrawable drawable = (BitmapDrawable) imvQrScanResultRender.getDrawable();
                 Bitmap bitmap = drawable.getBitmap();
 //                saveImage(bitmap);
-                ShareUtils.sharePalette(bitmap,mContext);
+                ShareUtils.sharePalette(mContext,bitmap);
                 imvQrScanResultBack.performClick();
 
                 break;

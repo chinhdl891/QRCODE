@@ -1,10 +1,8 @@
 package com.example.qrscaner.view;
 
-import static com.example.qrscaner.view.generate.ResultScanQr.resizeImage;
+import static com.example.qrscaner.view.ResultScanQr.resizeImage;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
@@ -13,7 +11,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +25,7 @@ import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
+import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.utils.IntentUtils;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 
@@ -37,11 +35,14 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
     private Context mContext;
     private View mRootView;
     private ImageView imvResultHistoryBack, imvResultHistoryCategory;
-    private  ImageView imvShowHistoryItemBackGround;
-    private TextView tvResultHistoryCategoryQR, tvResultHistoryDateCreate, tvResultHistoryCategory, tvResultHistoryShare, tvResultHistoryOptionOne;
-    private LinearLayout lnlResultHistoryContent,lnlResultHistoryOption;
+    private ImageView imvShowHistoryItemBackGround;
+    private TextView tvResultHistoryCategoryQR, tvResultHistoryDateCreate, tvResultHistoryCategory,
+
+    tvResultHistoryShare, tvResultHistoryOptionOne;
+    private LinearLayout lnlResultHistoryContent, lnlResultHistoryOption;
     private QrScan mqrScan;
-    private BackToHistory backToHistory;
+    private MainActivity mainActivity;
+
 
     public ResultHistoryQr(@NonNull Context context) {
         super(context);
@@ -64,7 +65,7 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
 
         imvResultHistoryBack = mRootView.findViewById(R.id.imv_scan_result_history__back);
         imvShowHistoryItemBackGround = mRootView.findViewById(R.id.imv_result_history_alert);
-        resizeImage(imvShowHistoryItemBackGround,288,366);
+        resizeImage(imvShowHistoryItemBackGround, 288, 366);
         imvResultHistoryCategory = mRootView.findViewById(R.id.imv_result_history_qr__category);
         tvResultHistoryCategory = mRootView.findViewById(R.id.tv_result_history__category);
         tvResultHistoryDateCreate = mRootView.findViewById(R.id.tv_result_history_qr__dateCreate);
@@ -79,10 +80,9 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
     }
 
 
-
-    public void setupData(QrScan qrScan, BackToHistory backToHistory) {
+    public void setupData(QrScan qrScan, Context context) {
         mqrScan = qrScan;
-        this.backToHistory = backToHistory;
+        this.mainActivity = (MainActivity) context;
 
         String qrContent = qrScan.getScanText();
         String[] content = qrContent.split(":");
@@ -386,8 +386,9 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
     @Override
     public void onClick(View view) {
         if (view == imvResultHistoryBack) {
-            lnlResultHistoryContent.removeAllViews();
-            backToHistory.onBackListener();
+            mainActivity.onBackPressed();
+//            lnlResultHistoryContent.removeAllViews();
+//            backToHistory.onBackListener();
         }
         if (view == tvResultHistoryOptionOne) {
             IntentUtils intentUtils = new IntentUtils();
@@ -395,9 +396,5 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         }
     }
 
-    public interface BackToHistory {
 
-        void onBackListener();
-
-    }
 }

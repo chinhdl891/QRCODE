@@ -34,8 +34,8 @@
             android:id="@+id/csl_main__edit"
             android:layout_width="match_parent"
             android:layout_height="72dp"
-            android:background="#FFFFFF"
             android:layout_alignParentBottom="true"
+            android:background="#FFFFFF"
             android:visibility="gone">
 
             <ImageView
@@ -80,9 +80,16 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>
 
-    <com.example.qrscaner.view.QrScanResult
-        android:id="@+id/con_activityMain__resultView"
+    <com.example.qrscaner.view.QrGenerateResult
+        android:id="@+id/qrs_activityMain__resultView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/fml_main_qrScanResult"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+     />
+
 </RelativeLayout>

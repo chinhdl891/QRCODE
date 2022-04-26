@@ -222,7 +222,7 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
             saveBackToGenerate.onSaveBackToGenerate();
         } else if (view == tvSave) {
             QrGenerateDataBase.getInstance(mContext).qrGenerateDao().insertQrGenerate(new QrGenerate(System.currentTimeMillis(), qrContent, type, color));
-            savaQr.onSaveQr(new QrGenerate(System.currentTimeMillis(), qrContent, type, color));
+            savaQr.onSaveQr();
             saveImage(BitMapUtils.bitmapQR(type, qrContent, color));
             imvSaveBack.performClick();
         }
@@ -260,8 +260,6 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
             }
 
         }
-
-
         try {
             bitmapQR.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
@@ -282,7 +280,7 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
     private SavaQr savaQr;
 
     public interface SavaQr {
-        void onSaveQr(QrGenerate qrGenerate);
+        void onSaveQr();
     }
 
 
