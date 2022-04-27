@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="CREATE"
+            android:text="@string/create"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="@+id/imv_generate__createQr"
             app:layout_constraintTop_toBottomOf="@+id/imv_generate__createQr" />
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="QR Code Generator"
+            android:text="@string/qr_code_generator"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="@+id/tv_generate_create"
             app:layout_constraintTop_toBottomOf="@+id/tv_generate_create" />
@@ -84,7 +84,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="50dp"
                 android:background="@drawable/corner"
-                android:text="Create now!"
+                android:text="@string/create_now"
                 android:textColor="@color/white" />
         </LinearLayout>
 
@@ -155,7 +155,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nsv_genFragment__gotoGenerate" />
-    <com.example.qrscaner.view.QrGenerateResult
+    <com.example.qrscaner.view.ShowQrGenerate
         android:id="@+id/rhs_generateFragment_show"
         android:visibility="gone"
         android:layout_width="match_parent"

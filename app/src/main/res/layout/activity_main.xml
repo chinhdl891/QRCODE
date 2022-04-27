@@ -80,7 +80,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>
 
-    <com.example.qrscaner.view.QrGenerateResult
+    <com.example.qrscaner.view.ShowQrGenerate
         android:id="@+id/qrs_activityMain__resultView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

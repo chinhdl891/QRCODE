@@ -33,7 +33,7 @@ import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
 import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.myshareferences.MyDataLocal;
-import com.example.qrscaner.view.ShowQrGenerate;
+import com.example.qrscaner.view.ShowResultScanQR;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
@@ -59,13 +59,12 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     private ImageView imvScanFragmentOpenCam, imvScanFragmentSwitchFlash;
     private boolean isFlash;
     private Vibrator vibrator;
-    private ShowQrGenerate resultScan;
+    private ShowResultScanQR resultScan;
     private LinearLayout lnlScanFragmentZoom;
     private CardView cvScanFragmentMenu;
     private MainActivity mMainActivity;
     private SeekBar mSkbScannerFragmentZoom;
     public static String SEND_QR_SCAN = "send_obj_scan";
-
 
 
     @Override
@@ -84,7 +83,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         imvScanFragmentOpenCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                zXingScannerView.startCamera();
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity()
                             , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
@@ -167,16 +166,12 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         QrScan qrScan = new QrScan();
         qrScan.setScanText(s);
         qrScan.setDate();
-        zXingScannerView.setVisibility(View.GONE);
-        lnlScanFragmentZoom.setVisibility(View.GONE);
-        cvScanFragmentMenu.setVisibility(View.GONE);
-
 
         ResultScanFragment fragment = new ResultScanFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(SEND_QR_SCAN,qrScan);
+        bundle.putSerializable(SEND_QR_SCAN, qrScan);
         fragment.setArguments(bundle);
-        mMainActivity.fragmentLoad(fragment,ResultScanFragment.class.getSimpleName());
+        mMainActivity.fragmentLoad(fragment, ResultScanFragment.class.getSimpleName());
 
     }
 
@@ -218,7 +213,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     }
 
 
-    public  void resumeCamera() {
+    public void resumeCamera() {
 
         zXingScannerView.startCamera();
         zXingScannerView.setResultHandler(this);
@@ -232,7 +227,6 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         zXingScannerView.stopCameraPreview();
 
     }
-
 
 
 }

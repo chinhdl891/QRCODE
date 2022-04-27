@@ -1,33 +1,28 @@
 package com.example.qrscaner.view;
 
-import static android.content.Context.WIFI_SERVICE;
 
-import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.ClipboardManager;
+import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
-import android.text.TextUtils;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.Model.QrEmail;
 import com.example.qrscaner.Model.QrGenerate;
 import com.example.qrscaner.Model.QrMess;
@@ -39,191 +34,172 @@ import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
 import com.example.qrscaner.activity.MainActivity;
-import com.example.qrscaner.fragment.ScannerFragment;
-import com.example.qrscaner.utils.IntentUtils;
+import com.example.qrscaner.utils.BitMapUtils;
 import com.example.qrscaner.utils.ShareUtils;
-import com.example.qrscaner.view.ResultHistoryQr;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Arrays;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Date;
-import java.util.List;
+
 
 public class ShowQrGenerate extends ConstraintLayout implements View.OnClickListener {
-    private Context mContext;
-    private View mRootView;
-    private ImageView imvResultGenerateBack, imvResultHistoryCategory;
-    private TextView tvResultHistoryCategoryQR, tvResultHistoryDateCreate, tvResultHistoryCategory, tvResultHistoryShare, tvResultHistoryOptionOne;
-    private LinearLayout lnlResultHistoryContent, lnlResultOption;
-    private ImageView imvResultScanQRBackGround;
-    private QrScan qrScan;
-    private String[] content;
-    private String qrContent;
+    private QrScan mqrScan;
+    private final Context mContext;
+    private MainActivity mainActivity;
+    private ImageView imvQrScanResultRender, imvQrScanResultIconCategory, imvQrScanResultBack;
+    private TextView tvQrScanResultCategoryName;
+    private TextView tvQrScanResultDate;
+
+
+    private LinearLayout lnlResultInfo;
+    private DrawView drawView;
     private QrScan.QRType type;
-    private MainActivity mMainActivity;
+    private BitMapUtils bitMapUtils;
 
 
     public ShowQrGenerate(@NonNull Context context) {
         super(context);
         mContext = context;
-        init();
+        initView();
     }
 
     public ShowQrGenerate(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
-        init();
+        this.mContext = context;
+        initView();
+
     }
 
-    private void init() {
 
+    private void initView() {
         LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mRootView = layoutInflater.inflate(R.layout.result_view_history, this, true);
-        imvResultGenerateBack = mRootView.findViewById(R.id.imv_scan_result_history__back);
-        imvResultHistoryCategory = mRootView.findViewById(R.id.imv_result_history_qr__category);
-        tvResultHistoryCategory = mRootView.findViewById(R.id.tv_result_history__category);
-        tvResultHistoryDateCreate = mRootView.findViewById(R.id.tv_result_history_qr__dateCreate);
-        lnlResultHistoryContent = mRootView.findViewById(R.id.lnl_result_history__contentHistory);
-        tvResultHistoryOptionOne = mRootView.findViewById(R.id.tv_scanResult_optionOne);
-        tvResultHistoryShare = mRootView.findViewById(R.id.tv_scanResult_share);
-        tvResultHistoryCategoryQR = mRootView.findViewById(R.id.tv_result_history_qr__categoryName);
-        imvResultScanQRBackGround = mRootView.findViewById(R.id.imv_result_history_alert);
-        resizeImage(imvResultScanQRBackGround, 287, 366);
-        lnlResultOption = mRootView.findViewById(R.id.lnl_resultScan__action);
-        lnlResultOption.getLayoutParams().width = imvResultScanQRBackGround.getWidth();
-        imvResultGenerateBack.setOnClickListener(this);
-        tvResultHistoryShare.setOnClickListener(this);
-        tvResultHistoryOptionOne.setOnClickListener(this);
+        View mRootView = layoutInflater.inflate(R.layout.result_scan_layout, this, true);
+
+        imvQrScanResultRender = mRootView.findViewById(R.id.imv_result_qr_render);
+        imvQrScanResultIconCategory = mRootView.findViewById(R.id.imv_result_qr_category);
+        tvQrScanResultCategoryName = mRootView.findViewById(R.id.tv_result_qr_category_name);
+        tvQrScanResultDate = mRootView.findViewById(R.id.tv_save_date_create);
+        lnlResultInfo = mRootView.findViewById(R.id.ll_result_qr_string);
+        imvQrScanResultBack = mRootView.findViewById(R.id.imv_scanResult_back);
+        TextView tvQrScanResultCancel = mRootView.findViewById(R.id.tv_scanResult_cancel);
+        TextView tvQrScanResultShare = findViewById(R.id.tv_scanResult_save);
+        imvQrScanResultBack.setOnClickListener(this);
+        tvQrScanResultCancel.setOnClickListener(this);
+        bitMapUtils = new BitMapUtils();
+        tvQrScanResultShare.setOnClickListener(this);
 
 
+        mRootView.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
 
+        drawView = new DrawView(mContext);
+        drawView.setBackgroundColor(Color.GRAY);
     }
 
-    public static void resizeImage(View view, int originWidth, int originHeight) {
-        int pW = MainActivity.WIDTH * originWidth / 360;
-        int pH = pW * originHeight / originWidth;
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        params.width = pW;
-        params.height = pH;
-    }
+
+    public void setupData(QrGenerate qrGenerate, Context context) {
+        mainActivity = (MainActivity) context;
+        mqrScan = new QrScan();
+        mqrScan.setScanText(qrGenerate.getContent());
+        mqrScan.setTypeQR(qrGenerate.getQrType());
+        mqrScan.setDate(qrGenerate.getDate());
+        String s = mqrScan.getScanText();
+        String[] content = s.split(":");
+        if (content[0].equals("SMSTO")) {
+            QrMess qrMess = new QrMess();
+            qrMess.compileSMS(content);
+            setContentMess(qrGenerate.getDate(), qrMess);
+            imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
 
 
-    public void setupData(QrScan qrScan,Context context) {
-        mMainActivity = (MainActivity) context;
-        this.qrScan = qrScan;
-        qrContent = qrScan.getScanText();
-        content = qrScan.getScanText().split(":");
-        if (checkIsProduct(content[0])) {
-            setContentProduct(qrScan.getDate(), qrScan);
-            type = QrScan.QRType.PRODUCT;
-            qrScan.setTypeQR(type);
-
-        } else {
-
-            if (content[0].equals("SMSTO")) {
-                QrMess qrMess = new QrMess();
-                qrMess.compileSMS(content);
-
-                setContentMess(qrScan.getDate(), qrMess);
-                type = QrScan.QRType.SMS;
-                qrScan.setTypeQR(type);
-
-            } else if (qrScan.getScanText().equals("Error")) {
-
-                setContentError(qrScan.getDate());
-            } else if (content[0].equals("http") || content[0].equals("https")) {
-                QrUrl qrUrl = new QrUrl();
-                qrUrl.compileUrl(content);
-                type = QrScan.QRType.URL;
-                qrScan.setTypeQR(type);
-                setContentUrl(qrScan.getDate(), qrUrl);
-
-            } else if (content[0].equals("WIFI")) {
-                type = QrScan.QRType.WIFI;
-                qrScan.setTypeQR(type);
-                StringBuilder stringBuilder = new StringBuilder();
-                String[] contentWifi = qrContent.split(";");
-                for (String value : contentWifi) {
-                    stringBuilder.append(value);
-                }
-                String contentWifi2 = stringBuilder.toString();
-                String[] contentWifi3 = contentWifi2.split(":");
-                QrWifi qrWifi = new QrWifi();
-                qrWifi.compileWifi(contentWifi, contentWifi3);
-                setContentWifi(qrScan.getDate(), qrWifi);
-            } else if (content[0].equals("MATMSG")) {
-                type = QrScan.QRType.EMAIL;
-                qrScan.setTypeQR(type);
-                QrEmail qrEmail = new QrEmail();
-                StringBuilder stringBuilder = new StringBuilder();
-                for (String value : content) {
-                    stringBuilder.append(value);
-                }
-                qrEmail.compileEmail(content);
-                setContentMail(qrScan.getDate(), qrEmail);
-
-            } else if (content[0].equals("tel")) {
-                type = QrScan.QRType.PHONE;
-                qrScan.setTypeQR(type);
-                QreTelephone qreTelephone = new QreTelephone();
-                qreTelephone.compile(content);
-                setContentTel(qrScan.getDate(), qreTelephone);
-
-            } else {
-                type = QrScan.QRType.TEXT;
-                qrScan.setTypeQR(type);
-                QrText qrText = new QrText();
-                qrText.setText(qrContent);
-                setContentText(qrScan.getDate(), qrText);
+        } else if (content[0].equals("http") || content[0].equals("https")) {
+            QrUrl qrUrl = new QrUrl();
+            qrUrl.compileUrl(content);
+            setContentUrl(qrGenerate.getDate(), qrUrl);
+            imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
+        } else if (content[0].equals("WIFI")) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String[] contentWifi = s.split(";");
+            for (String value : contentWifi) {
+                stringBuilder.append(value);
+            }
+            String contentWifi2 = stringBuilder.toString();
+            String[] contentWifi3 = contentWifi2.split(":");
+            QrWifi qrWifi = new QrWifi();
+            qrWifi.compileWifi(contentWifi, contentWifi3);
+            setContentWifi(qrGenerate.getDate(), qrWifi);
+            imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
+        } else if (content[0].equals("MATMSG")) {
+            QrEmail qrEmail = new QrEmail();
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String value : content) {
+                stringBuilder.append(value);
             }
 
-        }
-        if (!qrScan.getScanText().equals("Error")) {
-            QrHistoryDatabase.getInstance(mContext).qrDao().insertQr(new QrScan(type, qrContent, System.currentTimeMillis()));
+            qrEmail.compileEmail(content);
+            setContentMail(qrGenerate.getDate(), qrEmail);
+            imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
+        } else if (content[0].equals("tel")) {
+            QreTelephone qreTelephone = new QreTelephone();
+            qreTelephone.compile(content);
+            setContentTel(qrGenerate.getDate(), qreTelephone);
+            imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
+        } else {
+            if (checkIsProduct(qrGenerate.getContent())) {
+                QrProduct qrProduct = new QrProduct();
+                qrProduct.setProduct(Long.parseLong(qrGenerate.getContent()));
+                setContentProduct(qrGenerate.getDate(), qrProduct);
+                if (qrGenerate.getQrType() == QrScan.QRType.BAR39) {
+                    imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.BAR39, qrGenerate.getContent(), qrGenerate.getColor()));
+                } else if (qrGenerate.getQrType() == QrScan.QRType.BAR93) {
+                    imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.BAR39, qrGenerate.getContent(), qrGenerate.getColor()));
+                } else if (qrGenerate.getQrType() == QrScan.QRType.BAR128) {
+                    imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.BAR128, qrGenerate.getContent(), qrGenerate.getColor()));
+                }
+
+
+            } else {
+                imvQrScanResultRender.setImageBitmap(bitMapUtils.bitmapQR(QrScan.QRType.TEXT, qrGenerate.getContent(), qrGenerate.getColor()));
+                QrText qrText = new QrText();
+                qrText.setText(s);
+                setContentText(qrGenerate.getDate(), qrText);
+
+            }
+
+
         }
 
     }
 
-    private void setContentError(long date) {
-        lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-        imvResultHistoryCategory.setVisibility(GONE);
-        tvResultHistoryCategoryQR.setText("ERROR");
-        lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-        tvResultHistoryDateCreate.setText("#######");
-        ImageView imvError = new ImageView(mContext);
-        imvError.setImageResource(R.drawable.ic_error);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(300, 300);
-        imvError.setLayoutParams(params);
-        lnlResultHistoryContent.setGravity(Gravity.CENTER);
-        lnlResultHistoryContent.addView(imvError);
-
+    private void setContentProduct(long date, QrProduct qrProduct) {
+        type = QrScan.QRType.PRODUCT;
+        mqrScan.setTypeQR(type);
+        lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.ic_product);
+        String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
+        tvQrScanResultDate.setText(dateString);
+        tvQrScanResultCategoryName.setText(R.string.product);
+        LinearLayout linearLayoutText = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameCategoryText = new TextViewPoppinBold(mContext);
+        tvNameCategoryText.setText(R.string.number);
+        tvNameCategoryText.setTextColor(Color.WHITE);
+        tvNameCategoryText.setTextSize(13);
+        TextView tvTextContent = new TextView(mContext);
+        tvTextContent.setText(String.valueOf(qrProduct.getProduct()));
+        tvTextContent.setTextColor(Color.WHITE);
+        tvTextContent.setTextSize(13);
+        linearLayoutText.setOrientation(LinearLayout.VERTICAL);
+        linearLayoutText.addView(tvNameCategoryText);
+        linearLayoutText.addView(tvTextContent);
+        lnlResultInfo.addView(linearLayoutText);
     }
-
-    private void setContentProduct(long date, QrScan qrProduct) {
-        {
-            lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-            imvResultHistoryCategory.setImageResource(R.drawable.ic_product);
-            String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
-            tvResultHistoryDateCreate.setText(dateString);
-            tvResultHistoryCategory.setText("QR CODE");
-            tvResultHistoryCategoryQR.setText("Product");
-            LinearLayout lnlContent = new LinearLayout(mContext);
-            lnlContent.setOrientation(LinearLayout.VERTICAL);
-            TextViewPoppinBold tvContent = new TextViewPoppinBold(mContext);
-            TextView tvContentText = new TextView(mContext);
-            tvContent.setText("Number:");
-            tvContentText.setText("    " + qrProduct.getScanText());
-            tvContentText.setBackgroundResource(R.drawable.corner_tv);
-            lnlContent.addView(tvContent);
-            lnlContent.addView(tvContentText);
-            lnlResultHistoryContent.addView(lnlContent);
-            tvResultHistoryOptionOne.setText("Open Browser");
-
-        }
-    }
-
 
     public boolean checkIsProduct(String qr) {
         long id;
@@ -235,233 +211,313 @@ public class ShowQrGenerate extends ConstraintLayout implements View.OnClickList
         }
     }
 
-    private void setContentUrl(long date, QrUrl qrUrl) {
-        {
-
-            lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-            imvResultHistoryCategory.setImageResource(R.drawable.add_uri);
-            String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
-            tvResultHistoryDateCreate.setText(dateString);
-            tvResultHistoryCategory.setText("QR CODE");
-            tvResultHistoryCategoryQR.setText("Uri");
-
-            LinearLayout lnlEmail = new LinearLayout(mContext);
-            lnlEmail.setOrientation(LinearLayout.VERTICAL);
-            TextViewPoppinBold tvWifiCategoryName = new TextViewPoppinBold(mContext);
-            TextView tvEmailName = new TextView(mContext);
-            tvWifiCategoryName.setText("Uri: ");
-            tvEmailName.setText("    " + qrUrl.getUrl());
-            tvEmailName.setBackgroundResource(R.drawable.corner_tv);
-            tvEmailName.setMaxLines(1);
-            tvEmailName.setEllipsize(TextUtils.TruncateAt.END);
-            lnlEmail.addView(tvWifiCategoryName);
-            lnlEmail.addView(tvEmailName);
-            lnlResultHistoryContent.addView(lnlEmail);
-            tvResultHistoryOptionOne.setText("Open Browser");
-        }
-    }
-
-    private void setContentMail(long date, QrEmail qrEmail) {
-        {
-            lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-            imvResultHistoryCategory.setImageResource(R.drawable.add_email);
-            String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
-            tvResultHistoryDateCreate.setText(dateString);
-            tvResultHistoryCategory.setText("QR CODE");
-            tvResultHistoryCategoryQR.setText("Email");
-
-            LinearLayout lnlEmail = new LinearLayout(mContext);
-            lnlEmail.setOrientation(LinearLayout.HORIZONTAL);
-            TextViewPoppinBold tvWifiCategoryName = new TextViewPoppinBold(mContext);
-            TextView tvEmailName = new TextView(mContext);
-            tvWifiCategoryName.setText("Email:");
-            tvEmailName.setText("    " + qrEmail.getSendBy());
-            tvEmailName.setMaxLines(1);
-            tvEmailName.setEllipsize(TextUtils.TruncateAt.END);
-            lnlEmail.addView(tvWifiCategoryName);
-            lnlEmail.addView(tvEmailName);
-            lnlResultHistoryContent.addView(lnlEmail);
-
-            LinearLayout lnlSendTo = new LinearLayout(mContext);
-            lnlSendTo.setOrientation(LinearLayout.HORIZONTAL);
-            TextViewPoppinBold tvEmailSenTo = new TextViewPoppinBold(mContext);
-            TextView tvEmailNameSendTo = new TextView(mContext);
-            tvEmailSenTo.setText("Subject:");
-            tvEmailNameSendTo.setText("    " + qrEmail.getSendTo());
-            tvEmailNameSendTo.setMaxLines(1);
-            tvEmailNameSendTo.setEllipsize(TextUtils.TruncateAt.END);
-            lnlSendTo.addView(tvEmailSenTo);
-            lnlSendTo.addView(tvEmailNameSendTo);
-            lnlResultHistoryContent.addView(lnlSendTo);
-
-            LinearLayout lnlContent = new LinearLayout(mContext);
-            lnlContent.setOrientation(LinearLayout.VERTICAL);
-            TextViewPoppinBold tvContent = new TextViewPoppinBold(mContext);
-            TextView tvContentText = new TextView(mContext);
-            tvContent.setText("Content:");
-            tvContentText.setText(qrEmail.getContent());
-            lnlContent.addView(tvContent);
-            lnlContent.addView(tvContentText);
-            lnlResultHistoryContent.addView(lnlContent);
-            tvResultHistoryOptionOne.setText("Send Email");
-
-        }
-    }
-
-    private void setContentTel(long date, QreTelephone qreTelephone) {
-        {
-            lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-            imvResultHistoryCategory.setImageResource(R.drawable.add_call);
-            String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
-            tvResultHistoryDateCreate.setText(dateString);
-            tvResultHistoryCategory.setText("QR CODE");
-            tvResultHistoryCategoryQR.setText("Phone");
-            LinearLayout lnlContent = new LinearLayout(mContext);
-            lnlContent.setOrientation(LinearLayout.HORIZONTAL);
-            TextViewPoppinBold tvContent = new TextViewPoppinBold(mContext);
-            TextView tvContentText = new TextView(mContext);
-            tvContent.setText("Number:");
-            tvContentText.setText("    " + qreTelephone.getTel());
-            lnlContent.addView(tvContent);
-            lnlContent.addView(tvContentText);
-            lnlResultHistoryContent.addView(lnlContent);
-            tvResultHistoryOptionOne.setText("Call");
-            tvResultHistoryOptionOne.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse(qrScan.getScanText()));
-                    mContext.startActivity(intent);
-                }
-            });
-        }
-    }
-
-    private void setContentWifi(long date, QrWifi qrWifi) {
-        lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-        imvResultHistoryCategory.setImageResource(R.drawable.add_wifi);
-        String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
-        tvResultHistoryDateCreate.setText(dateString);
-        tvResultHistoryCategory.setText("QR CODE");
-        tvResultHistoryCategoryQR.setText("WIFI");
-        LinearLayout lnlNetWork = new LinearLayout(mContext);
-        lnlNetWork.setOrientation(LinearLayout.HORIZONTAL);
-        TextViewPoppinBold tvWifiCategoryName = new TextViewPoppinBold(mContext);
-        TextView tvWifiName = new TextView(mContext);
-        tvWifiCategoryName.setText("Network:");
-        tvWifiName.setText("    " + qrWifi.getWifiName());
-        lnlNetWork.addView(tvWifiCategoryName);
-        lnlNetWork.addView(tvWifiName);
-        lnlResultHistoryContent.addView(lnlNetWork);
-
-        LinearLayout lnlWifiPass = new LinearLayout(mContext);
-        lnlWifiPass.setOrientation(LinearLayout.HORIZONTAL);
-        TextViewPoppinBold tvWifiCategoryPass = new TextViewPoppinBold(mContext);
-        TextView tvWifiPass = new TextView(mContext);
-        tvWifiCategoryPass.setText("Pass:");
-        tvWifiPass.setText("    " + qrWifi.getPass());
-        lnlWifiPass.addView(tvWifiCategoryPass);
-        lnlWifiPass.addView(tvWifiPass);
-        lnlResultHistoryContent.addView(lnlWifiPass);
-
-        LinearLayout lnlWifiEAP = new LinearLayout(mContext);
-        lnlWifiEAP.setOrientation(LinearLayout.HORIZONTAL);
-        TextViewPoppinBold tvWifiCategoryEAP = new TextViewPoppinBold(mContext);
-        TextView tvWifiEAP = new TextView(mContext);
-        tvWifiCategoryEAP.setText("EAP:");
-        tvWifiEAP.setText("    " + qrWifi.getType());
-        lnlWifiEAP.addView(tvWifiCategoryEAP);
-        lnlWifiEAP.addView(tvWifiEAP);
-        lnlResultHistoryContent.addView(lnlWifiEAP);
-        tvResultHistoryOptionOne.setText("Connect to \n Network");
+    private void setContentError() {
+        type = QrScan.QRType.ERROR;
+        mqrScan.setTypeQR(type);
+        lnlResultInfo.setVisibility(GONE);
+        imvQrScanResultIconCategory.setVisibility(GONE);
+        imvQrScanResultRender.setImageResource(R.drawable.ic_error);
+        tvQrScanResultDate.setText("########");
+        tvQrScanResultCategoryName.setText(R.string.error);
 
     }
-
 
     private void setContentText(long date, QrText qrText) {
-        lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-
-        imvResultHistoryCategory.setImageResource(R.drawable.add_text);
+        type = QrScan.QRType.TEXT;
+        mqrScan.setTypeQR(type);
+        lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.add_text);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
-        tvResultHistoryDateCreate.setText(dateString);
-        tvResultHistoryCategory.setText("QR CODE");
-        tvResultHistoryCategoryQR.setText("Text");
-
-        LinearLayout lnlContent = new LinearLayout(mContext);
-        lnlContent.setOrientation(LinearLayout.VERTICAL);
-        TextViewPoppinBold tvContent = new TextViewPoppinBold(mContext);
-        TextView tvContentText = new TextView(mContext);
-        tvContent.setText("Text");
-        tvContentText.setText(qrText.getText());
-        tvContentText.setMaxLines(5);
-        tvContent.setEllipsize(TextUtils.TruncateAt.END);
-
-        lnlContent.addView(tvContent);
-        lnlContent.addView(tvContentText);
-        lnlResultHistoryContent.addView(lnlContent);
-        tvResultHistoryOptionOne.setText("Copy");
-        imvResultHistoryCategory.setVisibility(VISIBLE);
+        tvQrScanResultDate.setText(dateString);
+        tvQrScanResultCategoryName.setText(R.string.text);
+        LinearLayout lnlText = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameCategoryText = new TextViewPoppinBold(mContext);
+        tvNameCategoryText.setText(R.string.content);
+        tvNameCategoryText.setTextColor(Color.WHITE);
+        tvNameCategoryText.setTextSize(13);
+        TextView tvTextContent = new TextView(mContext);
+        tvTextContent.setText(qrText.getText());
+        tvTextContent.setTextColor(Color.WHITE);
+        tvTextContent.setTextSize(13);
+        lnlText.setOrientation(LinearLayout.VERTICAL);
+        lnlText.addView(tvNameCategoryText);
+        lnlText.addView(tvTextContent);
+        lnlResultInfo.addView(lnlText);
     }
 
     private void setContentMess(long date, QrMess qrMess) {
-        lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-        imvResultHistoryCategory.setImageResource(R.drawable.add_sms);
+        type = QrScan.QRType.SMS;
+        mqrScan.setTypeQR(type);
+        lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.add_sms);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
-        tvResultHistoryDateCreate.setText(dateString);
-        tvResultHistoryCategory.setText("QR CODE");
-        tvResultHistoryCategoryQR.setText("SMS");
+        tvQrScanResultDate.setText(dateString);
+        tvQrScanResultCategoryName.setText(R.string.mess);
+        LinearLayout linearLayoutPhone = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameCategory = new TextViewPoppinBold(mContext);
+        tvNameCategory.setText(R.string.phone);
+        tvNameCategory.setTextColor(Color.WHITE);
+        tvNameCategory.setTextSize(13);
+        TextView tvPhoneNumber = new TextView(mContext);
+        tvPhoneNumber.setText(qrMess.getSendBy());
+        tvPhoneNumber.setTextColor(Color.WHITE);
+        tvPhoneNumber.setTextSize(13);
+        linearLayoutPhone.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayoutPhone.addView(tvNameCategory);
+        linearLayoutPhone.addView(tvPhoneNumber);
+        lnlResultInfo.addView(linearLayoutPhone);
+//        lnlResultInfo.addView(drawView);
+        LinearLayout lnlMess = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameCategoryMess = new TextViewPoppinBold(mContext);
+        tvNameCategoryMess.setText(R.string.content);
+        tvNameCategoryMess.setTextColor(Color.WHITE);
+        tvNameCategoryMess.setTextSize(13);
+        TextView tvContent = new TextView(mContext);
+        tvContent.setText(qrMess.getContent());
+        tvContent.setTextColor(Color.WHITE);
+        lnlMess.setOrientation(LinearLayout.VERTICAL);
+        lnlMess.addView(tvNameCategoryMess);
+        lnlMess.addView(tvContent);
+        lnlResultInfo.addView(lnlMess);
 
-        LinearLayout lnlEmail = new LinearLayout(mContext);
-        lnlEmail.setOrientation(LinearLayout.HORIZONTAL);
-        TextViewPoppinBold tvWifiCategoryName = new TextViewPoppinBold(mContext);
+    }
+
+    private void setContentWifi(long date, QrWifi qrWifi) {
+        type = QrScan.QRType.WIFI;
+        mqrScan.setTypeQR(type);
+        lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.add_wifi);
+        String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
+        tvQrScanResultDate.setText(dateString);
+        tvQrScanResultCategoryName.setText(R.string.wifi);
+        LinearLayout lnlPhone = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameWifi = new TextViewPoppinBold(mContext);
+        tvNameWifi.setText(R.string.network);
+        tvNameWifi.setTextColor(Color.WHITE);
+        tvNameWifi.setTextSize(13);
+        TextView tvWifiName = new TextView(mContext);
+        tvWifiName.setText(qrWifi.getWifiName());
+        tvWifiName.setTextColor(Color.WHITE);
+        tvWifiName.setTextSize(13);
+        lnlPhone.setOrientation(LinearLayout.HORIZONTAL);
+        lnlPhone.addView(tvNameWifi);
+        lnlPhone.addView(tvWifiName);
+        lnlResultInfo.addView(lnlPhone);
+
+        LinearLayout lnlPass = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameCategoryPass = new TextViewPoppinBold(mContext);
+        tvNameCategoryPass.setText(R.string.pass);
+        tvNameCategoryPass.setTextColor(Color.WHITE);
+        tvNameCategoryPass.setTextSize(13);
+        TextView tvPassContent = new TextView(mContext);
+        tvPassContent.setText(qrWifi.getPass());
+        tvPassContent.setTextColor(Color.WHITE);
+        lnlPass.setOrientation(LinearLayout.HORIZONTAL);
+        lnlPass.addView(tvNameCategoryPass);
+        lnlPass.addView(tvPassContent);
+        lnlResultInfo.addView(lnlPass);
+
+        LinearLayout lnlType = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameCategoryType = new TextViewPoppinBold(mContext);
+        tvNameCategoryType.setText(R.string.epa);
+        tvNameCategoryType.setTextColor(Color.WHITE);
+        tvNameCategoryType.setTextSize(13);
+        TextView tvEAP = new TextView(mContext);
+        tvEAP.setText(qrWifi.getType());
+        tvEAP.setTextColor(Color.WHITE);
+        lnlType.setOrientation(LinearLayout.HORIZONTAL);
+        lnlType.addView(tvNameCategoryType);
+        lnlType.addView(tvEAP);
+        lnlResultInfo.addView(lnlType);
+
+    }
+
+    private void setContentMail(long date, QrEmail qrEmail) {
+        type = QrScan.QRType.EMAIL;
+        mqrScan.setTypeQR(type);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.add_email);
+        String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
+        tvQrScanResultDate.setText(dateString);
+        tvQrScanResultCategoryName.setText(R.string.email);
+        LinearLayout linearLayoutEmail = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameCategoryEmail = new TextViewPoppinBold(mContext);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            tvNameCategoryEmail.setText(R.string.email);
+        }
+        tvNameCategoryEmail.setTextColor(Color.WHITE);
+        tvNameCategoryEmail.setTextSize(13);
         TextView tvEmailName = new TextView(mContext);
-        tvWifiCategoryName.setText("Phone: ");
-        tvEmailName.setText("    " + qrMess.getSendBy());
-        tvEmailName.setMaxLines(1);
-        tvEmailName.setEllipsize(TextUtils.TruncateAt.END);
-        lnlEmail.addView(tvWifiCategoryName);
-        lnlEmail.addView(tvEmailName);
-        lnlResultHistoryContent.addView(lnlEmail);
-
+        tvEmailName.setText(qrEmail.getSendBy());
+        tvEmailName.setTextColor(Color.WHITE);
+        tvEmailName.setTextSize(13);
+        linearLayoutEmail.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayoutEmail.addView(tvNameCategoryEmail);
+        linearLayoutEmail.addView(tvEmailName);
+        lnlResultInfo.addView(linearLayoutEmail);
+        lnlResultInfo.addView(drawView);
+        //pass
         LinearLayout lnlSub = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameCategorySub = new TextViewPoppinBold(mContext);
+        tvNameCategorySub.setText(R.string.subject);
+        tvNameCategorySub.setTextColor(Color.WHITE);
+        tvNameCategorySub.setTextSize(13);
+        TextView tvContent = new TextView(mContext);
+        tvContent.setText(qrEmail.getSendTo());
+        tvContent.setTextColor(Color.WHITE);
         lnlSub.setOrientation(LinearLayout.HORIZONTAL);
-        TextViewPoppinBold tvSMSSub = new TextViewPoppinBold(mContext);
-        TextView tvSubContent = new TextView(mContext);
-        tvSMSSub.setText("Content: ");
-        tvSubContent.setText("    " + qrMess.getContent());
-        tvSubContent.setMaxLines(1);
-        tvSubContent.setEllipsize(TextUtils.TruncateAt.END);
-        lnlSub.addView(tvSMSSub);
-        lnlSub.addView(tvSubContent);
-        lnlResultHistoryContent.addView(lnlSub);
-        tvResultHistoryOptionOne.setText("Send Mess");
+        lnlSub.addView(tvNameCategorySub);
+        lnlSub.addView(tvContent);
+        lnlResultInfo.addView(lnlSub);
+
+//type
+        LinearLayout lnlContent = new LinearLayout(mContext);
+        TextViewPoppinBold tvNameCategoryContent = new TextViewPoppinBold(mContext);
+        tvNameCategoryContent.setText(R.string.content);
+        tvNameCategoryContent.setTextColor(Color.WHITE);
+        tvNameCategoryContent.setTextSize(13);
+        TextView tvContentEmail = new TextView(mContext);
+        tvContentEmail.setText(qrEmail.getContent());
+        tvContentEmail.setTextColor(Color.WHITE);
+        lnlContent.setOrientation(LinearLayout.VERTICAL);
+        lnlContent.addView(tvNameCategoryContent);
+        lnlContent.addView(tvContentEmail);
+        lnlResultInfo.addView(lnlContent);
+
+    }
+
+    private void setContentTel(long date, QreTelephone qreTelephone) {
+        type = QrScan.QRType.PHONE;
+        mqrScan.setTypeQR(type);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.add_call);
+        // or you already have long value of date, use this instead of milliseconds variable.
+        String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
+        tvQrScanResultDate.setText(dateString);
+        tvQrScanResultCategoryName.setText(R.string.phone);
+        TextViewPoppinBold tvNameCategory = new TextViewPoppinBold(mContext);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            tvNameCategory.setText(R.string.number);
+        }
+        tvNameCategory.setTextColor(Color.WHITE);
+        tvNameCategory.setTextSize(13);
+        TextView tvTel = new TextView(mContext);
+        tvTel.setText(qreTelephone.getTel());
+        tvTel.setTextColor(Color.WHITE);
+        tvTel.setTextSize(13);
+        lnlResultInfo.addView(tvNameCategory);
+        lnlResultInfo.addView(tvTel);
+
+
+    }
+
+
+    private void setContentUrl(long date, QrUrl qrUrl) {
+        type = QrScan.QRType.URL;
+        mqrScan.setTypeQR(type);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.add_uri);
+        String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
+        tvQrScanResultDate.setText(dateString);
+        tvQrScanResultCategoryName.setText(R.string.uri);
+        TextViewPoppinBold tvNameCategory = new TextViewPoppinBold(mContext);
+        tvNameCategory.setText(R.string.uri);
+        tvNameCategory.setTextColor(Color.WHITE);
+        tvNameCategory.setTextSize(13);
+        TextView tvUrl = new TextView(mContext);
+        tvUrl.setText(qrUrl.getUrl());
+        tvUrl.setTextColor(Color.WHITE);
+        tvUrl.setTextSize(13);
+        lnlResultInfo.addView(tvNameCategory);
+        lnlResultInfo.addView(tvUrl);
+
 
     }
 
 
     @Override
     public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.imv_scanResult_back:
+            case R.id.tv_scanResult_cancel:
+                setVisibility(GONE);
+                lnlResultInfo.removeAllViews();
+                mainActivity.onBackPressed();
+//
+                break;
+            case R.id.tv_scanResult_save:
+                setVisibility(View.GONE);
+                BitmapDrawable drawable = (BitmapDrawable) imvQrScanResultRender.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+//                saveImage(bitmap);
+                ShareUtils.sharePalette(mContext, bitmap);
+                imvQrScanResultBack.performClick();
 
-        if (view == imvResultGenerateBack) {
+                break;
 
-            lnlResultHistoryContent.removeAllViews();
-            mMainActivity.onBackPressed();
-
-        } else if (view == tvResultHistoryShare) {
-            ShareUtils.shareQR(mContext, qrScan);
-        } else if (view == tvResultHistoryOptionOne) {
-            IntentUtils intentUtils = new IntentUtils();
-            intentUtils.IntentAction(mContext, qrContent, type);
         }
 
-
     }
 
-
-
-    public interface BackToGenerate {
-        void onBackGenerate();
+    public interface iSaveQrScan {
+        void saveQr(QrScan qrScan);
     }
 
+    private iSaveQrScan saveQrScanListener;
 
+
+    private void saveImage(Bitmap bitmap) {
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            ContentValues values = contentValues();
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/" + mContext.getString(R.string.app_name));
+            values.put(MediaStore.Images.Media.IS_PENDING, true);
+
+            Uri uri = mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            if (uri != null) {
+                try {
+                    saveImageToStream(bitmap, mContext.getContentResolver().openOutputStream(uri));
+                    values.put(MediaStore.Images.Media.IS_PENDING, false);
+                    mContext.getContentResolver().update(uri, values, null, null);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        } else {
+            File directory = new File(Environment.getExternalStorageDirectory().toString() + '/' + mContext.getString(R.string.app_name));
+
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            String fileName = System.currentTimeMillis() + ".png";
+            File file = new File(directory, fileName);
+            try {
+                saveImageToStream(bitmap, new FileOutputStream(file));
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+                mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private ContentValues contentValues() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+        }
+        return values;
+    }
+
+    private void saveImageToStream(Bitmap bitmap, OutputStream outputStream) {
+        if (outputStream != null) {
+            try {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                outputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

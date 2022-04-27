@@ -98,7 +98,7 @@
 
     </androidx.cardview.widget.CardView>
 
-    <com.example.qrscaner.view.ShowQrGenerate
+    <com.example.qrscaner.view.ShowResultScanQR
         android:id="@+id/rhs_scanFragment_show"
         android:visibility="gone"
         android:layout_width="match_parent"

@@ -35,7 +35,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
     private int id;
     private EditText edtContent;
     private QrScan.QRType typeQR;
-    private boolean isCheckWifi = true;
+    private final boolean isCheckWifi = true;
 
     public ViewGenerateQRCode(@NonNull Context context) {
         super(context);
@@ -66,11 +66,11 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
         this.id = id;
         if (id == 0) {
             typeQR = QrScan.QRType.BAR39;
-            tvGenCategory.setText("BAR 39");
+            tvGenCategory.setText(R.string.bar39);
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
-            tvCategoryText.setText("BAR 39");
+            tvCategoryText.setText(R.string.bar39);
             edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
@@ -469,9 +469,9 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                 @Override
                 public void onClick(View view) {
                     type = "Free";
-                        acbFree.setTextColor(Color.BLUE);
-                        acbWep.setTextColor(Color.BLACK);
-                        acbWpa.setTextColor(Color.BLACK);
+                    acbFree.setTextColor(Color.BLUE);
+                    acbWep.setTextColor(Color.BLACK);
+                    acbWpa.setTextColor(Color.BLACK);
 
                 }
             });
@@ -480,9 +480,9 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                 public void onClick(View view) {
                     type = "WEP";
 
-                        acbWep.setTextColor(Color.BLUE);
-                        acbFree.setTextColor(Color.BLACK);
-                        acbWpa.setTextColor(Color.BLACK);
+                    acbWep.setTextColor(Color.BLUE);
+                    acbFree.setTextColor(Color.BLACK);
+                    acbWpa.setTextColor(Color.BLACK);
 
                 }
             });
@@ -490,9 +490,9 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                 @Override
                 public void onClick(View view) {
                     type = "WPA";
-                        acbWpa.setTextColor(Color.BLUE);
-                        acbFree.setTextColor(Color.BLACK);
-                        acbWep.setTextColor(Color.BLACK);
+                    acbWpa.setTextColor(Color.BLUE);
+                    acbFree.setTextColor(Color.BLACK);
+                    acbWep.setTextColor(Color.BLACK);
                 }
             });
 

@@ -3,14 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:clickable="true"
     tools:context=".fragment.ResultScanFragment">
 
     <!-- TODO: Update blank fragment layout -->
-   <com.example.qrscaner.view.ShowQrGenerate
+   <com.example.qrscaner.view.ShowResultScanQR
        android:id="@+id/rhs_result_fragment_Qr"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
-   </com.example.qrscaner.view.ShowQrGenerate>
+   </com.example.qrscaner.view.ShowResultScanQR>
 
 </FrameLayout>

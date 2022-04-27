@@ -1,6 +1,5 @@
 package com.example.qrscaner.fragment;
 
-import static com.example.qrscaner.fragment.ShowHistoryFragment.SEND_DATA_SHOW;
 import static com.example.qrscaner.fragment.ShowQrGenerateFragment.SEND_GEN_QR;
 import static com.example.qrscaner.utils.ShareUtils.sharePalette;
 
@@ -44,9 +43,9 @@ import com.example.qrscaner.adapter.GenerateHistoryAdapter;
 import com.example.qrscaner.adapter.QrCodeGenerateAdapter;
 import com.example.qrscaner.config.Constant;
 
-import com.example.qrscaner.view.QrGenerateResult;
-import com.example.qrscaner.view.SaveQRGenerate;
 import com.example.qrscaner.view.ShowQrGenerate;
+import com.example.qrscaner.view.SaveQRGenerate;
+import com.example.qrscaner.view.ShowResultScanQR;
 import com.example.qrscaner.view.ViewGenerateQRCode;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -59,7 +58,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, SaveQRGenerate.SavaQr, ViewGenerateQRCode.IBackToGenerate, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, ShowQrGenerate.BackToGenerate, SaveQRGenerate.SaveBackToGenerate {
+public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, SaveQRGenerate.SavaQr, ViewGenerateQRCode.IBackToGenerate, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, SaveQRGenerate.SaveBackToGenerate {
     private static final int REQUEST_WRITE_STORAGE = 1000;
     private static final int REQUEST_READ_STORAGE = 999;
     private static final int BITMAP_WIDTH = 955;
@@ -80,7 +79,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     private GenerateReceiver generateReceiver;
     private Bitmap bmShare;
     private boolean isGenMenu;
-    private QrGenerateResult mResultHistoryGen;
+    private ShowQrGenerate mResultHistoryGen;
     private SaveQRGenerate saveQRGenerate;
 
 
@@ -329,7 +328,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                         }
                     }
                      sharePalette(getActivity(),bitmap);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }
@@ -403,13 +402,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
     @Override
     public void onShowListener(QrGenerate qrGenerate) {
-        mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
-//        imvGenerateGotoCreate.setVisibility(View.GONE);
-//        imvGenerateBackground.setVisibility(View.GONE);
-//        tvGenerateCreate.setVisibility(View.GONE);
-//        tvGenerateCreateTitle.setVisibility(View.GONE);
-//        mResultHistoryGen.setVisibility(View.VISIBLE);
-//        mResultHistoryGen.setupData(qrGenerate);
+
         Bundle bundle = new Bundle();
         ShowQrGenerateFragment fragment = new ShowQrGenerateFragment();
         bundle.putSerializable(SEND_GEN_QR,qrGenerate);
@@ -417,27 +410,6 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         mMainActivity.fragmentLoad(fragment,ShowQrGenerateFragment.class.getSimpleName());
 
 
-    }
-
-    @Override
-    public void onBackGenerate() {
-
-        isGenMenu = false;
-        imvGenerateGotoCreate.setImageResource(R.drawable.imv_history_plus_history);
-        if (qrGenerateList.size() > 0) {
-            lnlGenQrGotoCreate.setVisibility(View.GONE);
-            rcvGenerateFragmentHistory.setVisibility(View.VISIBLE);
-
-        } else {
-            lnlGenQrGotoCreate.setVisibility(View.VISIBLE);
-            nsvGenQrItem.setVisibility(View.GONE);
-        }
-        imvGenerateGotoCreate.setVisibility(View.VISIBLE);
-        imvGenerateBackground.setVisibility(View.VISIBLE);
-        tvGenerateCreate.setVisibility(View.VISIBLE);
-        tvGenerateCreateTitle.setVisibility(View.VISIBLE);
-        mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
-        mResultHistoryGen.setVisibility(View.GONE);
     }
 
     @Override

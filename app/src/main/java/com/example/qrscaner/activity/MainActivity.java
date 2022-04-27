@@ -35,18 +35,18 @@ import com.example.qrscaner.SendData;
 import com.example.qrscaner.fragment.ShowHistoryFragment;
 import com.example.qrscaner.fragment.ShowQrGenerateFragment;
 import com.example.qrscaner.myshareferences.MyDataLocal;
-import com.example.qrscaner.view.QrGenerateResult;
+import com.example.qrscaner.view.ShowQrGenerate;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, QrGenerateResult.iSaveQrScan {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, ShowQrGenerate.iSaveQrScan {
     private BottomNavigationView bottomNavigationView;
     public static FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
-    private QrGenerateResult conActivityMainResultView;
+    private ShowQrGenerate conActivityMainResultView;
     private RelativeLayout rrlMainActivity;
     private Fragment fragment;
     private ConstraintLayout ctlMainEditItem;
@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentTransaction = fragmentManager.beginTransaction();
         if (tag.equals(ResultScanFragment.class.getSimpleName()) || tag.equals(ShowHistoryFragment.class.getSimpleName()) || tag.equals(ShowQrGenerateFragment.class.getSimpleName())) {
             fragmentTransaction.replace(R.id.fml_main_qrScanResult, fragment, tag);
+            mFmlMainResultQR.setVisibility(View.VISIBLE);
         } else {
             fragmentTransaction.replace(R.id.frame_main__content, fragment, tag);
         }
@@ -252,7 +253,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (getTopFragment().getTag().equals(ResultScanFragment.class.getSimpleName())) {
             fragmentManager.beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(ResultScanFragment.class.getSimpleName()))).commit();
             getSupportFragmentManager().popBackStack();
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ScannerFragment.class.getSimpleName());
+            if (fragment instanceof ScannerFragment) {
+                ((ScannerFragment) fragment).resumeCamera();
+
+            }
             mFmlMainResultQR.setVisibility(View.GONE);
+
+
 
         } else if (getTopFragment().getTag().equals(ShowHistoryFragment.class.getSimpleName())) {
             fragmentManager.beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(ShowHistoryFragment.class.getSimpleName()))).commit();
@@ -264,10 +272,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getSupportFragmentManager().popBackStack();
             mFmlMainResultQR.setVisibility(View.GONE);
             bottomNavigationView.setVisibility(View.VISIBLE);
-        }
-
-        else {
-
+        } else if (getTopFragment().getTag().equals(ScannerFragment.class.getSimpleName()) || getTopFragment().getTag().equals(GenerateFragment.class.getSimpleName()) ||  getTopFragment().getTag().equals(SettingFragment.class.getSimpleName())  ||  getTopFragment().getTag().equals(HistoryFragment.class.getSimpleName())) {
             if (time + TIME_WAIT > System.currentTimeMillis()) {
                 System.exit(0);
             } else {
