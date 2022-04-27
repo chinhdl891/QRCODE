@@ -33,9 +33,9 @@ import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
 import com.example.qrscaner.fragment.ShowHistoryFragment;
+import com.example.qrscaner.fragment.ShowQrGenerateFragment;
 import com.example.qrscaner.myshareferences.MyDataLocal;
 import com.example.qrscaner.view.QrGenerateResult;
-import com.example.qrscaner.view.ResultScanQr;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -104,13 +104,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        conActivityMainResultView.setCallbackCancelResult(() -> {
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ScannerFragment.class.getSimpleName());
-            if (fragment instanceof ScannerFragment) {
-                ((ScannerFragment) fragment).resumeCamera();
-
-            }
-        });
+//        conActivityMainResultView.setCallbackCancelResult(() -> {
+//            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ScannerFragment.class.getSimpleName());
+//            if (fragment instanceof ScannerFragment) {
+//                ((ScannerFragment) fragment).resumeCamera();
+//
+//            }
+//        });
     }
 
     private void getInfoDisPlay() {
@@ -149,9 +149,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //fml_main_qrScanResult
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        if (tag.equals(ResultScanFragment.class.getSimpleName()) || tag.equals(ShowHistoryFragment.class.getSimpleName())) {
+        if (tag.equals(ResultScanFragment.class.getSimpleName()) || tag.equals(ShowHistoryFragment.class.getSimpleName()) || tag.equals(ShowQrGenerateFragment.class.getSimpleName())) {
             fragmentTransaction.replace(R.id.fml_main_qrScanResult, fragment, tag);
-        }else {
+        } else {
             fragmentTransaction.replace(R.id.frame_main__content, fragment, tag);
         }
         fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
@@ -248,17 +248,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
 
-        if (fragmentManager.getFragments().size() > 0) {
 
-            if (getTopFragment().getTag().equals(ResultScanFragment.class.getSimpleName())) {
-                fragmentManager.beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(ResultScanFragment.class.getSimpleName()))).commit();
-                getSupportFragmentManager().popBackStack();
-                mFmlMainResultQR.setVisibility(View.GONE);
+        if (getTopFragment().getTag().equals(ResultScanFragment.class.getSimpleName())) {
+            fragmentManager.beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(ResultScanFragment.class.getSimpleName()))).commit();
+            getSupportFragmentManager().popBackStack();
+            mFmlMainResultQR.setVisibility(View.GONE);
 
-            }
+        } else if (getTopFragment().getTag().equals(ShowHistoryFragment.class.getSimpleName())) {
+            fragmentManager.beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(ShowHistoryFragment.class.getSimpleName()))).commit();
+            getSupportFragmentManager().popBackStack();
+            mFmlMainResultQR.setVisibility(View.GONE);
 
+        } else if (getTopFragment().getTag().equals(ShowQrGenerateFragment.class.getSimpleName())) {
+            fragmentManager.beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(ShowQrGenerateFragment.class.getSimpleName()))).commit();
+            getSupportFragmentManager().popBackStack();
+            mFmlMainResultQR.setVisibility(View.GONE);
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        }
 
-        } else {
+        else {
 
             if (time + TIME_WAIT > System.currentTimeMillis()) {
                 System.exit(0);

@@ -50,7 +50,7 @@ public class QrGenerateResult extends ConstraintLayout implements View.OnClickLi
     private Context mContext;
     private ImageView imvQrScanResultRender, imvQrScanResultIconCategory, imvQrScanResultBack;
     private TextView tvQrScanResultCategoryName, tvQrScanResultDate, tvQrScanResultCancel, tvQrScanResultShare;
-    private ResultScanQr.BackToGenerate backToGenerate;
+    private ShowQrGenerate.BackToGenerate backToGenerate;
 
     private LinearLayout lnlResultInfo;
     private DrawView drawView;
@@ -102,8 +102,8 @@ public class QrGenerateResult extends ConstraintLayout implements View.OnClickLi
     }
 
 
-    public void setupData(QrGenerate qrGenerate, ResultScanQr.BackToGenerate backToGenerate) {
-        this.backToGenerate = backToGenerate;
+    public void setupData(QrGenerate qrGenerate) {
+
         mqrScan = new QrScan();
         mqrScan.setScanText(qrGenerate.getContent());
         mqrScan.setTypeQR(qrGenerate.getQrType());
@@ -459,15 +459,9 @@ public class QrGenerateResult extends ConstraintLayout implements View.OnClickLi
 
     private iSaveQrScan saveQrScanListener;
 
-    public interface CallbackCancelResult {
-        void cancel();
-    }
 
-    private CallbackCancelResult callbackCancelResult;
 
-    public void setCallbackCancelResult(CallbackCancelResult callbackCancelResult) {
-        this.callbackCancelResult = callbackCancelResult;
-    }
+
 
     private void saveImage(Bitmap bitmap) {
         if (android.os.Build.VERSION.SDK_INT >= 29) {

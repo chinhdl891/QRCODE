@@ -27,14 +27,13 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
 import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.myshareferences.MyDataLocal;
-import com.example.qrscaner.view.ResultScanQr;
+import com.example.qrscaner.view.ShowQrGenerate;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
@@ -60,7 +59,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     private ImageView imvScanFragmentOpenCam, imvScanFragmentSwitchFlash;
     private boolean isFlash;
     private Vibrator vibrator;
-    private ResultScanQr resultScan;
+    private ShowQrGenerate resultScan;
     private LinearLayout lnlScanFragmentZoom;
     private CardView cvScanFragmentMenu;
     private MainActivity mMainActivity;

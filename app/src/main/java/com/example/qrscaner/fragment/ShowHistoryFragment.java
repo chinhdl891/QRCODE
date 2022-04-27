@@ -15,7 +15,7 @@ import com.example.qrscaner.view.ResultHistoryQr;
 
 public class ShowHistoryFragment extends Fragment {
     private ResultHistoryQr mResultHistoryQr;
-    public static String SEND_DATA_SHOW="send_data_show";
+    public static String SEND_DATA_SHOW = "send_data_show";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -24,11 +24,11 @@ public class ShowHistoryFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_show_history, container, false);
         mResultHistoryQr = view.findViewById(R.id.rhq_result_fragment);
-       Bundle bundle = getArguments();
-       if (bundle!=null){
-           QrScan qrScan = (QrScan) bundle.getSerializable(SEND_DATA_SHOW);
-           mResultHistoryQr.setupData(qrScan);
-       }
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            QrScan qrScan = (QrScan) bundle.getSerializable(SEND_DATA_SHOW);
+            mResultHistoryQr.setupData(qrScan, getActivity());
+        }
         return view;
     }
 }

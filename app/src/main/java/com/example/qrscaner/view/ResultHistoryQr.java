@@ -1,6 +1,6 @@
 package com.example.qrscaner.view;
 
-import static com.example.qrscaner.view.ResultScanQr.resizeImage;
+import static com.example.qrscaner.view.ShowQrGenerate.resizeImage;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -387,8 +387,6 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
     public void onClick(View view) {
         if (view == imvResultHistoryBack) {
             mainActivity.onBackPressed();
-//            lnlResultHistoryContent.removeAllViews();
-//            backToHistory.onBackListener();
         }
         if (view == tvResultHistoryOptionOne) {
             IntentUtils intentUtils = new IntentUtils();

@@ -1,5 +1,7 @@
 package com.example.qrscaner.fragment;
 
+import static com.example.qrscaner.fragment.ShowHistoryFragment.SEND_DATA_SHOW;
+import static com.example.qrscaner.fragment.ShowQrGenerateFragment.SEND_GEN_QR;
 import static com.example.qrscaner.utils.ShareUtils.sharePalette;
 
 import android.Manifest;
@@ -44,7 +46,7 @@ import com.example.qrscaner.config.Constant;
 
 import com.example.qrscaner.view.QrGenerateResult;
 import com.example.qrscaner.view.SaveQRGenerate;
-import com.example.qrscaner.view.ResultScanQr;
+import com.example.qrscaner.view.ShowQrGenerate;
 import com.example.qrscaner.view.ViewGenerateQRCode;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -57,7 +59,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, SaveQRGenerate.SavaQr, ViewGenerateQRCode.IBackToGenerate, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, ResultScanQr.BackToGenerate, SaveQRGenerate.SaveBackToGenerate {
+public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, SaveQRGenerate.SavaQr, ViewGenerateQRCode.IBackToGenerate, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, ShowQrGenerate.BackToGenerate, SaveQRGenerate.SaveBackToGenerate {
     private static final int REQUEST_WRITE_STORAGE = 1000;
     private static final int REQUEST_READ_STORAGE = 999;
     private static final int BITMAP_WIDTH = 955;
@@ -402,12 +404,17 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     @Override
     public void onShowListener(QrGenerate qrGenerate) {
         mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
-        imvGenerateGotoCreate.setVisibility(View.GONE);
-        imvGenerateBackground.setVisibility(View.GONE);
-        tvGenerateCreate.setVisibility(View.GONE);
-        tvGenerateCreateTitle.setVisibility(View.GONE);
-        mResultHistoryGen.setVisibility(View.VISIBLE);
-        mResultHistoryGen.setupData(qrGenerate, this);
+//        imvGenerateGotoCreate.setVisibility(View.GONE);
+//        imvGenerateBackground.setVisibility(View.GONE);
+//        tvGenerateCreate.setVisibility(View.GONE);
+//        tvGenerateCreateTitle.setVisibility(View.GONE);
+//        mResultHistoryGen.setVisibility(View.VISIBLE);
+//        mResultHistoryGen.setupData(qrGenerate);
+        Bundle bundle = new Bundle();
+        ShowQrGenerateFragment fragment = new ShowQrGenerateFragment();
+        bundle.putSerializable(SEND_GEN_QR,qrGenerate);
+        fragment.setArguments(bundle);
+        mMainActivity.fragmentLoad(fragment,ShowQrGenerateFragment.class.getSimpleName());
 
 
     }

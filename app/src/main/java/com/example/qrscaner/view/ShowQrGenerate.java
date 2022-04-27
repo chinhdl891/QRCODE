@@ -51,7 +51,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ResultScanQr extends ConstraintLayout implements View.OnClickListener {
+public class ShowQrGenerate extends ConstraintLayout implements View.OnClickListener {
     private Context mContext;
     private View mRootView;
     private ImageView imvResultGenerateBack, imvResultHistoryCategory;
@@ -65,13 +65,13 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
     private MainActivity mMainActivity;
 
 
-    public ResultScanQr(@NonNull Context context) {
+    public ShowQrGenerate(@NonNull Context context) {
         super(context);
         mContext = context;
         init();
     }
 
-    public ResultScanQr(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ShowQrGenerate(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();

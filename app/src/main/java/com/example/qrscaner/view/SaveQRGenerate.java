@@ -116,6 +116,7 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
         String date = DateFormat.format("dd/MM/yyyy", new Date(qrGenerate.getDate())).toString();
         tvSaveDateCreate.setText(date);
         type = qrGenerate.getQrType();
+
         this.saveBackToGenerate = saveBackToGenerate;
         this.savaQr = savaQr;
         qrContent = qrGenerate.getContent();
