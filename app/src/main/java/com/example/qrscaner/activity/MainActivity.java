@@ -26,30 +26,34 @@ import com.example.qrscaner.DataBase.QrHistoryDatabase;
 import com.example.qrscaner.config.Constant;
 import com.example.qrscaner.fragment.GenerateFragment;
 import com.example.qrscaner.fragment.HistoryFragment;
+import com.example.qrscaner.fragment.ResultScanFragment;
 import com.example.qrscaner.fragment.ScannerFragment;
 import com.example.qrscaner.fragment.SettingFragment;
 import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
+import com.example.qrscaner.fragment.ShowHistoryFragment;
+import com.example.qrscaner.fragment.ShowQrGenerateFragment;
 import com.example.qrscaner.myshareferences.MyDataLocal;
-import com.example.qrscaner.view.QrScanResult;
+import com.example.qrscaner.view.ShowQrGenerate;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-import java.util.List;
+import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, QrScanResult.iSaveQrScan {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, ShowQrGenerate.iSaveQrScan {
     private BottomNavigationView bottomNavigationView;
-    private FragmentManager fragmentManager;
+    public static FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
-    private QrScanResult conActivityMainResultView;
+    private ShowQrGenerate conActivityMainResultView;
     private RelativeLayout rrlMainActivity;
     private Fragment fragment;
     private ConstraintLayout ctlMainEditItem;
     private TextViewPoppinBold tvMainNumItem;
     private ImageView imvMainItemShare, imvMainItemDelete, imvMainQrTest;
-    private FrameLayout mFrlMainContent;
+    private FrameLayout mFrlMainContent, mFmlMainResultQR;
+
     public final static int REQUEST_CAM = 100;
     public final static int REQUEST_WRITE = 100;
     private static int TIME_WAIT = 3000;
@@ -100,13 +104,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        conActivityMainResultView.setCallbackCancelResult(() -> {
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ScannerFragment.class.getSimpleName());
-            if (fragment instanceof ScannerFragment) {
-                ((ScannerFragment) fragment).resumeCamera();
-
-            }
-        });
+//        conActivityMainResultView.setCallbackCancelResult(() -> {
+//            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ScannerFragment.class.getSimpleName());
+//            if (fragment instanceof ScannerFragment) {
+//                ((ScannerFragment) fragment).resumeCamera();
+//
+//            }
+//        });
     }
 
     private void getInfoDisPlay() {
@@ -118,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void init() {
 
+        mFmlMainResultQR = findViewById(R.id.fml_main_qrScanResult);
         mFrlMainContent = findViewById(R.id.frame_main__content);
         tvMainNumItem = findViewById(R.id.tv_main__numSelect);
         imvMainItemDelete = findViewById(R.id.imv_main__delete);
@@ -125,9 +130,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ctlMainEditItem = findViewById(R.id.csl_main__edit);
         rrlMainActivity = findViewById(R.id.rll_main_activity);
         bottomNavigationView = findViewById(R.id.nv_activityMain__menu);
-        conActivityMainResultView = findViewById(R.id.con_activityMain__resultView);
+        conActivityMainResultView = findViewById(R.id.qrs_activityMain__resultView);
+
 
     }
+
 
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
@@ -139,12 +146,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void fragmentLoad(Fragment fragment, String tag) {
-
+//fml_main_qrScanResult
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.frame_main__content, fragment, tag);
+        if (tag.equals(ResultScanFragment.class.getSimpleName()) || tag.equals(ShowHistoryFragment.class.getSimpleName()) || tag.equals(ShowQrGenerateFragment.class.getSimpleName())) {
+            fragmentTransaction.replace(R.id.fml_main_qrScanResult, fragment, tag);
+            mFmlMainResultQR.setVisibility(View.VISIBLE);
+        } else {
+            fragmentTransaction.replace(R.id.frame_main__content, fragment, tag);
+        }
         fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
+
 
     }
 
@@ -152,6 +165,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void sendQr(QrScan qr) {
 
+    }
+
+    public FrameLayout getmFmlMainResultQR() {
+        return mFmlMainResultQR;
+    }
+
+    public void setmFmlMainResultQR(FrameLayout mFmlMainResultQR) {
+        this.mFmlMainResultQR = mFmlMainResultQR;
     }
 
     public ConstraintLayout getCtlMainEditItem() {
@@ -185,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void setImvMainQrTest(ImageView imvMainQrTest) {
         this.imvMainQrTest = imvMainQrTest;
     }
+
 
     @Override
     public void saveQr(QrScan qrScan) {
@@ -227,17 +249,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
 
-        if (fragmentManager.getFragments().size() > 1) {
-            tag = fragmentManager.getFragments().remove(fragmentManager.getFragments().size() - 2).getTag();
-            if (bottomNavigationView.getVisibility()==View.GONE||bottomNavigationView.getVisibility()==View.INVISIBLE){
-                bottomNavigationView.setVisibility(View.VISIBLE);
+
+        if (getTopFragment().getTag().equals(ResultScanFragment.class.getSimpleName())) {
+            fragmentManager.beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(ResultScanFragment.class.getSimpleName()))).commit();
+            getSupportFragmentManager().popBackStack();
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ScannerFragment.class.getSimpleName());
+            if (fragment instanceof ScannerFragment) {
+                ((ScannerFragment) fragment).resumeCamera();
 
             }
+            mFmlMainResultQR.setVisibility(View.GONE);
 
-            setIdBottom(tag);
-            super.onBackPressed();
-        } else {
 
+
+        } else if (getTopFragment().getTag().equals(ShowHistoryFragment.class.getSimpleName())) {
+            fragmentManager.beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(ShowHistoryFragment.class.getSimpleName()))).commit();
+            getSupportFragmentManager().popBackStack();
+            mFmlMainResultQR.setVisibility(View.GONE);
+
+        } else if (getTopFragment().getTag().equals(ShowQrGenerateFragment.class.getSimpleName())) {
+            fragmentManager.beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(ShowQrGenerateFragment.class.getSimpleName()))).commit();
+            getSupportFragmentManager().popBackStack();
+            mFmlMainResultQR.setVisibility(View.GONE);
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        } else if (getTopFragment().getTag().equals(ScannerFragment.class.getSimpleName()) || getTopFragment().getTag().equals(GenerateFragment.class.getSimpleName()) ||  getTopFragment().getTag().equals(SettingFragment.class.getSimpleName())  ||  getTopFragment().getTag().equals(HistoryFragment.class.getSimpleName())) {
             if (time + TIME_WAIT > System.currentTimeMillis()) {
                 System.exit(0);
             } else {
@@ -249,8 +284,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    public Fragment getTopFragment() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            return null;
+        }
+        String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+        return getSupportFragmentManager().findFragmentByTag(fragmentTag);
+    }
+
     private void setIdBottom(String tag) {
         if (tag.equals(ScannerFragment.class.getSimpleName())) {
+            ScannerFragment.zXingScannerView.startCamera();
             updateNavigationBarState(R.id.scan);
         } else if (tag.equals(HistoryFragment.class.getSimpleName())) {
             updateNavigationBarState(R.id.history);
@@ -283,7 +327,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         ScannerFragment.zXingScannerView.stopCamera();
     }
-
 
 
 }

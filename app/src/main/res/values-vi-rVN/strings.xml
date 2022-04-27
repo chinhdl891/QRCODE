@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QR Scaner</string>
+    <string name="pass" translatable="false">Mật Khẩu&#xA0;&#xA0;</string>
+    <string name="network" translatable="false">Tên Mạng&#xA0;&#xA0;</string>
+    <string name="subject" translatable="false">Người Nhận&#xA0;&#xA0;&#xA0;&#xA0;</string>
+    <string name="content" translatable="false">Nội Dung</string>
+    <string name="send_email">Gửi Mail</string>
+    <string name="phone" translatable="false">Điện Thoại&#xA0;&#xA0;&#xA0;</string>
+    <string name="number" translatable="false">ID</string>
+    <string name="call" translatable="false">Gọi</string>
+    <string name="product" translatable="false">Sản Phẩm</string>
+    <string name="search" translatable="false">Tìm Kiếm</string>
+    <string name="text" translatable="false">Văn Bản</string>
+    <string name="more" translatable="false">Nhiều Hơn</string>
+    <string name="open_browser" translatable="false">Mở Trình Duyệt</string>
+    <string name="uri" translatable="false">Đường Link</string>
+    <string name="connect_wifi" translatable="false">Kết Nối</string>
+    <string name="copy">Sao Chép</string>
+    <string name="sms">Tin Nhắn</string>
+    <string name="send_mess">Gửi Tin Nhắn</string>
+    <string name="phone_number">SĐT&#xA0;&#xA0;</string>
+    <string name="scanner">Quét</string>
+    <string name="history">Lịch Sử</string>
+    <string name="generate">Tạo Mã</string>
+    <string name="setting">Cài Đặt</string>
+    <string name="product_id">Mã sản phẩm:&#xA0;&#xA0;&#xA0;&#xA0;</string>
+    <string name="share">Chia sẻ</string>
+    <string name="vibrate">Rung khi quét thành công</string>
+    <string name="beep">Kêu khi quét thành công</string>
+    <string name="history_save">Lưu mã QR </string>
+    <string name="mess" translatable="false">Tin Nhắn</string>
+    <string name="error" translatable="false">Lỗi</string>
+    <string name="vibrate_title">Rung</string>
+    <string name="beep_title">Tín hiệu</string>
+    <string name="language">Ngôn Ngữ</string>
+    <string name="support">Mở rộng</string>
+    <string name="share_with_your_friends">Chia sẻ</string>
+    <string name="history_title">Lịch sử quét</string>
+    <string name="rate_app">Đánh Giá</string>
+    <string name="privacy_policy">Chính sách và bảo mật</string>
+    <string name="create_now">Tạo Mã</string>
+    <string name="qr_code_generator">Tạo mã QR &amp; BAR CODE</string>
+    <string name="create">Khởi tạo</string>
+    <string name="generate_text_empty">Chưa có mã được khởi tạo. Hãy khởi tạo nào!!!</string>
+    <string name="scan_now">Quét Ngay!</string>
+    <string name="qr_code_scanner">Quét Mã QR</string>
+    <string name="tv_history_fragment">Lịch Sử</string>
+
+</resources>

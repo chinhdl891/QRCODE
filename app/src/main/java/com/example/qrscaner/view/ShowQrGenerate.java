@@ -33,10 +33,10 @@ import com.example.qrscaner.Model.QrUrl;
 import com.example.qrscaner.Model.QrWifi;
 import com.example.qrscaner.Model.QreTelephone;
 import com.example.qrscaner.R;
+import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.utils.BitMapUtils;
 import com.example.qrscaner.utils.ShareUtils;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
-import com.example.qrscaner.view.generate.ResultScanQr;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,13 +45,14 @@ import java.io.OutputStream;
 import java.util.Date;
 
 
-public class QrScanResult extends ConstraintLayout implements View.OnClickListener {
+public class ShowQrGenerate extends ConstraintLayout implements View.OnClickListener {
     private QrScan mqrScan;
-    private View mRootView;
-    private Context mContext;
+    private final Context mContext;
+    private MainActivity mainActivity;
     private ImageView imvQrScanResultRender, imvQrScanResultIconCategory, imvQrScanResultBack;
-    private TextView tvQrScanResultCategoryName, tvQrScanResultDate, tvQrScanResultCancel, tvQrScanResultShare;
-    private ResultScanQr.BackToGenerate backToGenerate;
+    private TextView tvQrScanResultCategoryName;
+    private TextView tvQrScanResultDate;
+
 
     private LinearLayout lnlResultInfo;
     private DrawView drawView;
@@ -59,13 +60,13 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     private BitMapUtils bitMapUtils;
 
 
-    public QrScanResult(@NonNull Context context) {
+    public ShowQrGenerate(@NonNull Context context) {
         super(context);
         mContext = context;
         initView();
     }
 
-    public QrScanResult(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ShowQrGenerate(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
         initView();
@@ -75,7 +76,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 
     private void initView() {
         LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mRootView = layoutInflater.inflate(R.layout.result_scan_layout, this, true);
+        View mRootView = layoutInflater.inflate(R.layout.result_scan_layout, this, true);
 
         imvQrScanResultRender = mRootView.findViewById(R.id.imv_result_qr_render);
         imvQrScanResultIconCategory = mRootView.findViewById(R.id.imv_result_qr_category);
@@ -83,8 +84,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         tvQrScanResultDate = mRootView.findViewById(R.id.tv_save_date_create);
         lnlResultInfo = mRootView.findViewById(R.id.ll_result_qr_string);
         imvQrScanResultBack = mRootView.findViewById(R.id.imv_scanResult_back);
-        tvQrScanResultCancel = mRootView.findViewById(R.id.tv_scanResult_cancel);
-        tvQrScanResultShare = findViewById(R.id.tv_scanResult_save);
+        TextView tvQrScanResultCancel = mRootView.findViewById(R.id.tv_scanResult_cancel);
+        TextView tvQrScanResultShare = findViewById(R.id.tv_scanResult_save);
         imvQrScanResultBack.setOnClickListener(this);
         tvQrScanResultCancel.setOnClickListener(this);
         bitMapUtils = new BitMapUtils();
@@ -103,8 +104,8 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
     }
 
 
-    public void setupData(QrGenerate qrGenerate, ResultScanQr.BackToGenerate backToGenerate) {
-        this.backToGenerate = backToGenerate;
+    public void setupData(QrGenerate qrGenerate, Context context) {
+        mainActivity = (MainActivity) context;
         mqrScan = new QrScan();
         mqrScan.setScanText(qrGenerate.getContent());
         mqrScan.setTypeQR(qrGenerate.getQrType());
@@ -184,14 +185,14 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         imvQrScanResultIconCategory.setImageResource(R.drawable.ic_product);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
-        tvQrScanResultCategoryName.setText("Product");
+        tvQrScanResultCategoryName.setText(R.string.product);
         LinearLayout linearLayoutText = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryText = new TextViewPoppinBold(mContext);
-        tvNameCategoryText.setText("Product");
+        tvNameCategoryText.setText(R.string.number);
         tvNameCategoryText.setTextColor(Color.WHITE);
         tvNameCategoryText.setTextSize(13);
         TextView tvTextContent = new TextView(mContext);
-        tvTextContent.setText(qrProduct.getProduct() + "");
+        tvTextContent.setText(String.valueOf(qrProduct.getProduct()));
         tvTextContent.setTextColor(Color.WHITE);
         tvTextContent.setTextSize(13);
         linearLayoutText.setOrientation(LinearLayout.VERTICAL);
@@ -217,7 +218,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         imvQrScanResultIconCategory.setVisibility(GONE);
         imvQrScanResultRender.setImageResource(R.drawable.ic_error);
         tvQrScanResultDate.setText("########");
-        tvQrScanResultCategoryName.setText("ERROR");
+        tvQrScanResultCategoryName.setText(R.string.error);
 
     }
 
@@ -228,10 +229,10 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_text);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
-        tvQrScanResultCategoryName.setText("Text");
+        tvQrScanResultCategoryName.setText(R.string.text);
         LinearLayout lnlText = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryText = new TextViewPoppinBold(mContext);
-        tvNameCategoryText.setText("Text");
+        tvNameCategoryText.setText(R.string.content);
         tvNameCategoryText.setTextColor(Color.WHITE);
         tvNameCategoryText.setTextSize(13);
         TextView tvTextContent = new TextView(mContext);
@@ -251,10 +252,10 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_sms);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
-        tvQrScanResultCategoryName.setText("Mess");
+        tvQrScanResultCategoryName.setText(R.string.mess);
         LinearLayout linearLayoutPhone = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategory = new TextViewPoppinBold(mContext);
-        tvNameCategory.setText("Phone      ");
+        tvNameCategory.setText(R.string.phone);
         tvNameCategory.setTextColor(Color.WHITE);
         tvNameCategory.setTextSize(13);
         TextView tvPhoneNumber = new TextView(mContext);
@@ -268,7 +269,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 //        lnlResultInfo.addView(drawView);
         LinearLayout lnlMess = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryMess = new TextViewPoppinBold(mContext);
-        tvNameCategoryMess.setText("Body      ");
+        tvNameCategoryMess.setText(R.string.content);
         tvNameCategoryMess.setTextColor(Color.WHITE);
         tvNameCategoryMess.setTextSize(13);
         TextView tvContent = new TextView(mContext);
@@ -288,10 +289,10 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_wifi);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
-        tvQrScanResultCategoryName.setText("Wifi");
+        tvQrScanResultCategoryName.setText(R.string.wifi);
         LinearLayout lnlPhone = new LinearLayout(mContext);
         TextViewPoppinBold tvNameWifi = new TextViewPoppinBold(mContext);
-        tvNameWifi.setText("NetWork:     ");
+        tvNameWifi.setText(R.string.network);
         tvNameWifi.setTextColor(Color.WHITE);
         tvNameWifi.setTextSize(13);
         TextView tvWifiName = new TextView(mContext);
@@ -305,7 +306,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 
         LinearLayout lnlPass = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryPass = new TextViewPoppinBold(mContext);
-        tvNameCategoryPass.setText("Password:   ");
+        tvNameCategoryPass.setText(R.string.pass);
         tvNameCategoryPass.setTextColor(Color.WHITE);
         tvNameCategoryPass.setTextSize(13);
         TextView tvPassContent = new TextView(mContext);
@@ -318,7 +319,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 
         LinearLayout lnlType = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryType = new TextViewPoppinBold(mContext);
-        tvNameCategoryType.setText("EAP:      ");
+        tvNameCategoryType.setText(R.string.epa);
         tvNameCategoryType.setTextColor(Color.WHITE);
         tvNameCategoryType.setTextSize(13);
         TextView tvEAP = new TextView(mContext);
@@ -337,11 +338,11 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_email);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
-        tvQrScanResultCategoryName.setText("Email");
+        tvQrScanResultCategoryName.setText(R.string.email);
         LinearLayout linearLayoutEmail = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryEmail = new TextViewPoppinBold(mContext);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvNameCategoryEmail.setText("Email");
+            tvNameCategoryEmail.setText(R.string.email);
         }
         tvNameCategoryEmail.setTextColor(Color.WHITE);
         tvNameCategoryEmail.setTextSize(13);
@@ -357,7 +358,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         //pass
         LinearLayout lnlSub = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategorySub = new TextViewPoppinBold(mContext);
-        tvNameCategorySub.setText("Subject:   ");
+        tvNameCategorySub.setText(R.string.subject);
         tvNameCategorySub.setTextColor(Color.WHITE);
         tvNameCategorySub.setTextSize(13);
         TextView tvContent = new TextView(mContext);
@@ -371,7 +372,7 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 //type
         LinearLayout lnlContent = new LinearLayout(mContext);
         TextViewPoppinBold tvNameCategoryContent = new TextViewPoppinBold(mContext);
-        tvNameCategoryContent.setText("Content:   ");
+        tvNameCategoryContent.setText(R.string.content);
         tvNameCategoryContent.setTextColor(Color.WHITE);
         tvNameCategoryContent.setTextSize(13);
         TextView tvContentEmail = new TextView(mContext);
@@ -391,10 +392,10 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         // or you already have long value of date, use this instead of milliseconds variable.
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
-        tvQrScanResultCategoryName.setText("Phone");
+        tvQrScanResultCategoryName.setText(R.string.phone);
         TextViewPoppinBold tvNameCategory = new TextViewPoppinBold(mContext);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvNameCategory.setText("Phone       ");
+            tvNameCategory.setText(R.string.number);
         }
         tvNameCategory.setTextColor(Color.WHITE);
         tvNameCategory.setTextSize(13);
@@ -415,9 +416,9 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
         imvQrScanResultIconCategory.setImageResource(R.drawable.add_uri);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
-        tvQrScanResultCategoryName.setText("Uri");
+        tvQrScanResultCategoryName.setText(R.string.uri);
         TextViewPoppinBold tvNameCategory = new TextViewPoppinBold(mContext);
-        tvNameCategory.setText("Uri");
+        tvNameCategory.setText(R.string.uri);
         tvNameCategory.setTextColor(Color.WHITE);
         tvNameCategory.setTextSize(13);
         TextView tvUrl = new TextView(mContext);
@@ -438,14 +439,15 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
             case R.id.tv_scanResult_cancel:
                 setVisibility(GONE);
                 lnlResultInfo.removeAllViews();
-                backToGenerate.onBackGenerate();
+                mainActivity.onBackPressed();
+//
                 break;
             case R.id.tv_scanResult_save:
                 setVisibility(View.GONE);
                 BitmapDrawable drawable = (BitmapDrawable) imvQrScanResultRender.getDrawable();
                 Bitmap bitmap = drawable.getBitmap();
 //                saveImage(bitmap);
-                ShareUtils.sharePalette(bitmap,mContext);
+                ShareUtils.sharePalette(mContext, bitmap);
                 imvQrScanResultBack.performClick();
 
                 break;
@@ -460,15 +462,6 @@ public class QrScanResult extends ConstraintLayout implements View.OnClickListen
 
     private iSaveQrScan saveQrScanListener;
 
-    public interface CallbackCancelResult {
-        void cancel();
-    }
-
-    private CallbackCancelResult callbackCancelResult;
-
-    public void setCallbackCancelResult(CallbackCancelResult callbackCancelResult) {
-        this.callbackCancelResult = callbackCancelResult;
-    }
 
     private void saveImage(Bitmap bitmap) {
         if (android.os.Build.VERSION.SDK_INT >= 29) {

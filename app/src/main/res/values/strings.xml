@@ -1,7 +1,57 @@
 <resources>
     <string name="app_name">QR Scaner</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hit_history">You have not scanned any code before!</string>
-    <string name="generate_text_empty">You have not generated \n any code before!</string>
+
+    <string name="qr_code_title" translatable="false">QR CODE</string>
+    <string name="wifi" translatable="false">WIFI</string>
+    <string name="network">Network</string>
+    <string name="pass">Pass</string>
+    <string name="epa" translatable="false">EAP</string>
+    <string name="email" translatable="false">Email&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;</string>
+    <string name="subject">Subject</string>
+    <string name="content">Content</string>
+    <string name="send_email">Send Email &#160;&#160;&#160;</string>
+    <string name="phone">Phone</string>
+    <string name="number">ID</string>
+    <string name="call">Call</string>
+    <string name="product">Product</string>
+    <string name="search">Search Browser</string>
+    <string name="text">Text</string>
+    <string name="more">More</string>
+    <string name="open_browser">Open Browser</string>
+    <string name="uri">Uri</string>
+    <string name="connect_wifi">Connect to \n Network</string>
+    <string name="copy">Copy</string>
+    <string name="sms">SMS</string>
+    <string name="send_mess">Send Mess</string>
+    <string name="product_id">ID:&#xA0;&#xA0;&#xA0;&#xA0;</string>
+    <string name="mess">Mess</string>
+    <string name="error">ERROR</string>
+    <string name="bar39" translatable="false">BAR 39</string>
+    <string name="phone_number">Phone</string>
+    <string name="scanner">Scanner</string>
+    <string name="history">History</string>
+    <string name="generate">Generate</string>
+    <string name="setting">Setting</string>
+    <string name="share">Share</string>
+    <string name="vibrate">Vibrate when scan successful</string>
+    <string name="beep">Beep when scan successful</string>
+    <string name="history_save">Save history for your scan</string>
+    <string name="generate_text_empty">You have not generated any code before!</string>
+    <string name="vibrate_title">Vibrate</string>
+    <string name="beep_title">Beep</string>
+    <string name="language">Language</string>
+    <string name="support">Support</string>
+    <string name="share_with_your_friends">Share with your friends</string>
+    <string name="history_title">History</string>
+    <string name="rate_app">Rate app</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="create_now">Create now!</string>
+    <string name="qr_code_generator">QR Code Generator</string>
+    <string name="create">CREATE</string>
+    <string name="scan_now">Scan Now!</string>
+    <string name="qr_code_scanner">QR Code Scanner</string>
+    <string name="tv_history_fragment">HISTORY</string>
+
+
 </resources>

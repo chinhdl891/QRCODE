@@ -1,4 +1,4 @@
-package com.example.qrscaner.view.generate;
+package com.example.qrscaner.view;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -35,7 +35,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
     private int id;
     private EditText edtContent;
     private QrScan.QRType typeQR;
-    private boolean isCheckWifi = true;
+    private final boolean isCheckWifi = true;
 
     public ViewGenerateQRCode(@NonNull Context context) {
         super(context);
@@ -66,11 +66,11 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
         this.id = id;
         if (id == 0) {
             typeQR = QrScan.QRType.BAR39;
-            tvGenCategory.setText("BAR 39");
+            tvGenCategory.setText(R.string.bar39);
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
-            tvCategoryText.setText("BAR 39");
+            tvCategoryText.setText(R.string.bar39);
             edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
@@ -464,43 +464,35 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                     pass = editable.toString();
                 }
             });
+            acbFree.setTextColor(Color.BLUE);
             acbFree.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    type = "NoPass";
-                    if (isCheckWifi){
-                        isCheckWifi = false;
-                        acbFree.setTextColor(Color.BLUE);
-                    }else {
-                        isCheckWifi = true;
-                        acbFree.setTextColor(Color.BLACK);
-                    }
+                    type = "Free";
+                    acbFree.setTextColor(Color.BLUE);
+                    acbWep.setTextColor(Color.BLACK);
+                    acbWpa.setTextColor(Color.BLACK);
+
                 }
             });
             acbWep.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     type = "WEP";
-                    if (isCheckWifi){
-                        isCheckWifi = false;
-                        acbFree.setTextColor(Color.BLUE);
-                    }else {
-                        isCheckWifi = true;
-                        acbFree.setTextColor(Color.BLACK);
-                    }
+
+                    acbWep.setTextColor(Color.BLUE);
+                    acbFree.setTextColor(Color.BLACK);
+                    acbWpa.setTextColor(Color.BLACK);
+
                 }
             });
             acbWpa.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     type = "WPA";
-                    if (isCheckWifi){
-                        isCheckWifi = false;
-                        acbFree.setTextColor(Color.BLUE);
-                    }else {
-                        isCheckWifi = true;
-                        acbFree.setTextColor(Color.BLACK);
-                    }
+                    acbWpa.setTextColor(Color.BLUE);
+                    acbFree.setTextColor(Color.BLACK);
+                    acbWep.setTextColor(Color.BLACK);
                 }
             });
 
@@ -525,9 +517,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
                     case 15:
 
                         String[] url = contentQr.split(":");
-                        for (String s : url) {
-                            Log.e("aaa", s);
-                        }
+
                         if (url[0].equals("http") || url[0].equals("https")) {
                             break;
                         } else {
@@ -536,7 +526,6 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
 
                         break;
                     case 19:
-                        //WIFI:T:WPA;S:Cong ty 333;P:1111222212;H:;
 
                         contentQr = "WIFI:T:" + type + ";S:" + name + ";P:" + pass + ";H:;";
                         break;
@@ -581,4 +570,6 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
     public void setInterFace(IBackToGenerate backToGenerate) {
         this.backToGenerate = backToGenerate;
     }
+
+
 }

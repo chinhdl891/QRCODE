@@ -1,4 +1,4 @@
-package com.example.qrscaner.view.generate;
+package com.example.qrscaner.view;
 
 import static android.content.Context.WIFI_SERVICE;
 
@@ -51,28 +51,24 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ResultScanQr extends ConstraintLayout implements View.OnClickListener {
-    private Context mContext;
-    private View mRootView;
+public class ShowResultScanQR extends ConstraintLayout implements View.OnClickListener {
+    private final Context mContext;
     private ImageView imvResultGenerateBack, imvResultHistoryCategory;
     private TextView tvResultHistoryCategoryQR, tvResultHistoryDateCreate, tvResultHistoryCategory, tvResultHistoryShare, tvResultHistoryOptionOne;
-    private LinearLayout lnlResultHistoryContent, lnlResultOption;
-    private BackToScan backToScan;
-    private ImageView imvResultScanQRBackGround;
+    private LinearLayout lnlResultHistoryContent;
     private QrScan qrScan;
-    private String[] content;
     private String qrContent;
     private QrScan.QRType type;
     private MainActivity mMainActivity;
 
 
-    public ResultScanQr(@NonNull Context context) {
+    public ShowResultScanQR(@NonNull Context context) {
         super(context);
         mContext = context;
         init();
     }
 
-    public ResultScanQr(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ShowResultScanQR(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -81,7 +77,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
     private void init() {
 
         LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mRootView = layoutInflater.inflate(R.layout.result_view_history, this, true);
+        View mRootView = layoutInflater.inflate(R.layout.result_view_history, this, true);
         imvResultGenerateBack = mRootView.findViewById(R.id.imv_scan_result_history__back);
         imvResultHistoryCategory = mRootView.findViewById(R.id.imv_result_history_qr__category);
         tvResultHistoryCategory = mRootView.findViewById(R.id.tv_result_history__category);
@@ -90,13 +86,14 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         tvResultHistoryOptionOne = mRootView.findViewById(R.id.tv_scanResult_optionOne);
         tvResultHistoryShare = mRootView.findViewById(R.id.tv_scanResult_share);
         tvResultHistoryCategoryQR = mRootView.findViewById(R.id.tv_result_history_qr__categoryName);
-        imvResultScanQRBackGround = mRootView.findViewById(R.id.imv_result_history_alert);
+        ImageView imvResultScanQRBackGround = mRootView.findViewById(R.id.imv_result_history_alert);
         resizeImage(imvResultScanQRBackGround, 287, 366);
-        lnlResultOption = mRootView.findViewById(R.id.lnl_resultScan__action);
+        LinearLayout lnlResultOption = mRootView.findViewById(R.id.lnl_resultScan__action);
         lnlResultOption.getLayoutParams().width = imvResultScanQRBackGround.getWidth();
         imvResultGenerateBack.setOnClickListener(this);
         tvResultHistoryShare.setOnClickListener(this);
         tvResultHistoryOptionOne.setOnClickListener(this);
+
 
 
     }
@@ -110,12 +107,11 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
     }
 
 
-    public void setupData(QrScan qrScan, BackToScan backToScan) {
-
-        this.backToScan = backToScan;
+    public void setupData(QrScan qrScan,Context context) {
+        mMainActivity = (MainActivity) context;
         this.qrScan = qrScan;
         qrContent = qrScan.getScanText();
-        content = qrScan.getScanText().split(":");
+        String[] content = qrScan.getScanText().split(":");
         if (checkIsProduct(content[0])) {
             setContentProduct(qrScan.getDate(), qrScan);
             type = QrScan.QRType.PRODUCT;
@@ -181,9 +177,9 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
             }
 
         }
-       if (!qrScan.getScanText().equals("Error")){
-           QrHistoryDatabase.getInstance(mContext).qrDao().insertQr(new QrScan(type, qrContent, System.currentTimeMillis()));
-       }
+        if (!qrScan.getScanText().equals("Error")) {
+            QrHistoryDatabase.getInstance(mContext).qrDao().insertQr(new QrScan(type, qrContent, System.currentTimeMillis()));
+        }
 
     }
 
@@ -204,23 +200,25 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
 
     private void setContentProduct(long date, QrScan qrProduct) {
         {
+
             lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
             imvResultHistoryCategory.setImageResource(R.drawable.ic_product);
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
             tvResultHistoryDateCreate.setText(dateString);
-            tvResultHistoryCategory.setText("QR CODE");
-            tvResultHistoryCategoryQR.setText("Product");
+            tvResultHistoryCategory.setText(R.string.qr_code_title);
+            tvResultHistoryCategoryQR.setText(R.string.product);
             LinearLayout lnlContent = new LinearLayout(mContext);
             lnlContent.setOrientation(LinearLayout.VERTICAL);
             TextViewPoppinBold tvContent = new TextViewPoppinBold(mContext);
             TextView tvContentText = new TextView(mContext);
-            tvContent.setText("Number:");
-            tvContentText.setText("    " + qrProduct.getScanText());
+            tvContent.setText(R.string.product_id);
+            tvContentText.setText("\t"+qrProduct.getScanText());
+
             tvContentText.setBackgroundResource(R.drawable.corner_tv);
             lnlContent.addView(tvContent);
             lnlContent.addView(tvContentText);
             lnlResultHistoryContent.addView(lnlContent);
-            tvResultHistoryOptionOne.setText("Open Browser");
+            tvResultHistoryOptionOne.setText(R.string.open_browser);
 
         }
     }
@@ -236,6 +234,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         }
     }
 
+
     private void setContentUrl(long date, QrUrl qrUrl) {
         {
 
@@ -243,22 +242,22 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
             imvResultHistoryCategory.setImageResource(R.drawable.add_uri);
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
             tvResultHistoryDateCreate.setText(dateString);
-            tvResultHistoryCategory.setText("QR CODE");
-            tvResultHistoryCategoryQR.setText("Uri");
+            tvResultHistoryCategory.setText("\t \t"+R.string.qr_code_title);
+            tvResultHistoryCategoryQR.setText(R.string.uri);
 
             LinearLayout lnlEmail = new LinearLayout(mContext);
             lnlEmail.setOrientation(LinearLayout.VERTICAL);
             TextViewPoppinBold tvWifiCategoryName = new TextViewPoppinBold(mContext);
             TextView tvEmailName = new TextView(mContext);
-            tvWifiCategoryName.setText("Uri: ");
-            tvEmailName.setText("    " + qrUrl.getUrl());
+            tvWifiCategoryName.setText( R.string.uri);
+            tvEmailName.setText(qrUrl.getUrl());
             tvEmailName.setBackgroundResource(R.drawable.corner_tv);
             tvEmailName.setMaxLines(1);
             tvEmailName.setEllipsize(TextUtils.TruncateAt.END);
             lnlEmail.addView(tvWifiCategoryName);
             lnlEmail.addView(tvEmailName);
             lnlResultHistoryContent.addView(lnlEmail);
-            tvResultHistoryOptionOne.setText("Open Browser");
+            tvResultHistoryOptionOne.setText(R.string.open_browser);
         }
     }
 
@@ -268,15 +267,15 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
             imvResultHistoryCategory.setImageResource(R.drawable.add_email);
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
             tvResultHistoryDateCreate.setText(dateString);
-            tvResultHistoryCategory.setText("QR CODE");
-            tvResultHistoryCategoryQR.setText("Email");
+            tvResultHistoryCategory.setText(R.string.qr_code_title);
+            tvResultHistoryCategoryQR.setText(R.string.email);
 
             LinearLayout lnlEmail = new LinearLayout(mContext);
             lnlEmail.setOrientation(LinearLayout.HORIZONTAL);
             TextViewPoppinBold tvWifiCategoryName = new TextViewPoppinBold(mContext);
             TextView tvEmailName = new TextView(mContext);
-            tvWifiCategoryName.setText("Email:");
-            tvEmailName.setText("    " + qrEmail.getSendBy());
+            tvWifiCategoryName.setText(R.string.email);
+            tvEmailName.setText(qrEmail.getSendBy());
             tvEmailName.setMaxLines(1);
             tvEmailName.setEllipsize(TextUtils.TruncateAt.END);
             lnlEmail.addView(tvWifiCategoryName);
@@ -287,8 +286,8 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
             lnlSendTo.setOrientation(LinearLayout.HORIZONTAL);
             TextViewPoppinBold tvEmailSenTo = new TextViewPoppinBold(mContext);
             TextView tvEmailNameSendTo = new TextView(mContext);
-            tvEmailSenTo.setText("Subject:");
-            tvEmailNameSendTo.setText("    " + qrEmail.getSendTo());
+            tvEmailSenTo.setText(R.string.subject);
+            tvEmailNameSendTo.setText(qrEmail.getSendTo());
             tvEmailNameSendTo.setMaxLines(1);
             tvEmailNameSendTo.setEllipsize(TextUtils.TruncateAt.END);
             lnlSendTo.addView(tvEmailSenTo);
@@ -299,12 +298,12 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
             lnlContent.setOrientation(LinearLayout.VERTICAL);
             TextViewPoppinBold tvContent = new TextViewPoppinBold(mContext);
             TextView tvContentText = new TextView(mContext);
-            tvContent.setText("Content:");
+            tvContent.setText(R.string.content);
             tvContentText.setText(qrEmail.getContent());
             lnlContent.addView(tvContent);
             lnlContent.addView(tvContentText);
             lnlResultHistoryContent.addView(lnlContent);
-            tvResultHistoryOptionOne.setText("Send Email");
+            tvResultHistoryOptionOne.setText(R.string.send_email);
 
         }
     }
@@ -315,18 +314,18 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
             imvResultHistoryCategory.setImageResource(R.drawable.add_call);
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
             tvResultHistoryDateCreate.setText(dateString);
-            tvResultHistoryCategory.setText("QR CODE");
-            tvResultHistoryCategoryQR.setText("Phone");
+            tvResultHistoryCategory.setText(R.string.qr_code_title);
+            tvResultHistoryCategoryQR.setText(R.string.phone);
             LinearLayout lnlContent = new LinearLayout(mContext);
             lnlContent.setOrientation(LinearLayout.HORIZONTAL);
             TextViewPoppinBold tvContent = new TextViewPoppinBold(mContext);
             TextView tvContentText = new TextView(mContext);
-            tvContent.setText("Number:");
-            tvContentText.setText("    " + qreTelephone.getTel());
+            tvContent.setText(R.string.phone_number);
+            tvContentText.setText("\t \t" +qreTelephone.getTel());
             lnlContent.addView(tvContent);
             lnlContent.addView(tvContentText);
             lnlResultHistoryContent.addView(lnlContent);
-            tvResultHistoryOptionOne.setText("Call");
+            tvResultHistoryOptionOne.setText(R.string.call);
             tvResultHistoryOptionOne.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -343,14 +342,14 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         imvResultHistoryCategory.setImageResource(R.drawable.add_wifi);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvResultHistoryDateCreate.setText(dateString);
-        tvResultHistoryCategory.setText("QR CODE");
-        tvResultHistoryCategoryQR.setText("WIFI");
+        tvResultHistoryCategory.setText(R.string.qr_code_title);
+        tvResultHistoryCategoryQR.setText(R.string.wifi);
         LinearLayout lnlNetWork = new LinearLayout(mContext);
         lnlNetWork.setOrientation(LinearLayout.HORIZONTAL);
         TextViewPoppinBold tvWifiCategoryName = new TextViewPoppinBold(mContext);
         TextView tvWifiName = new TextView(mContext);
-        tvWifiCategoryName.setText("Network:");
-        tvWifiName.setText("    " + qrWifi.getWifiName());
+        tvWifiCategoryName.setText(R.string.network);
+        tvWifiName.setText(qrWifi.getWifiName());
         lnlNetWork.addView(tvWifiCategoryName);
         lnlNetWork.addView(tvWifiName);
         lnlResultHistoryContent.addView(lnlNetWork);
@@ -359,8 +358,8 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         lnlWifiPass.setOrientation(LinearLayout.HORIZONTAL);
         TextViewPoppinBold tvWifiCategoryPass = new TextViewPoppinBold(mContext);
         TextView tvWifiPass = new TextView(mContext);
-        tvWifiCategoryPass.setText("Pass:");
-        tvWifiPass.setText("    " + qrWifi.getPass());
+        tvWifiCategoryPass.setText(R.string.pass);
+        tvWifiPass.setText(qrWifi.getPass());
         lnlWifiPass.addView(tvWifiCategoryPass);
         lnlWifiPass.addView(tvWifiPass);
         lnlResultHistoryContent.addView(lnlWifiPass);
@@ -369,12 +368,12 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         lnlWifiEAP.setOrientation(LinearLayout.HORIZONTAL);
         TextViewPoppinBold tvWifiCategoryEAP = new TextViewPoppinBold(mContext);
         TextView tvWifiEAP = new TextView(mContext);
-        tvWifiCategoryEAP.setText("EAP:");
-        tvWifiEAP.setText("    " + qrWifi.getType());
+        tvWifiCategoryEAP.setText(R.string.epa);
+        tvWifiEAP.setText(qrWifi.getType());
         lnlWifiEAP.addView(tvWifiCategoryEAP);
         lnlWifiEAP.addView(tvWifiEAP);
         lnlResultHistoryContent.addView(lnlWifiEAP);
-        tvResultHistoryOptionOne.setText("Connect to \n Network");
+        tvResultHistoryOptionOne.setText(R.string.connect_wifi);
 
     }
 
@@ -385,14 +384,14 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         imvResultHistoryCategory.setImageResource(R.drawable.add_text);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvResultHistoryDateCreate.setText(dateString);
-        tvResultHistoryCategory.setText("QR CODE");
-        tvResultHistoryCategoryQR.setText("Text");
+        tvResultHistoryCategory.setText(R.string.qr_code_title);
+        tvResultHistoryCategoryQR.setText(R.string.text);
 
         LinearLayout lnlContent = new LinearLayout(mContext);
         lnlContent.setOrientation(LinearLayout.VERTICAL);
         TextViewPoppinBold tvContent = new TextViewPoppinBold(mContext);
         TextView tvContentText = new TextView(mContext);
-        tvContent.setText("Text");
+        tvContent.setText(R.string.content);
         tvContentText.setText(qrText.getText());
         tvContentText.setMaxLines(5);
         tvContent.setEllipsize(TextUtils.TruncateAt.END);
@@ -400,7 +399,7 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         lnlContent.addView(tvContent);
         lnlContent.addView(tvContentText);
         lnlResultHistoryContent.addView(lnlContent);
-        tvResultHistoryOptionOne.setText("Copy");
+        tvResultHistoryOptionOne.setText(R.string.copy);
         imvResultHistoryCategory.setVisibility(VISIBLE);
     }
 
@@ -409,15 +408,15 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         imvResultHistoryCategory.setImageResource(R.drawable.add_sms);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvResultHistoryDateCreate.setText(dateString);
-        tvResultHistoryCategory.setText("QR CODE");
-        tvResultHistoryCategoryQR.setText("SMS");
+        tvResultHistoryCategory.setText(R.string.qr_code_title);
+        tvResultHistoryCategoryQR.setText(R.string.sms);
 
         LinearLayout lnlEmail = new LinearLayout(mContext);
         lnlEmail.setOrientation(LinearLayout.HORIZONTAL);
         TextViewPoppinBold tvWifiCategoryName = new TextViewPoppinBold(mContext);
         TextView tvEmailName = new TextView(mContext);
-        tvWifiCategoryName.setText("Phone: ");
-        tvEmailName.setText("    " + qrMess.getSendBy());
+        tvWifiCategoryName.setText(R.string.phone);
+        tvEmailName.setText(qrMess.getSendBy());
         tvEmailName.setMaxLines(1);
         tvEmailName.setEllipsize(TextUtils.TruncateAt.END);
         lnlEmail.addView(tvWifiCategoryName);
@@ -428,23 +427,25 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
         lnlSub.setOrientation(LinearLayout.HORIZONTAL);
         TextViewPoppinBold tvSMSSub = new TextViewPoppinBold(mContext);
         TextView tvSubContent = new TextView(mContext);
-        tvSMSSub.setText("Content: ");
-        tvSubContent.setText("    " + qrMess.getContent());
+        tvSMSSub.setText(R.string.content);
+        tvSubContent.setText(qrMess.getContent());
         tvSubContent.setMaxLines(1);
         tvSubContent.setEllipsize(TextUtils.TruncateAt.END);
         lnlSub.addView(tvSMSSub);
         lnlSub.addView(tvSubContent);
         lnlResultHistoryContent.addView(lnlSub);
-        tvResultHistoryOptionOne.setText("Send Mess");
+        tvResultHistoryOptionOne.setText(R.string.send_mess);
 
     }
 
 
     @Override
     public void onClick(View view) {
+
         if (view == imvResultGenerateBack) {
-            backToScan.onBackScan();
             lnlResultHistoryContent.removeAllViews();
+            mMainActivity.onBackPressed();
+
         } else if (view == tvResultHistoryShare) {
             ShareUtils.shareQR(mContext, qrScan);
         } else if (view == tvResultHistoryOptionOne) {
@@ -455,13 +456,8 @@ public class ResultScanQr extends ConstraintLayout implements View.OnClickListen
 
     }
 
-    public interface BackToScan {
-        void onBackScan();
-    }
 
-    public interface BackToGenerate {
-        void onBackGenerate();
-    }
+
 
 
 }
