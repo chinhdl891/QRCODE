@@ -1,5 +1,7 @@
 package com.example.qrscaner.fragment;
 
+import static com.example.qrscaner.fragment.ShowHistoryFragment.SEND_DATA_SHOW;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HistoryFragment extends Fragment implements View.OnClickListener, HistoryAdapter.HistoryAdapterListener, HistoryAdapter.ShowHistory, ResultHistoryQr.BackToHistory {
+public class HistoryFragment extends Fragment implements View.OnClickListener, HistoryAdapter.HistoryAdapterListener, HistoryAdapter.ShowHistory{
     private Button btnGotoScan;
     private RecyclerView rcvHistoryScan;
     private LinearLayout lnlHTRGotoScan;
@@ -188,24 +190,22 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
 
     @Override
     public void ShowListener(QrScan qrScan) {
-        mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
-        rcvHistoryScan.setVisibility(View.GONE);
-        rltHistoryFragmentUp.setVisibility(View.GONE);
-        rltHistoryFragmentBelow.setVisibility(View.GONE);
-        rslHistoryFragmentShowQr.setVisibility(View.VISIBLE);
-        rslHistoryFragmentShowQr.setupData(qrScan,this);
+//        mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
+//        rcvHistoryScan.setVisibility(View.GONE);
+//        rltHistoryFragmentUp.setVisibility(View.GONE);
+//        rltHistoryFragmentBelow.setVisibility(View.GONE);
+//        rslHistoryFragmentShowQr.setVisibility(View.VISIBLE);
+        Bundle bundle = new Bundle();
+        ShowHistoryFragment fragment = new ShowHistoryFragment();
+        bundle.putSerializable(SEND_DATA_SHOW,qrScan);
+        fragment.setArguments(bundle);
+        mMainActivity.fragmentLoad(fragment,ShowHistoryFragment.class.getSimpleName());
+      //  rslHistoryFragmentShowQr.setupData(qrScan);
+
 
     }
 
-    @Override
-    public void onBackListener() {
-        mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
-        rcvHistoryScan.setVisibility(View.VISIBLE);
-        rltHistoryFragmentUp.setVisibility(View.VISIBLE);
-        rltHistoryFragmentBelow.setVisibility(View.VISIBLE);
-        rslHistoryFragmentShowQr.setVisibility(View.GONE);
 
-    }
 
 
     public class QRHistoryReceiver extends BroadcastReceiver {

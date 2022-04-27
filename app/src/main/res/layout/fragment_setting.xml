@@ -14,7 +14,7 @@
         android:background="#3C52F5"
         android:gravity="center"
         android:padding="20dp"
-        android:text="Setting"
+        android:text="@string/setting"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_toRightOf="@+id/imv_settingFragment_Vibrate"
-                    android:text="Vibrate"
+                    android:text="@string/vibrate_title"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -85,7 +85,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_toRightOf="@id/imv_settingFragment_Vibrate"
-                    android:hint="Vibrate when scan successful" />
+                    android:hint="@string/vibrate" />
 
                 <Switch
                     android:id="@+id/sw_settingFragment_Vibrate"
@@ -125,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_toRightOf="@+id/imv_settingFragment_Beep"
-                    android:text="Beep"
+                    android:text="@string/beep_title"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -136,7 +136,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_toRightOf="@id/imv_settingFragment_Beep"
-                    android:hint="Beep when scan successful" />
+                    android:hint="@string/beep" />
 
                 <Switch
                     android:id="@+id/sw_settingFragment_Beep"
@@ -176,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_toRightOf="@+id/imv_settingFragment_History"
-                    android:text="History"
+                    android:text="@string/history_title"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -184,10 +184,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_settingFragment_History"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_toRightOf="@id/imv_settingFragment_History"
-                    android:hint="Save history for your scan" />
+                    android:hint="@string/history_save" />
 
                 <Switch
                     android:id="@+id/sw_settingFragment_His"
@@ -230,7 +230,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
                     android:layout_toRightOf="@+id/imv_settingFragment_Language"
-                    android:text="Language"
+                    android:text="@string/language"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -241,7 +241,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
-                    android:text="Language"
+                    android:text="@string/language"
                     android:textColor="#3C52F5"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -252,7 +252,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26dp"
                 android:layout_marginTop="20dp"
-                android:text="Support"
+                android:text="@string/support"
                 android:textColor="#3C52F5"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -279,7 +279,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
                     android:layout_toRightOf="@+id/imv_settingFragment_Share"
-                    android:text="Share with your friends"
+                    android:text="@string/share_with_your_friends"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -316,7 +316,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
                     android:layout_toRightOf="@+id/imv_settingFragment_Rate"
-                    android:text="Rate app"
+                    android:text="@string/rate_app"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -389,7 +389,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
                     android:layout_toRightOf="@+id/imv_settingFragment_PrivacyPolicy"
-                    android:text="Privacy Policy"
+                    android:text="@string/privacy_policy"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
