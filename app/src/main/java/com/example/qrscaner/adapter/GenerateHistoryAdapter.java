@@ -90,7 +90,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             holder.imvItemScanType.setImageResource(R.drawable.add_sms);
             holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
             if (qrGenerate.getContent().equals("")) {
-                holder.tvItemHistoryQrContent.setText("SMS");
+                holder.tvItemHistoryQrContent.setText(R.string.sms);
             }
 
 
@@ -102,7 +102,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
 
             if (qrGenerate.getContent().equals("")) {
-                holder.tvItemHistoryQrContent.setText("Uri");
+                holder.tvItemHistoryQrContent.setText(R.string.uri);
             }
         } else if (content[0].equals("WIFI")) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -119,7 +119,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             holder.tvItemHistoryQrDate.setText(qrGenerate.getStringDate());
 
             if (qrGenerate.getContent().equals("")) {
-                holder.tvItemHistoryQrContent.setText("Wifi");
+                holder.tvItemHistoryQrContent.setText(R.string.wifi);
             }
         } else if (content[0].equals("MATMSG")) {
             QrEmail qrEmail = new QrEmail();
@@ -132,7 +132,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             holder.imvItemScanType.setImageResource(R.drawable.add_email);
             holder.tvItemHistoryQrDate.setText(qrEmail.getDateString());
             if (qrGenerate.getContent().equals("")) {
-                holder.tvItemHistoryQrContent.setText("Email");
+                holder.tvItemHistoryQrContent.setText(R.string.email);
             }
 
         } else if (content[0].equals("tel")) {
@@ -143,7 +143,7 @@ public class GenerateHistoryAdapter extends RecyclerView.Adapter<GenerateHistory
             holder.imvItemScanType.setImageResource(R.drawable.add_call);
             holder.tvItemHistoryQrDate.setText(qreTelephone.getDateString());
             if (qrGenerate.getContent().equals("")) {
-                holder.tvItemHistoryQrContent.setText("Phone");
+                holder.tvItemHistoryQrContent.setText(R.string.phone_number);
             }
 
         } else {

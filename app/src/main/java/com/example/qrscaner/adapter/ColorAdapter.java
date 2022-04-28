@@ -8,16 +8,16 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qrscaner.models.Color;
+import com.example.qrscaner.models.ColorOption;
 import com.example.qrscaner.R;
 
 import java.util.List;
 
 public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHolder> {
-   private List<Color> colorList;
+   private List<ColorOption> colorList;
     private SelectColor selectColor;
 
-    public ColorAdapter(List<Color> colorList , SelectColor selectColor) {
+    public ColorAdapter(List<ColorOption> colorList , SelectColor selectColor) {
         this.colorList = colorList;
         this.selectColor = selectColor;
     }
@@ -31,7 +31,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ColorViewHolder holder, int position) {
-        Color color = colorList.get(position);
+        ColorOption color = colorList.get(position);
         int backGround = color.getColor();
         holder.mLinearLayout.setBackgroundColor(backGround);
 

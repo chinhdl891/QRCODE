@@ -1,5 +1,7 @@
 package com.example.qrscaner.activity;
 
+import static com.example.qrscaner.fragment.ScannerFragment.zXingScannerView;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -48,9 +50,6 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, ShowQrGenerate.iSaveQrScan, DialogFragment.SelectLanguage {
     private BottomNavigationView bottomNavigationView;
     public static FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
-    private ShowQrGenerate conActivityMainResultView;
-    private RelativeLayout rrlMainActivity;
     private Fragment fragment;
     private ConstraintLayout ctlMainEditItem;
     private TextViewPoppinBold tvMainNumItem;
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public final static int REQUEST_CAM = 100;
     public final static int REQUEST_WRITE = 100;
-    private static int TIME_WAIT = 3000;
+    private static final int TIME_WAIT = 3000;
     private long time;
     public static int WIDTH = 0;
     public static int HEIGHT = 0;
@@ -130,9 +129,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imvMainItemDelete = findViewById(R.id.imv_main__delete);
         imvMainItemShare = findViewById(R.id.imv_main__share);
         ctlMainEditItem = findViewById(R.id.csl_main__edit);
-        rrlMainActivity = findViewById(R.id.rll_main_activity);
+        RelativeLayout rrlMainActivity = findViewById(R.id.rll_main_activity);
         bottomNavigationView = findViewById(R.id.nv_activityMain__menu);
-        conActivityMainResultView = findViewById(R.id.qrs_activityMain__resultView);
+        ShowQrGenerate conActivityMainResultView = findViewById(R.id.qrs_activityMain__resultView);
 
 
     }
@@ -148,9 +147,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void fragmentLoad(Fragment fragment, String tag) {
-//fml_main_qrScanResult
+
         fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (tag.equals(ResultScanFragment.class.getSimpleName()) || tag.equals(ShowHistoryFragment.class.getSimpleName()) || tag.equals(ShowQrGenerateFragment.class.getSimpleName())) {
             fragmentTransaction.replace(R.id.fml_main_qrScanResult, fragment, tag);
             mFmlMainResultQR.setVisibility(View.VISIBLE);
@@ -160,9 +159,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
 
-
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        zXingScannerView.startCamera();
+    }
 
     @Override
     public void sendQr(QrScan qr) {
@@ -295,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setIdBottom(String tag) {
         if (tag.equals(ScannerFragment.class.getSimpleName())) {
-            ScannerFragment.zXingScannerView.startCamera();
+            zXingScannerView.startCamera();
             updateNavigationBarState(R.id.scan);
         } else if (tag.equals(HistoryFragment.class.getSimpleName())) {
             updateNavigationBarState(R.id.history);
@@ -320,12 +323,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        ScannerFragment.zXingScannerView.stopCameraPreview();
+        zXingScannerView.stopCameraPreview();
     }
 
     @Override
     protected void onDestroy() {
-        ScannerFragment.zXingScannerView.stopCamera();
+        zXingScannerView.stopCamera();
         super.onDestroy();
 
     }

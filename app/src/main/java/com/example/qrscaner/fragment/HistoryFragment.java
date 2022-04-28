@@ -85,7 +85,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
 
     private void init(View view) {
         rltHistoryFragmentBelow = view.findViewById(R.id.rlt_scanHistory_below);
-        rltHistoryFragmentUp = view.findViewById(R.id.rlt_scanHistory__Upto);
+        rltHistoryFragmentUp = view.findViewById(R.id.rlt_scanHistory__upto);
         rslHistoryFragmentShowQr = view.findViewById(R.id.rsq_historyFragment__showQr);
         lnlHTRGotoScan = view.findViewById(R.id.lnl_historyFragment__gotoScan);
         btnGotoScan = view.findViewById(R.id.btn_historyFragment__gotoScan);

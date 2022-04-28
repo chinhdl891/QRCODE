@@ -75,8 +75,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
 
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
         init(view);
-        zXingScannerView.startCamera();
-
+        zXingScannerView.startCamera(0);
         if (zXingScannerView.getMaxZoom() > 0) {
             mSkbScannerFragmentZoom.setMax(zXingScannerView.getMaxZoom());
         } else {
@@ -115,9 +114,13 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
             if (!checkCam) {
 
                 zXingScannerView.startCamera(Camera.CameraInfo.CAMERA_FACING_FRONT);
+                zXingScannerView.setResultHandler(this);
+
             } else {
-                zXingScannerView.startCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
+                zXingScannerView.startCamera();
+                zXingScannerView.setResultHandler(this);
             }
+
             checkCam = !checkCam;
         });
 

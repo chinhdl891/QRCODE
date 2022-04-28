@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imv_dialog_decorate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="65dp"
@@ -22,7 +22,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_seclect_language" />
+            app:srcCompat="@drawable/ic_select_language" />
 
         <NumberPicker
             android:id="@+id/nbp_dialog_lang_selectLang"
@@ -30,7 +30,7 @@
             android:layout_height="200dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/imv_dialog_decorate" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_dialog_lang_select_lang"

@@ -3,19 +3,19 @@ package com.example.qrscaner.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Language {
+public class LanguageOption {
     private int id;
     private String country;
     private String lang;
 
 
-    public Language(int id, String country, String lang) {
+    public LanguageOption(int id, String country, String lang) {
         this.id = id;
         this.country = country;
         this.lang = lang;
     }
 
-    public Language() {
+    public LanguageOption() {
     }
 
     public int getId() {
@@ -42,21 +42,21 @@ public class Language {
         this.lang = lang;
     }
 
-    public static List<Language> languageList() {
-        List<Language> languageList = new ArrayList<>();
-        languageList.add(new Language(0, "Viet Nam", "vn"));
-        languageList.add(new Language(1, "English", "en"));
+    public static List<LanguageOption> languageList() {
+        List<LanguageOption> languageOptionList = new ArrayList<>();
+        languageOptionList.add(new LanguageOption(0, "Việt Nam", "vn"));
+        languageOptionList.add(new LanguageOption(1, "English", "en"));
 //        languageList.add(new Language(2, "日本", "ja"));
 
-        return languageList;
+        return languageOptionList;
     }
 
     public static String[] listStrCountry() {
-        List<Language> languageList = languageList();
-        String[] strings = new String[languageList.size()];
+        List<LanguageOption> languageOptionList = languageList();
+        String[] strings = new String[languageOptionList.size()];
 
-        for (int i = 0; i < languageList.size(); i++) {
-            strings[i] = languageList.get(i).country;
+        for (int i = 0; i < languageOptionList.size(); i++) {
+            strings[i] = languageOptionList.get(i).country;
         }
         return strings;
     }

@@ -441,6 +441,4 @@ public class ShowResultScanQR extends ConstraintLayout implements View.OnClickLi
 
 
 
-
-
 }

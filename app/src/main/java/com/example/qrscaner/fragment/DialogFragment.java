@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-import com.example.qrscaner.models.Language;
+import com.example.qrscaner.models.LanguageOption;
 import com.example.qrscaner.R;
 
 public class DialogFragment extends AppCompatDialogFragment {
@@ -36,7 +36,7 @@ public class DialogFragment extends AppCompatDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.dialog_language, container, false);
-        strLanguages = Language.listStrCountry();
+        strLanguages = LanguageOption.listStrCountry();
         init(view);
         if (getDialog() != null && getDialog().getWindow() != null){
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

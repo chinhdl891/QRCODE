@@ -395,7 +395,7 @@ public class ShowQrGenerate extends ConstraintLayout implements View.OnClickList
         tvQrScanResultCategoryName.setText(R.string.phone);
         TextViewPoppinBold tvNameCategory = new TextViewPoppinBold(mContext);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvNameCategory.setText(R.string.number);
+            tvNameCategory.setText(R.string.phone_number);
         }
         tvNameCategory.setTextColor(Color.WHITE);
         tvNameCategory.setTextSize(13);

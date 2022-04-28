@@ -27,8 +27,8 @@
     <string name="product_id">Mã sản phẩm:&#xA0;&#xA0;&#xA0;&#xA0;</string>
     <string name="share">Chia sẻ</string>
     <string name="vibrate">Rung khi quét thành công</string>
-    <string name="beep">Kêu khi quét thành công</string>
-    <string name="history_save">Lưu mã QR </string>
+    <string name="beep">Phát ra tín hiệu khi quét thành công</string>
+    <string name="history_save">Lưu mã</string>
     <string name="mess" translatable="false">Tin Nhắn</string>
     <string name="error" translatable="false">Lỗi</string>
     <string name="vibrate_title">Rung</string>
@@ -46,5 +46,13 @@
     <string name="scan_now">Quét Ngay!</string>
     <string name="qr_code_scanner">Quét Mã QR</string>
     <string name="tv_history_fragment">Lịch Sử</string>
+
+    <string name="file_selected">Đã Chọn</string>
+    <string name="feedback">Phản hồi</string>
+    <string name="created_in">Ngày tạo</string>
+    <string name="cancel">Trở lại</string>
+    <string name="result">Kết quả</string>
+    <string name="color">Chọn màu</string>
+    <string name="general_settings">Cài đặt chung</string>
 
 </resources>
