@@ -1,4 +1,4 @@
-package com.example.qrscaner.Model;
+package com.example.qrscaner.models;
 
 public class Color {
     private int id;

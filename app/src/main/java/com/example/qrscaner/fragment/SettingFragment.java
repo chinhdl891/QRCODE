@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.qrscaner.R;
@@ -17,12 +19,13 @@ import com.example.qrscaner.myshareferences.MyDataLocal;
 import com.example.qrscaner.myshareferences.MySharePreference;
 
 
-public class SettingFragment extends Fragment {
+public class SettingFragment extends Fragment implements View.OnClickListener{
     public final static String KEY_VIBRATE = "vibrate";
     public final static String KEY_BEEP = "beep";
     public final static String KEY_BARCODE = "auto_scan";
     public final static String KEY_HISTORY = "history_scan";
     Switch swSettingFragmentVibrate, swSettingFragmentBeep, swSettingFragmentHistory, swSettingFragmentBarcode;
+    private RelativeLayout rltSettingSelectLan;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,5 +67,21 @@ public class SettingFragment extends Fragment {
         swSettingFragmentVibrate = view.findViewById(R.id.sw_settingFragment_Vibrate);
         swSettingFragmentBeep = view.findViewById(R.id.sw_settingFragment_Beep);
         swSettingFragmentHistory = view.findViewById(R.id.sw_settingFragment_His);
+        rltSettingSelectLan = view.findViewById(R.id.rlt_setting_lang);
+        rltSettingSelectLan.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId()==R.id.rlt_setting_lang){
+            showDialog();
+        }
+    }
+
+    private void showDialog() {
+        DialogFragment dialogFragment = new DialogFragment();
+        dialogFragment.show(getActivity().getSupportFragmentManager(),"Select language");
+
     }
 }

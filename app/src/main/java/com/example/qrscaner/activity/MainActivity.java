@@ -3,6 +3,7 @@ package com.example.qrscaner.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -22,16 +23,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.qrscaner.DataBase.QrHistoryDatabase;
+import com.example.qrscaner.databases.QrHistoryDatabase;
+import com.example.qrscaner.models.QrScan;
+import com.example.qrscaner.R;
+import com.example.qrscaner.SendData;
 import com.example.qrscaner.config.Constant;
+import com.example.qrscaner.fragment.DialogFragment;
 import com.example.qrscaner.fragment.GenerateFragment;
 import com.example.qrscaner.fragment.HistoryFragment;
 import com.example.qrscaner.fragment.ResultScanFragment;
 import com.example.qrscaner.fragment.ScannerFragment;
 import com.example.qrscaner.fragment.SettingFragment;
-import com.example.qrscaner.Model.QrScan;
-import com.example.qrscaner.R;
-import com.example.qrscaner.SendData;
 import com.example.qrscaner.fragment.ShowHistoryFragment;
 import com.example.qrscaner.fragment.ShowQrGenerateFragment;
 import com.example.qrscaner.myshareferences.MyDataLocal;
@@ -40,9 +42,10 @@ import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.Locale;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, ShowQrGenerate.iSaveQrScan {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, ShowQrGenerate.iSaveQrScan, DialogFragment.SelectLanguage {
     private BottomNavigationView bottomNavigationView;
     public static FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -66,10 +69,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         checkPermission();
         if (!MyDataLocal.getFistInstall()) {
             MyDataLocal.setShowHistory(true);
         }
+        if (MyDataLocal.getLang() != null) {
+            setLang(MyDataLocal.getLang());
+        }
+
+
         getInfoDisPlay();
         setContentView(R.layout.activity_main);
         init();
@@ -104,13 +113,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-//        conActivityMainResultView.setCallbackCancelResult(() -> {
-//            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ScannerFragment.class.getSimpleName());
-//            if (fragment instanceof ScannerFragment) {
-//                ((ScannerFragment) fragment).resumeCamera();
-//
-//            }
-//        });
     }
 
     private void getInfoDisPlay() {
@@ -261,7 +263,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mFmlMainResultQR.setVisibility(View.GONE);
 
 
-
         } else if (getTopFragment().getTag().equals(ShowHistoryFragment.class.getSimpleName())) {
             fragmentManager.beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(ShowHistoryFragment.class.getSimpleName()))).commit();
             getSupportFragmentManager().popBackStack();
@@ -272,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getSupportFragmentManager().popBackStack();
             mFmlMainResultQR.setVisibility(View.GONE);
             bottomNavigationView.setVisibility(View.VISIBLE);
-        } else if (getTopFragment().getTag().equals(ScannerFragment.class.getSimpleName()) || getTopFragment().getTag().equals(GenerateFragment.class.getSimpleName()) ||  getTopFragment().getTag().equals(SettingFragment.class.getSimpleName())  ||  getTopFragment().getTag().equals(HistoryFragment.class.getSimpleName())) {
+        } else if (getTopFragment().getTag().equals(ScannerFragment.class.getSimpleName()) || getTopFragment().getTag().equals(GenerateFragment.class.getSimpleName()) || getTopFragment().getTag().equals(SettingFragment.class.getSimpleName()) || getTopFragment().getTag().equals(HistoryFragment.class.getSimpleName())) {
             if (time + TIME_WAIT > System.currentTimeMillis()) {
                 System.exit(0);
             } else {
@@ -324,8 +325,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         ScannerFragment.zXingScannerView.stopCamera();
+        super.onDestroy();
+
+    }
+
+
+    @Override
+    public void onSelectListener(int i) {
+
+        if (i == 0) {
+            setLang("vi");
+            recreate();
+
+            bottomNavigationView.setSelectedItemId(R.id.scan);
+        } else if (i == 1) {
+            setLang("en");
+            recreate();
+            bottomNavigationView.setSelectedItemId(R.id.scan);
+        }
+
+    }
+
+    public void setLang(String lang) {
+        Resources res = MainActivity.this.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        android.content.res.Configuration conf = res.getConfiguration();
+        conf.setLocale(new Locale(lang.toLowerCase()));
+        MyDataLocal.setLanguage(lang);
+        res.updateConfiguration(conf, dm);
+
     }
 
 

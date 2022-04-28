@@ -2,14 +2,11 @@ package com.example.qrscaner.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.widget.ImageView;
 
-import com.example.qrscaner.Model.QrScan;
+import com.example.qrscaner.models.QrScan;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 
 public class BitMapUtils {
 

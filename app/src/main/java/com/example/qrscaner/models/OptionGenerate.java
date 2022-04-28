@@ -1,4 +1,4 @@
-package com.example.qrscaner.Model;
+package com.example.qrscaner.models;
 
 import java.util.List;
 

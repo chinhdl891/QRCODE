@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/tv_settingFragment__Title"
@@ -24,13 +24,13 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <ScrollView
-        android:paddingBottom="50dp"
-        android:clipToPadding="true"
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="65dp"
+        android:clipToPadding="true"
         android:paddingTop="10dp"
+        android:paddingBottom="50dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -108,6 +108,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginStart="26dp"
@@ -210,10 +211,10 @@
 
 
             <RelativeLayout
+                android:id="@+id/rlt_setting_lang"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginStart="26dp"
-
                 android:layout_marginEnd="26dp"
                 android:paddingTop="5dp">
 

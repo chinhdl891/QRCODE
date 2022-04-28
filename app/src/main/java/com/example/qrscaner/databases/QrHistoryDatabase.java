@@ -1,4 +1,4 @@
-package com.example.qrscaner.DataBase;
+package com.example.qrscaner.databases;
 
 import android.content.Context;
 
@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.qrscaner.Model.QrScan;
+import com.example.qrscaner.models.QrScan;
 import com.example.qrscaner.dao.QrDao;
 
 @Database(entities = {QrScan.class}, version = 2)

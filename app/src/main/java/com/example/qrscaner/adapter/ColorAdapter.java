@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qrscaner.Model.Color;
+import com.example.qrscaner.models.Color;
 import com.example.qrscaner.R;
 
 import java.util.List;

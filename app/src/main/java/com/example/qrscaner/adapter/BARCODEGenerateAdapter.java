@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qrscaner.Model.GenerateItem;
+import com.example.qrscaner.models.GenerateItem;
 import com.example.qrscaner.R;
 
 import java.util.List;

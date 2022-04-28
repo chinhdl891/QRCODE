@@ -1,6 +1,4 @@
-package com.example.qrscaner.Model;
-
-import androidx.room.Entity;
+package com.example.qrscaner.models;
 
 
 public class GenerateItem {

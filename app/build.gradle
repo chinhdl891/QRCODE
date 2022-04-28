@@ -50,6 +50,9 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 
     implementation "androidx.room:room-paging:2.5.0-alpha01"
+
+    //wheelView
+    implementation 'com.github.psuzn:WheelView:1.0.1'
     implementation 'com.google.zxing:core:3.4.1'
     implementation 'com.karumi:dexter:6.2.3'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'

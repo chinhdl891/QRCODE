@@ -11,12 +11,12 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.widget.Toast;
 
-import com.example.qrscaner.Model.QrEmail;
-import com.example.qrscaner.Model.QrGenerate;
-import com.example.qrscaner.Model.QrMess;
-import com.example.qrscaner.Model.QrScan;
-import com.example.qrscaner.Model.QrUrl;
-import com.example.qrscaner.Model.QrWifi;
+import com.example.qrscaner.models.QrEmail;
+import com.example.qrscaner.models.QrGenerate;
+import com.example.qrscaner.models.QrMess;
+import com.example.qrscaner.models.QrScan;
+import com.example.qrscaner.models.QrUrl;
+import com.example.qrscaner.models.QrWifi;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

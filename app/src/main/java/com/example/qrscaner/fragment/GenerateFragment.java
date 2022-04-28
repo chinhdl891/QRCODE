@@ -32,10 +32,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qrscaner.DataBase.QrGenerateDataBase;
-import com.example.qrscaner.Model.GenerateItem;
-import com.example.qrscaner.Model.QrGenerate;
-import com.example.qrscaner.Model.QrScan;
+import com.example.qrscaner.databases.QrGenerateDataBase;
+import com.example.qrscaner.models.GenerateItem;
+import com.example.qrscaner.models.QrGenerate;
+import com.example.qrscaner.models.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.adapter.BARCODEGenerateAdapter;
@@ -45,7 +45,6 @@ import com.example.qrscaner.config.Constant;
 
 import com.example.qrscaner.view.ShowQrGenerate;
 import com.example.qrscaner.view.SaveQRGenerate;
-import com.example.qrscaner.view.ShowResultScanQR;
 import com.example.qrscaner.view.ViewGenerateQRCode;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;

@@ -7,26 +7,21 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qrscaner.Model.QrEmail;
-import com.example.qrscaner.Model.QrMess;
-import com.example.qrscaner.Model.QrScan;
-import com.example.qrscaner.Model.QrUrl;
-import com.example.qrscaner.Model.QrWifi;
-import com.example.qrscaner.Model.QreTelephone;
+import com.example.qrscaner.models.QrEmail;
+import com.example.qrscaner.models.QrMess;
+import com.example.qrscaner.models.QrScan;
+import com.example.qrscaner.models.QrUrl;
+import com.example.qrscaner.models.QrWifi;
+import com.example.qrscaner.models.QreTelephone;
 import com.example.qrscaner.R;
-import com.example.qrscaner.view.ResultHistoryQr;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import kotlin.jvm.internal.markers.KMutableListIterator;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryHolder> {
     private final List<QrScan> qrList;
@@ -246,9 +241,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                 @Override
                 public void onClick(View view) {
                     if (mHistoryAdapterListener != null) {
-                        mHistoryAdapterListener.onDeleteQRSelected(qrList.get(getLayoutPosition()));
+                        mHistoryAdapterListener.onDeleteQRSelected(qrList.get(getLayoutPosition()), getLayoutPosition());
                         notifyItemRemoved(getLayoutPosition());
-                        notifyDataSetChanged();
                     }
                 }
             });
@@ -297,7 +291,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
 
         void onEditHistory(boolean isEdit);
 
-        void onDeleteQRSelected(QrScan qrScan);
+        void onDeleteQRSelected(QrScan qrScan, int i);
 
         void onItemSelected(boolean isSelected);
 

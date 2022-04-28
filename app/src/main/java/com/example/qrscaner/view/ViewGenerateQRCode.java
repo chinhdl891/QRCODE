@@ -6,7 +6,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -19,8 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.qrscaner.Model.QrGenerate;
-import com.example.qrscaner.Model.QrScan;
+import com.example.qrscaner.models.QrGenerate;
+import com.example.qrscaner.models.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 

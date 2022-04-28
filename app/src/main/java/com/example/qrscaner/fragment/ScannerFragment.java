@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -28,12 +30,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.qrscaner.Model.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
 import com.example.qrscaner.activity.MainActivity;
+import com.example.qrscaner.models.QrScan;
 import com.example.qrscaner.myshareferences.MyDataLocal;
 import com.example.qrscaner.view.ShowResultScanQR;
+import com.example.qrscaner.view.customs.ZXingScannerView;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
@@ -46,8 +49,6 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
 import java.io.IOException;
-
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 
 public class ScannerFragment extends Fragment implements ZXingScannerView.ResultHandler {
@@ -65,6 +66,8 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
     private MainActivity mMainActivity;
     private SeekBar mSkbScannerFragmentZoom;
     public static String SEND_QR_SCAN = "send_obj_scan";
+    private ImageView imvRotateCam;
+    private boolean checkCam;
 
 
     @Override
@@ -72,32 +75,58 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
 
         View view = inflater.inflate(R.layout.fragment_scanner, container, false);
         init(view);
+        zXingScannerView.startCamera();
 
-
-        imvScanFragmentSwitchFlash.setOnClickListener(new View.OnClickListener() {
+        if (zXingScannerView.getMaxZoom() > 0) {
+            mSkbScannerFragmentZoom.setMax(zXingScannerView.getMaxZoom());
+        } else {
+            mSkbScannerFragmentZoom.setMax(10);
+        }
+        mSkbScannerFragmentZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onClick(View view) {
-                switchFlashLight(isFlash);
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                zXingScannerView.setZoom(i);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
-        imvScanFragmentOpenCam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                zXingScannerView.startCamera();
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity()
-                            , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
-                } else {
-                    selectImage();
-                }
 
+        imvScanFragmentSwitchFlash.setOnClickListener(view12 -> switchFlashLight(isFlash));
+        imvScanFragmentOpenCam.setOnClickListener(view1 -> {
+            zXingScannerView.setFlash(false);
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity()
+                        , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+            } else {
+                selectImage();
             }
+
+        });
+
+        imvRotateCam.setOnClickListener(view13 -> {
+            if (!checkCam) {
+
+                zXingScannerView.startCamera(Camera.CameraInfo.CAMERA_FACING_FRONT);
+            } else {
+                zXingScannerView.startCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
+            }
+            checkCam = !checkCam;
         });
 
         return view;
     }
 
     private void init(View view) {
+        imvRotateCam = view.findViewById(R.id.imv_scanFragment_rotateCam);
+        mSkbScannerFragmentZoom = view.findViewById(R.id.skb_scan_zoom);
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         imvScanFragmentOpenCam = view.findViewById(R.id.imv_ScanFragment_openPhoto);
         imvScanFragmentSwitchFlash = view.findViewById(R.id.imv_scanFragment_openFlash);
@@ -214,18 +243,15 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
 
 
     public void resumeCamera() {
-
-        zXingScannerView.startCamera();
-        zXingScannerView.setResultHandler(this);
-
+        zXingScannerView.resumeCameraPreview(this);
     }
 
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         zXingScannerView.stopCameraPreview();
-
+        zXingScannerView.stopCamera();
+        super.onDestroyView();
     }
 
 

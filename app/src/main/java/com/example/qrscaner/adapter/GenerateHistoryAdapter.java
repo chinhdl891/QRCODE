@@ -1,6 +1,5 @@
 package com.example.qrscaner.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +11,15 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qrscaner.Model.QrEmail;
-import com.example.qrscaner.Model.QrGenerate;
-import com.example.qrscaner.Model.QrMess;
-import com.example.qrscaner.Model.QrProduct;
-import com.example.qrscaner.Model.QrScan;
-import com.example.qrscaner.Model.QrText;
-import com.example.qrscaner.Model.QrUrl;
-import com.example.qrscaner.Model.QrWifi;
-import com.example.qrscaner.Model.QreTelephone;
+import com.example.qrscaner.models.QrEmail;
+import com.example.qrscaner.models.QrGenerate;
+import com.example.qrscaner.models.QrMess;
+import com.example.qrscaner.models.QrProduct;
+import com.example.qrscaner.models.QrScan;
+import com.example.qrscaner.models.QrText;
+import com.example.qrscaner.models.QrUrl;
+import com.example.qrscaner.models.QrWifi;
+import com.example.qrscaner.models.QreTelephone;
 import com.example.qrscaner.R;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 

@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.qrscaner.Model.QrGenerate;
+import com.example.qrscaner.models.QrGenerate;
 import com.example.qrscaner.R;
 import com.example.qrscaner.view.ShowQrGenerate;
 
