@@ -7,26 +7,21 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qrscaner.Model.QrEmail;
-import com.example.qrscaner.Model.QrMess;
-import com.example.qrscaner.Model.QrScan;
-import com.example.qrscaner.Model.QrUrl;
-import com.example.qrscaner.Model.QrWifi;
-import com.example.qrscaner.Model.QreTelephone;
+import com.example.qrscaner.models.QrEmail;
+import com.example.qrscaner.models.QrMess;
+import com.example.qrscaner.models.QrScan;
+import com.example.qrscaner.models.QrUrl;
+import com.example.qrscaner.models.QrWifi;
+import com.example.qrscaner.models.QreTelephone;
 import com.example.qrscaner.R;
-import com.example.qrscaner.view.ResultHistoryQr;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import kotlin.jvm.internal.markers.KMutableListIterator;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryHolder> {
     private final List<QrScan> qrList;
@@ -198,12 +193,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         private final ImageView imvItemHistoryScannedType;
         private final TextView tvItemHistoryScannedContent;
         private final TextView tvItemHistoryScannedDate;
-        private final ImageView imvItemHistoryScannedMenu;
         private final ImageView imvItemHistoryScannedCheck;
         private final CardView cvItemHistoryEditContainer;
-        private final ImageButton imvItemHistoryEditCancel;
-        private final TextView txvItemHistoryEdit;
-        private final TextView txvItemHistoryEditShare;
         private final TextView txvItemHistoryEditDelete;
 
         public HistoryHolder(@NonNull View itemView) {
@@ -216,12 +207,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             imvItemHistoryScannedType = (ImageView) itemView.findViewById(R.id.imv_item_history__scannedType);
             tvItemHistoryScannedContent = (TextView) itemView.findViewById(R.id.tv_item_history__scannedContent);
             tvItemHistoryScannedDate = (TextView) itemView.findViewById(R.id.tv_item_history__scannedDate);
-            imvItemHistoryScannedMenu = (ImageView) itemView.findViewById(R.id.imv_item_history__scannedMenu);
+            ImageView imvItemHistoryScannedMenu = (ImageView) itemView.findViewById(R.id.imv_item_history__scannedMenu);
             imvItemHistoryScannedCheck = (ImageView) itemView.findViewById(R.id.imv_item_history__scannedCheck);
             cvItemHistoryEditContainer = (CardView) itemView.findViewById(R.id.cv_item_history__editContainer);
-            imvItemHistoryEditCancel = (ImageButton) itemView.findViewById(R.id.imv_item_history__editCancel);
-            txvItemHistoryEdit = (TextView) itemView.findViewById(R.id.txv_item_history__edit);
-            txvItemHistoryEditShare = (TextView) itemView.findViewById(R.id.txv_item_history__editShare);
+            ImageButton imvItemHistoryEditCancel = (ImageButton) itemView.findViewById(R.id.imv_item_history__editCancel);
+            TextView txvItemHistoryEdit = (TextView) itemView.findViewById(R.id.txv_item_history__edit);
+            TextView txvItemHistoryEditShare = (TextView) itemView.findViewById(R.id.txv_item_history__editShare);
             txvItemHistoryEditDelete = (TextView) itemView.findViewById(R.id.txv_item_history__editDelete);
 
             txvItemHistoryEdit.setOnClickListener(new View.OnClickListener() {
@@ -246,9 +237,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                 @Override
                 public void onClick(View view) {
                     if (mHistoryAdapterListener != null) {
-                        mHistoryAdapterListener.onDeleteQRSelected(qrList.get(getLayoutPosition()));
+                        mHistoryAdapterListener.onDeleteQRSelected(qrList.get(getLayoutPosition()), getLayoutPosition());
                         notifyItemRemoved(getLayoutPosition());
-                        notifyDataSetChanged();
                     }
                 }
             });
@@ -260,29 +250,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                 }
             });
 
-            txvItemHistoryEditShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    QrScan qrScan = qrList.get(getLayoutPosition());
-                    if (mHistoryAdapterListener != null) {
-                        mHistoryAdapterListener.onShareQRSelected(qrScan);
-                    }
+            txvItemHistoryEditShare.setOnClickListener(view -> {
+                QrScan qrScan = qrList.get(getLayoutPosition());
+                if (mHistoryAdapterListener != null) {
+                    mHistoryAdapterListener.onShareQRSelected(qrScan);
                 }
             });
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (isEdit) {
-                        boolean isSelect = !qrList.get(getLayoutPosition()).isChecked();
-                        qrList.get(getLayoutPosition()).setEdit(isSelect);
-                        notifyItemChanged(getLayoutPosition());
-                        if (mHistoryAdapterListener != null) {
-                            mHistoryAdapterListener.onItemSelected(isSelect);
-                        }
-                    } else {
-                        showHistory.ShowListener(qrList.get(getLayoutPosition()));
+            itemView.setOnClickListener(view -> {
+                if (isEdit) {
+                    boolean isSelect = !qrList.get(getLayoutPosition()).isChecked();
+                    qrList.get(getLayoutPosition()).setEdit(isSelect);
+                    notifyItemChanged(getLayoutPosition());
+                    if (mHistoryAdapterListener != null) {
+                        mHistoryAdapterListener.onItemSelected(isSelect);
                     }
+                } else {
+                    showHistory.ShowListener(qrList.get(getLayoutPosition()));
                 }
             });
 
@@ -297,7 +281,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
 
         void onEditHistory(boolean isEdit);
 
-        void onDeleteQRSelected(QrScan qrScan);
+        void onDeleteQRSelected(QrScan qrScan, int i);
 
         void onItemSelected(boolean isSelected);
 

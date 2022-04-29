@@ -23,15 +23,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.qrscaner.Model.QrEmail;
-import com.example.qrscaner.Model.QrGenerate;
-import com.example.qrscaner.Model.QrMess;
-import com.example.qrscaner.Model.QrProduct;
-import com.example.qrscaner.Model.QrScan;
-import com.example.qrscaner.Model.QrText;
-import com.example.qrscaner.Model.QrUrl;
-import com.example.qrscaner.Model.QrWifi;
-import com.example.qrscaner.Model.QreTelephone;
+import com.example.qrscaner.models.QrEmail;
+import com.example.qrscaner.models.QrGenerate;
+import com.example.qrscaner.models.QrMess;
+import com.example.qrscaner.models.QrProduct;
+import com.example.qrscaner.models.QrScan;
+import com.example.qrscaner.models.QrText;
+import com.example.qrscaner.models.QrUrl;
+import com.example.qrscaner.models.QrWifi;
+import com.example.qrscaner.models.QreTelephone;
 import com.example.qrscaner.R;
 import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.utils.BitMapUtils;
@@ -395,7 +395,7 @@ public class ShowQrGenerate extends ConstraintLayout implements View.OnClickList
         tvQrScanResultCategoryName.setText(R.string.phone);
         TextViewPoppinBold tvNameCategory = new TextViewPoppinBold(mContext);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvNameCategory.setText(R.string.number);
+            tvNameCategory.setText(R.string.phone_number);
         }
         tvNameCategory.setTextColor(Color.WHITE);
         tvNameCategory.setTextSize(13);

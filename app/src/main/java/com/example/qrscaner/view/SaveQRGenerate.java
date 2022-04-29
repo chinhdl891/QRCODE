@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -22,10 +21,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qrscaner.DataBase.QrGenerateDataBase;
-import com.example.qrscaner.Model.Color;
-import com.example.qrscaner.Model.QrGenerate;
-import com.example.qrscaner.Model.QrScan;
+import com.example.qrscaner.databases.QrGenerateDataBase;
+import com.example.qrscaner.models.ColorOption;
+import com.example.qrscaner.models.QrGenerate;
+import com.example.qrscaner.models.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.adapter.ColorAdapter;
@@ -36,7 +35,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -92,22 +90,22 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
 
     }
 
-    private List<Color> colorList() {
-        List<Color> colorList = new ArrayList<>();
-        colorList.add(new Color(0, 0XFFDA4532));
-        colorList.add(new Color(1, 0xFFE07640));
-        colorList.add(new Color(2, 0xFFE7A04F));
-        colorList.add(new Color(3, 0xFFF2CE60));
-        colorList.add(new Color(4, 0xFFFFFD72));
-        colorList.add(new Color(5, 0xFF90C554));
-        colorList.add(new Color(6, 0xFF58933B));
-        colorList.add(new Color(7, 0xFF67AFBE));
-        colorList.add(new Color(8, 0xFF2555C5));
-        colorList.add(new Color(9, 0xFF55228D));
-        colorList.add(new Color(10, 0xFF812D8F));
-        colorList.add(new Color(11, 0xFFAD3B91));
-        colorList.add(new Color(12, 0xFFDA4532));
-        colorList.add(new Color(13, 0xFF000000));
+    private List<ColorOption> colorList() {
+        List<ColorOption> colorList = new ArrayList<>();
+        colorList.add(new ColorOption(0, 0XFFDA4532));
+        colorList.add(new ColorOption(1, 0xFFE07640));
+        colorList.add(new ColorOption(2, 0xFFE7A04F));
+        colorList.add(new ColorOption(3, 0xFFF2CE60));
+        colorList.add(new ColorOption(4, 0xFFFFFD72));
+        colorList.add(new ColorOption(5, 0xFF90C554));
+        colorList.add(new ColorOption(6, 0xFF58933B));
+        colorList.add(new ColorOption(7, 0xFF67AFBE));
+        colorList.add(new ColorOption(8, 0xFF2555C5));
+        colorList.add(new ColorOption(9, 0xFF55228D));
+        colorList.add(new ColorOption(10, 0xFF812D8F));
+        colorList.add(new ColorOption(11, 0xFFAD3B91));
+        colorList.add(new ColorOption(12, 0xFFDA4532));
+        colorList.add(new ColorOption(13, 0xFF000000));
 
         return colorList;
     }
@@ -116,90 +114,77 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
         String date = DateFormat.format("dd/MM/yyyy", new Date(qrGenerate.getDate())).toString();
         tvSaveDateCreate.setText(date);
         type = qrGenerate.getQrType();
-
+        imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
         this.saveBackToGenerate = saveBackToGenerate;
         this.savaQr = savaQr;
         qrContent = qrGenerate.getContent();
         if (type == QrScan.QRType.TEXT) {
-            tvSaveTitleQR.setText("QR CODE");
-            tvSaveCateGoryName.setText("Text");
+            tvSaveTitleQR.setText(R.string.qr_code_title);
+            tvSaveCateGoryName.setText(R.string.text);
             imvSaveCateGory.setImageResource(R.drawable.add_text);
-            
-            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+            setSizeQRCode();
 
 
         } else if (type == QrScan.QRType.PHONE) {
 
-            tvSaveTitleQR.setText("QR CODE");
-            tvSaveCateGoryName.setText("Phone");
+            tvSaveTitleQR.setText(R.string.qr_code_title);
+            tvSaveCateGoryName.setText(R.string.phone);
             imvSaveCateGory.setImageResource(R.drawable.add_call);
-            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+            setSizeQRCode();
 
 
         } else if (type == QrScan.QRType.EMAIL) {
-            tvSaveTitleQR.setText("QR CODE");
-            tvSaveCateGoryName.setText("Email");
+            tvSaveTitleQR.setText(R.string.qr_code_title);
+            tvSaveCateGoryName.setText(R.string.email);
             imvSaveCateGory.setImageResource(R.drawable.add_email);
-            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+            setSizeQRCode();
+
 
         } else if (type == QrScan.QRType.SMS) {
-            tvSaveTitleQR.setText("QR CODE");
-            tvSaveCateGoryName.setText("SMS");
-            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+            tvSaveTitleQR.setText(R.string.qr_code_title);
+            tvSaveCateGoryName.setText(R.string.sms);
+            setSizeQRCode();
+
 
             imvSaveCateGory.setImageResource(R.drawable.add_sms);
 
         } else if (type == QrScan.QRType.WIFI) {
-            tvSaveTitleQR.setText("QR CODE");
-            tvSaveCateGoryName.setText("WIFI");
-            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+            tvSaveTitleQR.setText(R.string.qr_code_title);
+            tvSaveCateGoryName.setText(R.string.wifi);
+            setSizeQRCode();
+
 
             imvSaveCateGory.setImageResource(R.drawable.add_wifi);
         } else if (type == QrScan.QRType.URL) {
-            tvSaveTitleQR.setText("QR CODE");
-            tvSaveCateGoryName.setText("Uri");
-            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+            tvSaveTitleQR.setText(R.string.qr_code_title);
+            tvSaveCateGoryName.setText(R.string.uri);
+            setSizeQRCode();
+
             imvSaveCateGory.setImageResource(R.drawable.add_uri);
         } else if (type == QrScan.QRType.PRODUCT) {
-            tvSaveTitleQR.setText("QR CODE");
-            tvSaveCateGoryName.setText("Product");
-            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.4);
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
+            tvSaveTitleQR.setText(R.string.qr_code_title);
+            tvSaveCateGoryName.setText(R.string.product);
+            setSizeQRCode();
+
 
             imvSaveCateGory.setImageResource(R.drawable.ic_product);
         } else if (type == QrScan.QRType.BAR39) {
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
-            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.68);
-            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.35);
+
+            setSizeBARCODE();
             tvSaveTitleQR.setText("BAR CODE");
             tvSaveCateGoryName.setText("Bar 39");
             imvSaveCateGory.setImageResource(R.drawable.ic_product);
 
         } else if (type == QrScan.QRType.BAR93) {
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
-            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.68);
-            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.35);
+
+            setSizeBARCODE();
             tvSaveTitleQR.setText("BAR CODE");
             tvSaveCateGoryName.setText("Bar 93");
             imvSaveCateGory.setImageResource(R.drawable.ic_product);
 
         } else if (type == QrScan.QRType.BAR128) {
-            imvSaveBarCode.setImageBitmap(bitMapUtils.bitmapQR(qrGenerate.getQrType(), qrGenerate.getContent(), android.graphics.Color.BLACK));
-            imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH*0.68);
-            imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH*0.35);
+
+            setSizeBARCODE();
             tvSaveTitleQR.setText("BAR CODE");
             tvSaveCateGoryName.setText("Bar 128");
             imvSaveCateGory.setImageResource(R.drawable.ic_product);
@@ -282,6 +267,16 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
 
     public interface SavaQr {
         void onSaveQr();
+    }
+
+    private void setSizeQRCode() {
+        imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH * 0.4);
+        imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH * 0.4);
+    }
+
+    private void setSizeBARCODE() {
+        imvSaveBarCode.getLayoutParams().width = (int) (MainActivity.WIDTH * 0.68);
+        imvSaveBarCode.getLayoutParams().height = (int) (MainActivity.WIDTH * 0.35);
     }
 
 

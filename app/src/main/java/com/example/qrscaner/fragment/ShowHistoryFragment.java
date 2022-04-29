@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.qrscaner.Model.QrScan;
+import com.example.qrscaner.models.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.view.ResultHistoryQr;
 
@@ -20,7 +20,7 @@ public class ShowHistoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
 
         View view = inflater.inflate(R.layout.fragment_show_history, container, false);
         mResultHistoryQr = view.findViewById(R.id.rhq_result_fragment);

@@ -1,19 +1,11 @@
 package com.example.qrscaner.view;
 
-import static android.content.Context.WIFI_SERVICE;
-
-import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,35 +13,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.qrscaner.DataBase.QrHistoryDatabase;
-import com.example.qrscaner.Model.QrEmail;
-import com.example.qrscaner.Model.QrGenerate;
-import com.example.qrscaner.Model.QrMess;
-import com.example.qrscaner.Model.QrProduct;
-import com.example.qrscaner.Model.QrScan;
-import com.example.qrscaner.Model.QrText;
-import com.example.qrscaner.Model.QrUrl;
-import com.example.qrscaner.Model.QrWifi;
-import com.example.qrscaner.Model.QreTelephone;
+import com.example.qrscaner.databases.QrHistoryDatabase;
+import com.example.qrscaner.models.QrEmail;
+import com.example.qrscaner.models.QrMess;
+import com.example.qrscaner.models.QrScan;
+import com.example.qrscaner.models.QrText;
+import com.example.qrscaner.models.QrUrl;
+import com.example.qrscaner.models.QrWifi;
+import com.example.qrscaner.models.QreTelephone;
 import com.example.qrscaner.R;
 import com.example.qrscaner.activity.MainActivity;
-import com.example.qrscaner.fragment.ScannerFragment;
 import com.example.qrscaner.utils.IntentUtils;
 import com.example.qrscaner.utils.ShareUtils;
-import com.example.qrscaner.view.ResultHistoryQr;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class ShowResultScanQR extends ConstraintLayout implements View.OnClickListener {
     private final Context mContext;
@@ -455,8 +438,6 @@ public class ShowResultScanQR extends ConstraintLayout implements View.OnClickLi
 
 
     }
-
-
 
 
 

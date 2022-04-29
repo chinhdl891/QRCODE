@@ -26,7 +26,7 @@
             android:gravity="center"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textColor="#3C52F5" />
 
         <View
@@ -42,7 +42,7 @@
             android:gravity="center"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:text="Share"
+            android:text="@string/share"
             android:textColor="#3C52F5" />
 
 
@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="19dp"
         android:layout_marginTop="24dp"
-        android:text="Result"
+        android:text="@string/result"
         android:textColor="@color/white"
         android:textSize="18dp"
         android:textStyle="bold"
@@ -114,31 +114,19 @@
         app:layout_constraintStart_toEndOf="@+id/imv_result_qr_category"
         app:layout_constraintTop_toTopOf="@+id/imv_result_alert" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cv_result_qr_render"
+
+    <ImageView
+        android:id="@+id/imv_result_qr_render"
         android:layout_width="250dp"
         android:layout_height="250dp"
-        android:layout_marginTop="48dp"
-        android:padding="20dp"
-        app:cardCornerRadius="12dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imv_result_alert"
         app:layout_constraintEnd_toEndOf="@+id/imv_result_alert"
+        app:layout_constraintHorizontal_bias="0.421"
         app:layout_constraintStart_toStartOf="@+id/imv_result_alert"
-        app:layout_constraintTop_toBottomOf="@+id/tv_save_date_create">
+        app:layout_constraintTop_toBottomOf="@+id/imv_result_qr_category"
+        app:layout_constraintVertical_bias="0.73" />
 
-        <ImageView
-            android:id="@+id/imv_result_qr_render"
-            android:layout_width="250dp"
-            android:layout_height="250dp" />
-        <LinearLayout
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:id="@+id/lnl_result__contentHistory"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
     <ScrollView
         android:id="@+id/scv_content"
         android:layout_width="match_parent"

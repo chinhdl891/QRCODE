@@ -112,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginBottom="10dp"
-                    android:text="QR CODE" />
+                    android:text="@string/qr_code_title" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcv_generate__qrcode"
@@ -127,7 +127,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:text="BAR CODE" />
+                    android:text="@string/bar_code" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcv_generate__barcode"

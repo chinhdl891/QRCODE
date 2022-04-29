@@ -37,8 +37,7 @@
     <string name="vibrate">Vibrate when scan successful</string>
     <string name="beep">Beep when scan successful</string>
     <string name="history_save">Save history for your scan</string>
-    <string name="generate_text_empty" >You have not generated
-any code before!</string>
+    <string name="generate_text_empty">You have not generated \nany code before!</string>
     <string name="vibrate_title">Vibrate</string>
     <string name="beep_title">Beep</string>
     <string name="language">Language</string>
@@ -50,5 +49,17 @@ any code before!</string>
     <string name="create_now">Create now!</string>
     <string name="qr_code_generator">QR Code Generator</string>
     <string name="create">CREATE</string>
+    <string name="scan_now">Scan Now!</string>
+    <string name="qr_code_scanner">QR Code Scanner</string>
+    <string name="tv_history_fragment">HISTORY</string>
+    <string name="file_selected">File Selected</string>
+    <string name="bar_code" translatable="false">BAR CODE</string>
+    <string name="feedback">Feedback</string>
+    <string name="created_in">Created in</string>
+    <string name="cancel">Cancel</string>
+    <string name="result">Result</string>
+    <string name="color">Color</string>
+    <string name="general_settings">General Settings</string>
+
 
 </resources>

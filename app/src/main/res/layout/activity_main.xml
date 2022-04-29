@@ -59,10 +59,10 @@
                 app:srcCompat="@drawable/ic_share_edit" />
 
             <com.example.qrscaner.view.fonts.TextViewPoppinBold
-                android:id="@+id/textViewPoppinBold"
+                android:id="@+id/tv_main_num_selected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="File Selected"
+                android:text="@string/file_selected"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imv_main__delete"
                 app:layout_constraintStart_toEndOf="@+id/imv_main__share"
@@ -75,7 +75,7 @@
                 android:layout_marginEnd="10dp"
                 android:text="2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/textViewPoppinBold"
+                app:layout_constraintEnd_toStartOf="@+id/tv_main_num_selected"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.example.qrscaner.DataBase;
+package com.example.qrscaner.databases;
 
 
 import android.content.Context;
@@ -10,8 +10,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.qrscaner.Model.QrGenerate;
-import com.example.qrscaner.dao.QrDao;
+import com.example.qrscaner.models.QrGenerate;
 import com.example.qrscaner.dao.QrGenerateDao;
 
 @Database(entities = {QrGenerate.class}, version = 2)

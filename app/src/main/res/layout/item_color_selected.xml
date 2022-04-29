@@ -8,10 +8,11 @@
     android:layout_marginEnd="5dp"
     android:layout_marginStart="5dp"
     app:cardCornerRadius="12dp">
+
     <LinearLayout
         android:id="@+id/lnl_item_color"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="#DA4532"
-        android:orientation="horizontal"></LinearLayout>
+        android:orientation="horizontal" />
 </androidx.cardview.widget.CardView>

@@ -20,16 +20,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.example.qrscaner.Model.QrEmail;
-import com.example.qrscaner.Model.QrMess;
-import com.example.qrscaner.Model.QrProduct;
-import com.example.qrscaner.Model.QrUrl;
-import com.example.qrscaner.Model.QrWifi;
-import com.example.qrscaner.Model.QreTelephone;
+import com.example.qrscaner.models.QrEmail;
+import com.example.qrscaner.models.QrMess;
+import com.example.qrscaner.models.QrProduct;
+import com.example.qrscaner.models.QrUrl;
+import com.example.qrscaner.models.QrWifi;
+import com.example.qrscaner.models.QreTelephone;
 import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.adapter.HistoryAdapter;
-import com.example.qrscaner.DataBase.QrHistoryDatabase;
-import com.example.qrscaner.Model.QrScan;
+import com.example.qrscaner.databases.QrHistoryDatabase;
+import com.example.qrscaner.models.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.config.Constant;
 import com.example.qrscaner.myshareferences.MyDataLocal;
@@ -85,7 +85,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
 
     private void init(View view) {
         rltHistoryFragmentBelow = view.findViewById(R.id.rlt_scanHistory_below);
-        rltHistoryFragmentUp = view.findViewById(R.id.rlt_scanHistory__Upto);
+        rltHistoryFragmentUp = view.findViewById(R.id.rlt_scanHistory__upto);
         rslHistoryFragmentShowQr = view.findViewById(R.id.rsq_historyFragment__showQr);
         lnlHTRGotoScan = view.findViewById(R.id.lnl_historyFragment__gotoScan);
         btnGotoScan = view.findViewById(R.id.btn_historyFragment__gotoScan);
@@ -155,8 +155,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     }
 
     @Override
-    public void onDeleteQRSelected(QrScan qrScan) {
-        deleteQR(qrScan);
+    public void onDeleteQRSelected(QrScan qrScan, int i) {
+        deleteQR(qrScan, i);
         if (mQRScannedList.size() == 0) {
             rcvHistoryScan.setVisibility(View.GONE);
             lnlHTRGotoScan.setVisibility(View.VISIBLE);
@@ -180,27 +180,24 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
         }
     }
 
-    private void deleteQR(QrScan qrScan) {
+    private void deleteQR(QrScan qrScan, int i) {
         if (mQRScannedList != null) {
             QrHistoryDatabase.getInstance(getActivity()).qrDao().deleteQr(qrScan);
-            mQRScannedList.remove(qrScan);
-            historyAdapter.notifyDataSetChanged();
+            mQRScannedList.remove(i);
+            historyAdapter.notifyItemRemoved(i);
+
         }
     }
 
     @Override
     public void ShowListener(QrScan qrScan) {
-//        mMainActivity.getBottomNavigationView().setVisibility(View.GONE);
-//        rcvHistoryScan.setVisibility(View.GONE);
-//        rltHistoryFragmentUp.setVisibility(View.GONE);
-//        rltHistoryFragmentBelow.setVisibility(View.GONE);
-//        rslHistoryFragmentShowQr.setVisibility(View.VISIBLE);
+
         Bundle bundle = new Bundle();
         ShowHistoryFragment fragment = new ShowHistoryFragment();
         bundle.putSerializable(SEND_DATA_SHOW,qrScan);
         fragment.setArguments(bundle);
         mMainActivity.fragmentLoad(fragment,ShowHistoryFragment.class.getSimpleName());
-      //  rslHistoryFragmentShowQr.setupData(qrScan);
+
 
 
     }
@@ -214,7 +211,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
             if (intent.getAction().equals(Constant.ACTION_DELETE_MULTIPLE_QRCODE)) {
                 for (int i = 0; i < mQRScannedList.size(); i++) {
                     if (mQRScannedList.get(i).isChecked()) {
-                        deleteQR(mQRScannedList.get(i));
+                        deleteQR(mQRScannedList.get(i),i);
                         i--;
                     }
                 }

@@ -6,12 +6,19 @@ import static com.example.qrscaner.fragment.SettingFragment.KEY_VIBRATE;
 
 import android.content.Context;
 
+import com.example.qrscaner.activity.MainActivity;
+import com.example.qrscaner.locale.LocaleHelper;
+
 public class MyDataLocal {
     private static final String KEY_PREFERENCE_FIRST = "first_install";
+    private static final String KEY_LANGUAGE = "language";
     private static MyDataLocal instance;
     private MySharePreference mySharePreference;
+    public static Context mContext;
+
     public static void init(Context context){
         instance = new MyDataLocal();
+        mContext = context;
         instance.mySharePreference = new MySharePreference(context);
 
     }
@@ -54,4 +61,12 @@ public class MyDataLocal {
         return  MyDataLocal.getInstance().mySharePreference.getData(KEY_HISTORY);
 
     }
+    public static void setLanguage(String language){
+        MyDataLocal.getInstance().mySharePreference.pushLang(KEY_LANGUAGE, language);
+    }
+
+    public static  String getLang(){
+        return MyDataLocal.getInstance().mySharePreference.getLang(KEY_LANGUAGE);
+    }
+
 }

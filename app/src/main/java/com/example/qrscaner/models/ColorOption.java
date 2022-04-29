@@ -1,10 +1,10 @@
-package com.example.qrscaner.Model;
+package com.example.qrscaner.models;
 
-public class Color {
+public class ColorOption {
     private int id;
     private int color;
 
-    public Color(int id, int color) {
+    public ColorOption(int id, int color) {
         this.id = id;
         this.color = color;
     }
