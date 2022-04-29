@@ -1,7 +1,6 @@
 package com.example.qrscaner.fragment;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,11 +13,9 @@ import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.qrscaner.R;
 import com.example.qrscaner.myshareferences.MyDataLocal;
-import com.example.qrscaner.myshareferences.MySharePreference;
 
 
 public class SettingFragment extends Fragment implements View.OnClickListener{
@@ -96,8 +93,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
     }
 
     private void showDialog() {
-        DialogFragment dialogFragment = new DialogFragment();
-        dialogFragment.show(getActivity().getSupportFragmentManager(),"Select language");
+        LanguageDialogFragment languageDialogFragment = new LanguageDialogFragment();
+        languageDialogFragment.show(getActivity().getSupportFragmentManager(),"Select language");
 
     }
 

@@ -117,7 +117,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
 
 
             } else {
-                imvHistoryEdit.setImageResource(R.drawable.pen_edit_1);
+                imvHistoryEdit.setImageResource(R.drawable.imv_pen_edit_1);
                 isEditable = false;
                 mMainActivity.getBottomNavigationView().setVisibility(View.VISIBLE);
                 mMainActivity.getCtlMainEditItem().setVisibility(View.GONE);

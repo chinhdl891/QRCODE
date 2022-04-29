@@ -121,7 +121,7 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
         if (type == QrScan.QRType.TEXT) {
             tvSaveTitleQR.setText(R.string.qr_code_title);
             tvSaveCateGoryName.setText(R.string.text);
-            imvSaveCateGory.setImageResource(R.drawable.add_text);
+            imvSaveCateGory.setImageResource(R.drawable.ic_add_text);
             setSizeQRCode();
 
 
@@ -129,14 +129,14 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
 
             tvSaveTitleQR.setText(R.string.qr_code_title);
             tvSaveCateGoryName.setText(R.string.phone);
-            imvSaveCateGory.setImageResource(R.drawable.add_call);
+            imvSaveCateGory.setImageResource(R.drawable.ic_add_call);
             setSizeQRCode();
 
 
         } else if (type == QrScan.QRType.EMAIL) {
             tvSaveTitleQR.setText(R.string.qr_code_title);
             tvSaveCateGoryName.setText(R.string.email);
-            imvSaveCateGory.setImageResource(R.drawable.add_email);
+            imvSaveCateGory.setImageResource(R.drawable.ic_add_email);
             setSizeQRCode();
 
 
@@ -146,7 +146,7 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
             setSizeQRCode();
 
 
-            imvSaveCateGory.setImageResource(R.drawable.add_sms);
+            imvSaveCateGory.setImageResource(R.drawable.ic_add_sms);
 
         } else if (type == QrScan.QRType.WIFI) {
             tvSaveTitleQR.setText(R.string.qr_code_title);
@@ -154,13 +154,13 @@ public class SaveQRGenerate extends ConstraintLayout implements ColorAdapter.Sel
             setSizeQRCode();
 
 
-            imvSaveCateGory.setImageResource(R.drawable.add_wifi);
+            imvSaveCateGory.setImageResource(R.drawable.ic_add_wifi);
         } else if (type == QrScan.QRType.URL) {
             tvSaveTitleQR.setText(R.string.qr_code_title);
             tvSaveCateGoryName.setText(R.string.uri);
             setSizeQRCode();
 
-            imvSaveCateGory.setImageResource(R.drawable.add_uri);
+            imvSaveCateGory.setImageResource(R.drawable.ic_add_uri);
         } else if (type == QrScan.QRType.PRODUCT) {
             tvSaveTitleQR.setText(R.string.qr_code_title);
             tvSaveCateGoryName.setText(R.string.product);

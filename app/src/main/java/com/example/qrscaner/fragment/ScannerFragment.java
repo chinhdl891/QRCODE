@@ -238,11 +238,7 @@ public class ScannerFragment extends Fragment implements ZXingScannerView.Result
         zXingScannerView.stopCameraPreview();
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        sendData = ((SendData) context);
-    }
+
 
 
     public void resumeCamera() {

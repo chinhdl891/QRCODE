@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/plus" />
+            android:src="@drawable/ic_plus" />
 
         <SeekBar
             android:id="@+id/skb_scan_zoom"
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/minus" />
+            android:src="@drawable/ic_minus" />
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="3"
-                android:src="@drawable/photo_image" />
+                android:src="@drawable/imv_photo_image" />
 
             <ImageView
                 android:id="@+id/imv_scanFragment_rotateCam"
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="3"
-                android:src="@drawable/rotate_camera" />
+                android:src="@drawable/ic_rotate_camera" />
 
             <ImageView
                 android:id="@+id/imv_scanFragment_openFlash"
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="3"
-                android:src="@drawable/flash" />
+                android:src="@drawable/ic_flash" />
 
             <View
                 android:layout_width="0dp"

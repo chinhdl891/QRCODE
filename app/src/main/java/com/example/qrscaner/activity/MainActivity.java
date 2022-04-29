@@ -30,7 +30,7 @@ import com.example.qrscaner.models.QrScan;
 import com.example.qrscaner.R;
 import com.example.qrscaner.SendData;
 import com.example.qrscaner.config.Constant;
-import com.example.qrscaner.fragment.DialogFragment;
+import com.example.qrscaner.fragment.LanguageDialogFragment;
 import com.example.qrscaner.fragment.GenerateFragment;
 import com.example.qrscaner.fragment.HistoryFragment;
 import com.example.qrscaner.fragment.ResultScanFragment;
@@ -47,7 +47,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import java.util.Locale;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, SendData, ShowQrGenerate.iSaveQrScan, DialogFragment.SelectLanguage {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ShowQrGenerate.iSaveQrScan, LanguageDialogFragment.SelectLanguage {
     private BottomNavigationView bottomNavigationView;
     public static FragmentManager fragmentManager;
     private Fragment fragment;
@@ -167,10 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         zXingScannerView.startCamera();
     }
 
-    @Override
-    public void sendQr(QrScan qr) {
 
-    }
 
     public FrameLayout getmFmlMainResultQR() {
         return mFmlMainResultQR;

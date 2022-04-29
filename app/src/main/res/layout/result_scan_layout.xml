@@ -56,7 +56,7 @@
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrow_back" />
+        app:srcCompat="@drawable/ic_arrow_back" />
 
     <TextView
 
@@ -81,7 +81,7 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_result_category"
-        app:srcCompat="@drawable/background_dialog" />
+        app:srcCompat="@drawable/bg_dialog" />
 
     <ImageView
         android:id="@+id/imv_result_qr_category"
@@ -91,7 +91,7 @@
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="@+id/imv_result_alert"
         app:layout_constraintTop_toTopOf="@+id/imv_result_alert"
-        app:srcCompat="@drawable/add_email" />
+        app:srcCompat="@drawable/ic_add_email" />
 
     <TextView
         android:textStyle="bold"

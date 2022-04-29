@@ -226,7 +226,7 @@ public class ShowQrGenerate extends ConstraintLayout implements View.OnClickList
         type = QrScan.QRType.TEXT;
         mqrScan.setTypeQR(type);
         lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
-        imvQrScanResultIconCategory.setImageResource(R.drawable.add_text);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.ic_add_text);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
         tvQrScanResultCategoryName.setText(R.string.text);
@@ -249,7 +249,7 @@ public class ShowQrGenerate extends ConstraintLayout implements View.OnClickList
         type = QrScan.QRType.SMS;
         mqrScan.setTypeQR(type);
         lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
-        imvQrScanResultIconCategory.setImageResource(R.drawable.add_sms);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.ic_add_sms);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
         tvQrScanResultCategoryName.setText(R.string.mess);
@@ -286,7 +286,7 @@ public class ShowQrGenerate extends ConstraintLayout implements View.OnClickList
         type = QrScan.QRType.WIFI;
         mqrScan.setTypeQR(type);
         lnlResultInfo.setOrientation(LinearLayout.VERTICAL);
-        imvQrScanResultIconCategory.setImageResource(R.drawable.add_wifi);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.ic_add_wifi);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
         tvQrScanResultCategoryName.setText(R.string.wifi);
@@ -335,7 +335,7 @@ public class ShowQrGenerate extends ConstraintLayout implements View.OnClickList
     private void setContentMail(long date, QrEmail qrEmail) {
         type = QrScan.QRType.EMAIL;
         mqrScan.setTypeQR(type);
-        imvQrScanResultIconCategory.setImageResource(R.drawable.add_email);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.ic_add_email);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
         tvQrScanResultCategoryName.setText(R.string.email);
@@ -388,7 +388,7 @@ public class ShowQrGenerate extends ConstraintLayout implements View.OnClickList
     private void setContentTel(long date, QreTelephone qreTelephone) {
         type = QrScan.QRType.PHONE;
         mqrScan.setTypeQR(type);
-        imvQrScanResultIconCategory.setImageResource(R.drawable.add_call);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.ic_add_call);
         // or you already have long value of date, use this instead of milliseconds variable.
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
@@ -413,7 +413,7 @@ public class ShowQrGenerate extends ConstraintLayout implements View.OnClickList
     private void setContentUrl(long date, QrUrl qrUrl) {
         type = QrScan.QRType.URL;
         mqrScan.setTypeQR(type);
-        imvQrScanResultIconCategory.setImageResource(R.drawable.add_uri);
+        imvQrScanResultIconCategory.setImageResource(R.drawable.ic_add_uri);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvQrScanResultDate.setText(dateString);
         tvQrScanResultCategoryName.setText(R.string.uri);
