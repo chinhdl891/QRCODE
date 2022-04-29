@@ -222,7 +222,7 @@ public class ShowResultScanQR extends ConstraintLayout implements View.OnClickLi
         {
 
             lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-            imvResultHistoryCategory.setImageResource(R.drawable.add_uri);
+            imvResultHistoryCategory.setImageResource(R.drawable.ic_add_uri);
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
             tvResultHistoryDateCreate.setText(dateString);
             tvResultHistoryCategory.setText("\t \t"+R.string.qr_code_title);
@@ -247,7 +247,7 @@ public class ShowResultScanQR extends ConstraintLayout implements View.OnClickLi
     private void setContentMail(long date, QrEmail qrEmail) {
         {
             lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-            imvResultHistoryCategory.setImageResource(R.drawable.add_email);
+            imvResultHistoryCategory.setImageResource(R.drawable.ic_add_email);
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
             tvResultHistoryDateCreate.setText(dateString);
             tvResultHistoryCategory.setText(R.string.qr_code_title);
@@ -294,7 +294,7 @@ public class ShowResultScanQR extends ConstraintLayout implements View.OnClickLi
     private void setContentTel(long date, QreTelephone qreTelephone) {
         {
             lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-            imvResultHistoryCategory.setImageResource(R.drawable.add_call);
+            imvResultHistoryCategory.setImageResource(R.drawable.ic_add_call);
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
             tvResultHistoryDateCreate.setText(dateString);
             tvResultHistoryCategory.setText(R.string.qr_code_title);
@@ -322,7 +322,7 @@ public class ShowResultScanQR extends ConstraintLayout implements View.OnClickLi
 
     private void setContentWifi(long date, QrWifi qrWifi) {
         lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-        imvResultHistoryCategory.setImageResource(R.drawable.add_wifi);
+        imvResultHistoryCategory.setImageResource(R.drawable.ic_add_wifi);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvResultHistoryDateCreate.setText(dateString);
         tvResultHistoryCategory.setText(R.string.qr_code_title);
@@ -364,7 +364,7 @@ public class ShowResultScanQR extends ConstraintLayout implements View.OnClickLi
     private void setContentText(long date, QrText qrText) {
         lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
 
-        imvResultHistoryCategory.setImageResource(R.drawable.add_text);
+        imvResultHistoryCategory.setImageResource(R.drawable.ic_add_text);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvResultHistoryDateCreate.setText(dateString);
         tvResultHistoryCategory.setText(R.string.qr_code_title);
@@ -388,7 +388,7 @@ public class ShowResultScanQR extends ConstraintLayout implements View.OnClickLi
 
     private void setContentMess(long date, QrMess qrMess) {
         lnlResultHistoryContent.setOrientation(LinearLayout.VERTICAL);
-        imvResultHistoryCategory.setImageResource(R.drawable.add_sms);
+        imvResultHistoryCategory.setImageResource(R.drawable.ic_add_sms);
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(date)).toString();
         tvResultHistoryDateCreate.setText(dateString);
         tvResultHistoryCategory.setText(R.string.qr_code_title);

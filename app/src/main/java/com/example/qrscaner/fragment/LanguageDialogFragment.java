@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import com.example.qrscaner.models.LanguageOption;
 import com.example.qrscaner.R;
 
-public class DialogFragment extends AppCompatDialogFragment {
+public class LanguageDialogFragment extends AppCompatDialogFragment {
     private NumberPicker nbpDialogLang;
     private String[] strLanguages;
     private SelectLanguage iSelectLanguage;

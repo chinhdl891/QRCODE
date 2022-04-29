@@ -68,7 +68,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             QrMess qrMess = new QrMess();
             qrMess.compileSMS(content);
             holder.tvItemHistoryScannedContent.setText(qrMess.getSendBy());
-            holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_sms);
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.ic_add_sms);
             holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
             if (qrScan.getScanText().equals("")) {
                 holder.tvItemHistoryScannedContent.setText("SMS");
@@ -86,7 +86,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             QrUrl qrUrl = new QrUrl();
             qrUrl.compileUrl(content);
             holder.tvItemHistoryScannedContent.setText(qrUrl.getUrl());
-            holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_uri);
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.ic_add_uri);
             holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
             if (qrScan.getScanText().equals("")) {
                 holder.tvItemHistoryScannedContent.setText("Uri");
@@ -102,7 +102,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             QrWifi qrWifi = new QrWifi();
             qrWifi.compileWifi(contentWifi, contentWifi3);
             holder.tvItemHistoryScannedContent.setText(qrWifi.getWifiName());
-            holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_wifi);
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.ic_add_wifi);
             holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
 
             if (qrScan.getScanText().equals("")) {
@@ -116,7 +116,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             }
             qrEmail.compileEmail(content);
             holder.tvItemHistoryScannedContent.setText(qrEmail.getSendBy());
-            holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_email);
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.ic_add_email);
             holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
             if (qrScan.getScanText().equals("")) {
                 holder.tvItemHistoryScannedContent.setText("Email");
@@ -125,7 +125,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             QreTelephone qreTelephone = new QreTelephone();
             qreTelephone.compile(content);
             holder.tvItemHistoryScannedContent.setText(qreTelephone.getTel());
-            holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_call);
+            holder.imvItemHistoryScannedType.setImageResource(R.drawable.ic_add_call);
             holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
             if (qrScan.getScanText().equals("")) {
                 holder.tvItemHistoryScannedContent.setText("Phone");
@@ -141,7 +141,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                 }
             } else {
                 holder.tvItemHistoryScannedContent.setText(qrScan.getScanText());
-                holder.imvItemHistoryScannedType.setImageResource(R.drawable.add_text);
+                holder.imvItemHistoryScannedType.setImageResource(R.drawable.ic_add_text);
                 holder.tvItemHistoryScannedDate.setText(qrScan.getDateString());
                 if (qrScan.getScanText().equals("")) {
                     holder.tvItemHistoryScannedContent.setText("Text");

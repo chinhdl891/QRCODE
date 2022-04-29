@@ -15,72 +15,38 @@ public class BitMapUtils {
 
 
     public static Bitmap bitmapQR(QrScan.QRType type, String s, int color) {
-          Bitmap bitmap = null;
-        if (type == QrScan.QRType.BAR39) {
-            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_39, BITMAP_WIDTH, BITMAP_HEIGHT);
-                bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.ARGB_8888);
-                for (int i = 0; i < BITMAP_WIDTH; i++) {
-                    for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                        bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
-                    }
-                }
+        Bitmap bitmap = null;
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        BarcodeFormat format;
 
-            } catch (Exception e) {
-
-            }
-            return bitmap;
-
-        } else if (type == QrScan.QRType.BAR93) {
-            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_93, BITMAP_WIDTH, BITMAP_HEIGHT);
-                bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.ARGB_8888);
-                for (int i = 0; i < BITMAP_WIDTH; i++) {
-                    for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                        bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
-                    }
-                }
-
-            } catch (Exception e) {
-
-            }
-            return bitmap;
-
-        } else if (type == QrScan.QRType.BAR128) {
-            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_128, BITMAP_WIDTH, BITMAP_HEIGHT);
-                bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.ARGB_8888);
-                for (int i = 0; i < BITMAP_WIDTH; i++) {
-                    for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                        bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
-                    }
-                }
-
-            } catch (Exception e) {
-
-            }
-            return bitmap;
-
-        } else {
-            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.QR_CODE, BITMAP_WIDTH, BITMAP_HEIGHT);
-                bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.ARGB_8888);
-                for (int i = 0; i < BITMAP_WIDTH; i++) {
-                    for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                        bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
-                    }
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return bitmap;
+        switch (type) {
+            case BAR39:
+                format = BarcodeFormat.CODE_39;
+                break;
+            case BAR93:
+                format = BarcodeFormat.CODE_93;
+                break;
+            case BAR128:
+                format = BarcodeFormat.CODE_128;
+                break;
+            default:
+                format = BarcodeFormat.QR_CODE;
+                break;
         }
+
+        try {
+            BitMatrix bitMatrix = multiFormatWriter.encode(s, format, BITMAP_WIDTH, BITMAP_HEIGHT);
+            bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.ARGB_8888);
+            for (int i = 0; i < BITMAP_WIDTH; i++) {
+                for (int j = 0; j < BITMAP_HEIGHT; j++) {
+                    bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
+                }
+            }
+
+        } catch (Exception e) {
+
+        }
+        return bitmap;
 
     }
 }

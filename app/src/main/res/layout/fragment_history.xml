@@ -20,7 +20,7 @@
         android:id="@+id/rlt_scanHistory__upto"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@drawable/background_history">
+        android:background="@drawable/bg_history">
 
         <ImageView
             android:id="@+id/imv_scan_goto__Scan"
@@ -61,7 +61,7 @@
             android:layout_marginTop="25dp"
             android:layout_marginEnd="30dp"
             android:padding="10dp"
-            android:src="@drawable/pen_edit_1" />
+            android:src="@drawable/imv_pen_edit_1" />
     </RelativeLayout>
 
     <RelativeLayout

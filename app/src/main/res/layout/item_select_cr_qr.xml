@@ -19,7 +19,7 @@
             android:id="@+id/imv_select_icon_create"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/add_call" />
+            android:src="@drawable/ic_add_call" />
 
         <View
             android:id="@+id/v_select_viewUnder"

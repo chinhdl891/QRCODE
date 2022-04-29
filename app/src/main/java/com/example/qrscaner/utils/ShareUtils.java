@@ -72,16 +72,7 @@ public class ShareUtils {
         context.startActivity(intentShare);
     }
 
-//    public static void sharePalette(Bitmap bitmap,Context context) {
-//
-//        String bitmapPath = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "palette", "share palette");
-//        Uri bitmapUri = Uri.parse(bitmapPath);
-//
-//        Intent intent = new Intent(Intent.ACTION_SEND);
-//        intent.setType("image/png");
-//        intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
-//        context.startActivity(Intent.createChooser(intent, "Share"));
-//    }
+
 
 
     public static void sharePalette(Context context,Bitmap bitmap) {
@@ -92,6 +83,7 @@ public class ShareUtils {
         intent.setType("image/png");
         intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
         context.startActivity(Intent.createChooser(intent, "Share"));
+
     }
 
 }
