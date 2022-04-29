@@ -123,11 +123,11 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
 
         } else if (id == 13) {
             typeQR = QrScan.QRType.PHONE;
-            tvGenCategory.setText("Phone");
+            tvGenCategory.setText(R.string.phone);
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
-            tvCategoryText.setText("Phone");
+            tvCategoryText.setText(R.string.phone);
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtPhone);
@@ -181,11 +181,11 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
 
         } else if (id == 13) {
             typeQR = QrScan.QRType.PHONE;
-            tvGenCategory.setText("Phone");
+            tvGenCategory.setText(R.string.phone);
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
-            tvCategoryText.setText("Phone");
+            tvCategoryText.setText(R.string.phone_number);
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtPhone);
@@ -222,7 +222,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentSub = new LinearLayout(mContext);
             TextViewPoppinBold tvCategorySub = new TextViewPoppinBold(mContext);
             EditText edtSub = new EditText(mContext);
-            tvCategorySub.setText("Subject");
+            tvCategorySub.setText(R.string.subject);
             lnlContentSub.setOrientation(LinearLayout.VERTICAL);
             lnlContentSub.addView(tvCategorySub);
             lnlContentSub.addView(edtSub);
@@ -230,7 +230,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentContent = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryContent = new TextViewPoppinBold(mContext);
             edtContent = new EditText(mContext);
-            tvCategoryContent.setText("Content");
+            tvCategoryContent.setText(R.string.content);
             lnlContentContent.setOrientation(LinearLayout.VERTICAL);
             lnlContentContent.addView(tvCategoryContent);
             lnlContentContent.addView(edtContent);
@@ -287,11 +287,11 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
 
         } else if (id == 15) {
             typeQR = QrScan.QRType.URL;
-            tvGenCategory.setText("Uri");
+            tvGenCategory.setText(R.string.uri);
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtContent = new EditText(mContext);
-            tvCategoryText.setText("Uri");
+            tvCategoryText.setText(R.string.uri);
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtContent);
@@ -314,13 +314,13 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             });
         } else if (id == 16) {
             typeQR = QrScan.QRType.SMS;
-            tvGenCategory.setText("SMS");
+            tvGenCategory.setText(R.string.sms);
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryPhone = new TextViewPoppinBold(mContext);
             EditText edtPhone = new EditText(mContext);
 
             edtPhone.setInputType(InputType.TYPE_CLASS_NUMBER);
-            tvCategoryPhone.setText("Phone");
+            tvCategoryPhone.setText(R.string.phone_number);
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryPhone);
             lnlContentText.addView(edtPhone);
@@ -328,7 +328,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentSMS = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryContentSMS = new TextViewPoppinBold(mContext);
             EditText edtSMS = new EditText(mContext);
-            tvCategoryContentSMS.setText("Content");
+            tvCategoryContentSMS.setText(R.string.content);
             lnlContentSMS.setOrientation(LinearLayout.VERTICAL);
             lnlContentSMS.addView(tvCategoryContentSMS);
             lnlContentSMS.addView(edtSMS);
@@ -368,11 +368,11 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
 
         } else if (id == 18) {
             typeQR = QrScan.QRType.TEXT;
-            tvGenCategory.setText("Text");
+            tvGenCategory.setText(R.string.text);
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtContent = new EditText(mContext);
-            tvCategoryText.setText("Text");
+            tvCategoryText.setText(R.string.content);
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtContent);
@@ -418,7 +418,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentText = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryText = new TextViewPoppinBold(mContext);
             EditText edtNetWork = new EditText(mContext);
-            tvCategoryText.setText("Network");
+            tvCategoryText.setText(R.string.network);
             lnlContentText.setOrientation(LinearLayout.VERTICAL);
             lnlContentText.addView(tvCategoryText);
             lnlContentText.addView(edtNetWork);
@@ -426,7 +426,7 @@ public class ViewGenerateQRCode extends ConstraintLayout implements View.OnClick
             LinearLayout lnlContentPass = new LinearLayout(mContext);
             TextViewPoppinBold tvCategoryPass = new TextViewPoppinBold(mContext);
             EditText edtPass = new EditText(mContext);
-            tvCategoryPass.setText("Pass");
+            tvCategoryPass.setText(R.string.pass);
             lnlContentPass.setOrientation(LinearLayout.VERTICAL);
             lnlContentPass.addView(tvCategoryPass);
             lnlContentPass.addView(edtPass);
