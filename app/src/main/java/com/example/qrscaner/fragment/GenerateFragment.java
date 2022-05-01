@@ -1,5 +1,9 @@
 package com.example.qrscaner.fragment;
 
+import static com.example.qrscaner.config.Constant.BITMAP_HEIGHT;
+import static com.example.qrscaner.config.Constant.BITMAP_WIDTH;
+import static com.example.qrscaner.config.Constant.REQUEST_READ_STORAGE;
+import static com.example.qrscaner.config.Constant.REQUEST_WRITE_STORAGE;
 import static com.example.qrscaner.fragment.ShowQrGenerateFragment.SEND_GEN_QR;
 import static com.example.qrscaner.utils.ShareUtils.sharePalette;
 
@@ -58,10 +62,7 @@ import java.util.List;
 
 
 public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, SaveQRGenerate.SavaQr, ViewGenerateQRCode.IBackToGenerate, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, SaveQRGenerate.SaveBackToGenerate {
-    private static final int REQUEST_WRITE_STORAGE = 1000;
-    private static final int REQUEST_READ_STORAGE = 999;
-    private static final int BITMAP_WIDTH = 955;
-    private static final int BITMAP_HEIGHT = 426;
+
 
     private RecyclerView rcvGenerateFragmentQrCode, rcvGenerateFragmentBarCode, rcvGenerateFragmentHistory;
     private ViewGenerateQRCode viewGenerateQRCode;

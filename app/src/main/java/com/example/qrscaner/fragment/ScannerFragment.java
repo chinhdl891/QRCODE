@@ -17,7 +17,6 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -31,7 +30,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.qrscaner.R;
-import com.example.qrscaner.SendData;
 import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.models.QrScan;
 import com.example.qrscaner.myshareferences.MyDataLocal;
@@ -54,7 +52,7 @@ import java.io.IOException;
 public class ScannerFragment extends Fragment implements ZXingScannerView.ResultHandler {
     public static ZXingScannerView zXingScannerView;
 
-    private SendData sendData;
+
     private String strImgFromPhoto, mCameraId;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
     private ImageView imvScanFragmentOpenCam, imvScanFragmentSwitchFlash;

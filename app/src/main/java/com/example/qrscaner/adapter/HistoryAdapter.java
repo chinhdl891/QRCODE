@@ -238,7 +238,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
                 public void onClick(View view) {
                     if (mHistoryAdapterListener != null) {
                         mHistoryAdapterListener.onDeleteQRSelected(qrList.get(getLayoutPosition()), getLayoutPosition());
-                        notifyItemRemoved(getLayoutPosition());
                     }
                 }
             });

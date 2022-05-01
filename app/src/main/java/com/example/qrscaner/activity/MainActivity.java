@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -28,7 +29,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.qrscaner.databases.QrHistoryDatabase;
 import com.example.qrscaner.models.QrScan;
 import com.example.qrscaner.R;
-import com.example.qrscaner.SendData;
 import com.example.qrscaner.config.Constant;
 import com.example.qrscaner.fragment.LanguageDialogFragment;
 import com.example.qrscaner.fragment.GenerateFragment;
@@ -55,13 +55,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextViewPoppinBold tvMainNumItem;
     private ImageView imvMainItemShare, imvMainItemDelete, imvMainQrTest;
     private FrameLayout mFrlMainContent, mFmlMainResultQR;
-
     public final static int REQUEST_CAM = 100;
     public final static int REQUEST_WRITE = 100;
-    private static final int TIME_WAIT = 3000;
-    private long time;
+    public static final int TIME_WAIT = 3000;
+
     public static int WIDTH = 0;
     public static int HEIGHT = 0;
+
+    private long time;
     private String tag;
 
 

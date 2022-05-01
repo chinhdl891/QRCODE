@@ -27,6 +27,7 @@ import com.example.qrscaner.models.QreTelephone;
 import com.example.qrscaner.R;
 import com.example.qrscaner.activity.MainActivity;
 import com.example.qrscaner.utils.IntentUtils;
+import com.example.qrscaner.utils.ShareUtils;
 import com.example.qrscaner.view.fonts.TextViewPoppinBold;
 
 import java.util.Date;
@@ -75,6 +76,7 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
         lnlResultHistoryOption.getLayoutParams().width = imvShowHistoryItemBackGround.getWidth();
         imvResultHistoryBack.setOnClickListener(this);
         tvResultHistoryOptionOne.setOnClickListener(this);
+        tvResultHistoryShare.setOnClickListener(this);
 
     }
 
@@ -394,13 +396,19 @@ public class ResultHistoryQr extends ConstraintLayout implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
+
+
         if (view == imvResultHistoryBack) {
             mainActivity.onBackPressed();
         }
-        if (view == tvResultHistoryOptionOne) {
+        else if  (view == tvResultHistoryOptionOne) {
             IntentUtils intentUtils = new IntentUtils();
             intentUtils.IntentAction(mContext, mqrScan.getScanText(), mqrScan.getTypeQR());
         }
+        else if (view.getId() == R.id.tv_scanResult_share){
+            ShareUtils.shareQR(mContext,mqrScan);
+        }
+
     }
 
 
