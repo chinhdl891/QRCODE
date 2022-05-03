@@ -282,41 +282,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
     @Override
     public void onShareGenerate(String s, QrScan.QRType type, int color) {
-        checkPermissionRead();
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-        BitMatrix bitMatrix;
-        BarcodeFormat format;
-        switch (type) {
-
-            case BAR39:
-                format = BarcodeFormat.CODE_39;
-                break;
-            case BAR93:
-                format = BarcodeFormat.CODE_93;
-                break;
-            case BAR128:
-                format = BarcodeFormat.CODE_128;
-                break;
-            default:
-                format = BarcodeFormat.QR_CODE;
-                break;
-        }
-
-        try {
-            bitMatrix = multiFormatWriter.encode(s, format, BITMAP_WIDTH, BITMAP_HEIGHT);
-            Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
-            for (int i = 0; i < BITMAP_WIDTH; i++) {
-                for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                    bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
-                }
-            }
-            if (getActivity() != null) {
-                sharePalette(getActivity(), bmShare);
-            }
-
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
+        shareMulti(s, type, color);
     }
 
     private void setImage(String s, int color) {

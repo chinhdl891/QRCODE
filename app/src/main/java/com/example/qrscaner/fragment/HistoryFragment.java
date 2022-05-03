@@ -270,7 +270,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
                 shareContent = qrUrl.getShare();
                 break;
             case PRODUCT:
-                QrProduct qrProduct = (QrProduct) qrCode;
+                QrProduct qrProduct = new QrProduct();
                 qrProduct.compileProduct(qrCode.getScanText());
                 shareContent = qrProduct.getShare();
                 break;
