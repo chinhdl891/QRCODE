@@ -480,7 +480,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     }
 
     private void shareMulti(String s, QrScan.QRType type, int color) {
-        if (type != QrScan.QRType.BAR128 || type != QrScan.QRType.BAR93 || type != QrScan.QRType.BAR39) {
+        if (type != QrScan.QRType.BAR128 && type != QrScan.QRType.BAR93 && type != QrScan.QRType.BAR39) {
             setImage(s, color);
             if (getActivity() != null) {
                 sharePalette(getActivity(), bmShare);
@@ -488,29 +488,31 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         } else {
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
             BitMatrix bitMatrix = null;
-            if (type == QrScan.QRType.BAR39) {
-                try {
-                    bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_39, BITMAP_WIDTH, BITMAP_HEIGHT);
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
+            switch (type) {
+                case BAR93:
+                    try {
+                        bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_93, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case BAR128:
 
-            } else if (type == QrScan.QRType.BAR93) {
-                try {
-                    bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_93, BITMAP_WIDTH, BITMAP_HEIGHT);
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
-
-            } else if (type == QrScan.QRType.BAR128) {
-                try {
-                    bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_128, BITMAP_WIDTH, BITMAP_HEIGHT);
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
-
-
+                    try {
+                        bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_128, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default:
+                    try {
+                        bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_39, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+                    break;
             }
+
             try {
                 Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
                 for (int i = 0; i < BITMAP_WIDTH; i++) {
@@ -518,12 +520,17 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                         bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
                     }
                 }
-                sharePalette(getActivity(), bitmap);
-            } catch (Exception e) {
+                if (getActivity() != null) {
+                    sharePalette(getActivity(), bitmap);
+                }
+            } catch (Exception ignored) {
 
             }
+
         }
+
     }
+
 
     @Override
     public void onDestroy() {

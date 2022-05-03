@@ -37,6 +37,7 @@
     <string name="vibrate">Vibrate when scan successful</string>
     <string name="beep">Beep when scan successful</string>
     <string name="history_save">Save history for your scan</string>
+    <string name="save">Save</string>
     <string name="generate_text_empty">You have not generated \nany code before!</string>
     <string name="vibrate_title">Vibrate</string>
     <string name="beep_title">Beep</string>
