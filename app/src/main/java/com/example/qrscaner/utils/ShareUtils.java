@@ -77,12 +77,14 @@ public class ShareUtils {
 
     public static void sharePalette(Context context,Bitmap bitmap) {
 
-        String bitmapPath = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "" + System.currentTimeMillis(), null);
-        Uri bitmapUri = Uri.parse(bitmapPath);
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("image/png");
-        intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
-        context.startActivity(Intent.createChooser(intent, "Share"));
+        String bitmapPath = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Hello" + System.currentTimeMillis(), "qr scan");
+       if(bitmapPath != null){
+           Uri bitmapUri = Uri.parse(bitmapPath);
+           Intent intent = new Intent(Intent.ACTION_SEND);
+           intent.setType("image/png");
+           intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+           context.startActivity(Intent.createChooser(intent, "Share"));
+       }
 
     }
 

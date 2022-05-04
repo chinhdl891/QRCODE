@@ -157,10 +157,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
     @Override
     public void onDeleteQRSelected(QrScan qrScan, int i) {
         deleteQR(qrScan, i);
-        if (mQRScannedList.size() == 0) {
-            rcvHistoryScan.setVisibility(View.GONE);
-            lnlHTRGotoScan.setVisibility(View.VISIBLE);
-        }
+
     }
 
     @Override
@@ -273,7 +270,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, H
                 shareContent = qrUrl.getShare();
                 break;
             case PRODUCT:
-                QrProduct qrProduct = (QrProduct) qrCode;
+                QrProduct qrProduct = new QrProduct();
                 qrProduct.compileProduct(qrCode.getScanText());
                 shareContent = qrProduct.getShare();
                 break;

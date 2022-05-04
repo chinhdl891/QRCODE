@@ -54,5 +54,6 @@
     <string name="result">Kết quả</string>
     <string name="color">Chọn màu</string>
     <string name="general_settings">Cài đặt chung</string>
+    <string name="save">Lưu mã</string>
 
 </resources>

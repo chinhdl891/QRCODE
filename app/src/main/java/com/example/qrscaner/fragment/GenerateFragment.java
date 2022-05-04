@@ -1,5 +1,9 @@
 package com.example.qrscaner.fragment;
 
+import static com.example.qrscaner.config.Constant.BITMAP_HEIGHT;
+import static com.example.qrscaner.config.Constant.BITMAP_WIDTH;
+import static com.example.qrscaner.config.Constant.REQUEST_READ_STORAGE;
+import static com.example.qrscaner.config.Constant.REQUEST_WRITE_STORAGE;
 import static com.example.qrscaner.fragment.ShowQrGenerateFragment.SEND_GEN_QR;
 import static com.example.qrscaner.utils.ShareUtils.sharePalette;
 
@@ -58,10 +62,7 @@ import java.util.List;
 
 
 public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter.iCreateQr, SaveQRGenerate.SavaQr, ViewGenerateQRCode.IBackToGenerate, View.OnClickListener, ViewGenerateQRCode.ISaveQrGenerate, GenerateHistoryAdapter.EditGenerateListener, GenerateHistoryAdapter.ShowData, SaveQRGenerate.SaveBackToGenerate {
-    private static final int REQUEST_WRITE_STORAGE = 1000;
-    private static final int REQUEST_READ_STORAGE = 999;
-    private static final int BITMAP_WIDTH = 955;
-    private static final int BITMAP_HEIGHT = 426;
+
 
     private RecyclerView rcvGenerateFragmentQrCode, rcvGenerateFragmentBarCode, rcvGenerateFragmentHistory;
     private ViewGenerateQRCode viewGenerateQRCode;
@@ -281,41 +282,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
 
     @Override
     public void onShareGenerate(String s, QrScan.QRType type, int color) {
-        checkPermissionRead();
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-        BitMatrix bitMatrix;
-        BarcodeFormat format;
-        switch (type) {
-
-            case BAR39:
-                format = BarcodeFormat.CODE_39;
-                break;
-            case BAR93:
-                format = BarcodeFormat.CODE_93;
-                break;
-            case BAR128:
-                format = BarcodeFormat.CODE_128;
-                break;
-            default:
-                format = BarcodeFormat.QR_CODE;
-                break;
-        }
-
-        try {
-            bitMatrix = multiFormatWriter.encode(s, format, BITMAP_WIDTH, BITMAP_HEIGHT);
-            Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
-            for (int i = 0; i < BITMAP_WIDTH; i++) {
-                for (int j = 0; j < BITMAP_HEIGHT; j++) {
-                    bitmap.setPixel(i, j, bitMatrix.get(i, j) ? color : Color.WHITE);
-                }
-            }
-            if (getActivity() != null) {
-                sharePalette(getActivity(), bmShare);
-            }
-
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
+        shareMulti(s, type, color);
     }
 
     private void setImage(String s, int color) {
@@ -479,7 +446,7 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
     }
 
     private void shareMulti(String s, QrScan.QRType type, int color) {
-        if (type != QrScan.QRType.BAR128 || type != QrScan.QRType.BAR93 || type != QrScan.QRType.BAR39) {
+        if (type != QrScan.QRType.BAR128 && type != QrScan.QRType.BAR93 && type != QrScan.QRType.BAR39) {
             setImage(s, color);
             if (getActivity() != null) {
                 sharePalette(getActivity(), bmShare);
@@ -487,29 +454,31 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
         } else {
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
             BitMatrix bitMatrix = null;
-            if (type == QrScan.QRType.BAR39) {
-                try {
-                    bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_39, BITMAP_WIDTH, BITMAP_HEIGHT);
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
+            switch (type) {
+                case BAR93:
+                    try {
+                        bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_93, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case BAR128:
 
-            } else if (type == QrScan.QRType.BAR93) {
-                try {
-                    bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_93, BITMAP_WIDTH, BITMAP_HEIGHT);
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
-
-            } else if (type == QrScan.QRType.BAR128) {
-                try {
-                    bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_128, BITMAP_WIDTH, BITMAP_HEIGHT);
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
-
-
+                    try {
+                        bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_128, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default:
+                    try {
+                        bitMatrix = multiFormatWriter.encode(s, BarcodeFormat.CODE_39, BITMAP_WIDTH, BITMAP_HEIGHT);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+                    break;
             }
+
             try {
                 Bitmap bitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.RGB_565);
                 for (int i = 0; i < BITMAP_WIDTH; i++) {
@@ -517,12 +486,17 @@ public class GenerateFragment extends Fragment implements BARCODEGenerateAdapter
                         bitmap.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
                     }
                 }
-                sharePalette(getActivity(), bitmap);
-            } catch (Exception e) {
+                if (getActivity() != null) {
+                    sharePalette(getActivity(), bitmap);
+                }
+            } catch (Exception ignored) {
 
             }
+
         }
+
     }
+
 
     @Override
     public void onDestroy() {
